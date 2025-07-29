@@ -5,7 +5,8 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { getAllCropNames, getCropByName } from '@/data/cropData';
-import { Wheat, Sprout, MapPin, Calendar, TrendingUp, Search, Filter } from 'lucide-react';
+import LocationBasedRecommendations from './LocationBasedRecommendations';
+import EnhancedCropSelector from './EnhancedCropSelector';
 
 interface CropDashboardProps {
   onCropSelect: (cropName: string) => void;
@@ -72,56 +73,78 @@ const CropDashboard: React.FC<CropDashboardProps> = ({ onCropSelect }) => {
           <h1 className="text-4xl md:text-5xl font-bold text-foreground mb-4">
             CropTree Explorer
           </h1>
-          <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
+          <p className="text-lg text-muted-foreground max-w-2xl mx-auto mb-6">
             Explore detailed crop profiles with variety-specific insights for students and farmers
           </p>
+          
+          {/* Quick Stats */}
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 max-w-4xl mx-auto">
+            <div className="bg-card rounded-lg p-4 border">
+              <div className="text-2xl font-bold text-crop-green">{allCrops.length}</div>
+              <div className="text-sm text-muted-foreground">Crop Profiles</div>
+            </div>
+            <div className="bg-card rounded-lg p-4 border">
+              <div className="text-2xl font-bold text-harvest-gold">50+</div>
+              <div className="text-sm text-muted-foreground">Varieties</div>
+            </div>
+            <div className="bg-card rounded-lg p-4 border">
+              <div className="text-2xl font-bold text-primary">25+</div>
+              <div className="text-sm text-muted-foreground">States Covered</div>
+            </div>
+            <div className="bg-card rounded-lg p-4 border">
+              <div className="text-2xl font-bold text-secondary">100%</div>
+              <div className="text-sm text-muted-foreground">ICAR Verified</div>
+            </div>
+          </div>
         </div>
 
         {/* Search and Filters */}
-        <div className="mb-8 space-y-4 md:space-y-0 md:flex md:gap-4 md:items-end">
-          <div className="flex-1">
-            <div className="relative">
-              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground h-4 w-4" />
-              <Input
-                placeholder="Search crops by name or botanical name..."
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-                className="pl-10"
-              />
+        <div className="mb-8">
+          <div className="flex flex-col md:flex-row gap-4 items-stretch md:items-end">
+            <div className="flex-1">
+              <div className="relative">
+                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground h-4 w-4" />
+                <Input
+                  placeholder="Search crops by name or scientific name..."
+                  value={searchTerm}
+                  onChange={(e) => setSearchTerm(e.target.value)}
+                  className="pl-10 h-12 text-lg border-2 focus:border-crop-green"
+                />
+              </div>
             </div>
-          </div>
-          
-          <div className="flex gap-2">
-            <Select value={selectedSeason} onValueChange={setSelectedSeason}>
-              <SelectTrigger className="w-32">
-                <Calendar className="h-4 w-4 mr-2" />
-                <SelectValue placeholder="Season" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="all">All Seasons</SelectItem>
-                <SelectItem value="rabi">Rabi</SelectItem>
-                <SelectItem value="kharif">Kharif</SelectItem>
-                <SelectItem value="zaid">Zaid</SelectItem>
-              </SelectContent>
-            </Select>
+            
+            <div className="flex gap-2">
+              <Select value={selectedSeason} onValueChange={setSelectedSeason}>
+                <SelectTrigger className="w-40">
+                  <Calendar className="h-4 w-4 mr-2" />
+                  <SelectValue placeholder="Season" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="all">All Seasons</SelectItem>
+                  <SelectItem value="rabi">Rabi</SelectItem>
+                  <SelectItem value="kharif">Kharif</SelectItem>
+                  <SelectItem value="zaid">Zaid</SelectItem>
+                </SelectContent>
+              </Select>
 
-            <Select value={selectedState} onValueChange={setSelectedState}>
-              <SelectTrigger className="w-32">
-                <MapPin className="h-4 w-4 mr-2" />
-                <SelectValue placeholder="State" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="all">All States</SelectItem>
-                <SelectItem value="punjab">Punjab</SelectItem>
-                <SelectItem value="haryana">Haryana</SelectItem>
-                <SelectItem value="uttar pradesh">UP</SelectItem>
-                <SelectItem value="bihar">Bihar</SelectItem>
-                <SelectItem value="west bengal">West Bengal</SelectItem>
-                <SelectItem value="maharashtra">Maharashtra</SelectItem>
-                <SelectItem value="karnataka">Karnataka</SelectItem>
-                <SelectItem value="tamil nadu">Tamil Nadu</SelectItem>
-              </SelectContent>
-            </Select>
+              <Select value={selectedState} onValueChange={setSelectedState}>
+                <SelectTrigger className="w-40">
+                  <MapPin className="h-4 w-4 mr-2" />
+                  <SelectValue placeholder="State" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="all">All States</SelectItem>
+                  <SelectItem value="punjab">Punjab</SelectItem>
+                  <SelectItem value="haryana">Haryana</SelectItem>
+                  <SelectItem value="uttar pradesh">UP</SelectItem>
+                  <SelectItem value="bihar">Bihar</SelectItem>
+                  <SelectItem value="west bengal">West Bengal</SelectItem>
+                  <SelectItem value="maharashtra">Maharashtra</SelectItem>
+                  <SelectItem value="karnataka">Karnataka</SelectItem>
+                  <SelectItem value="tamil nadu">Tamil Nadu</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
           </div>
         </div>
 
@@ -220,8 +243,26 @@ const CropDashboard: React.FC<CropDashboardProps> = ({ onCropSelect }) => {
           })}
         </div>
 
+        {/* Enhanced Features Section */}
+        <div className="mt-12 space-y-8">
+          {/* Location-Based Recommendations */}
+          <LocationBasedRecommendations onCropSelect={onCropSelect} />
+          
+          {/* Enhanced Crop Selector */}
+          <div>
+            <h2 className="text-2xl font-bold text-foreground mb-4 flex items-center gap-2">
+              <Lightbulb className="h-6 w-6 text-harvest-gold" />
+              Smart Crop Search
+            </h2>
+            <EnhancedCropSelector 
+              onCropSelect={onCropSelect} 
+              selectedCrop={filteredCrops.find(name => name === searchTerm) || null}
+            />
+          </div>
+        </div>
+
         {/* No Results */}
-        {filteredCrops.length === 0 && (
+        {filteredCrops.length === 0 && searchTerm && (
           <div className="text-center py-12">
             <Sprout className="h-16 w-16 text-muted-foreground mx-auto mb-4" />
             <h3 className="text-xl font-semibold text-foreground mb-2">No crops found</h3>
