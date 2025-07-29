@@ -16,14 +16,15 @@ import '@xyflow/react/dist/style.css';
 import { Card } from './ui/card';
 import { Badge } from './ui/badge';
 import { CropData, CropVariety } from '../data/cropData';
-import { Wheat, Droplets, Thermometer, Mountain, Bug, Shield, DollarSign, Leaf, Sprout, Calendar, MapPin } from 'lucide-react';
+import { Wheat, Droplets, Thermometer, Mountain, Bug, Shield, DollarSign, Leaf, Sprout, Calendar, MapPin, Star, Award, CheckCircle, XCircle, Crown, Zap, Apple, TrendingUp } from 'lucide-react';
 
 interface CropNodeData {
   label: string;
-  type: 'main' | 'category' | 'variety' | 'detail';
+  type: 'main' | 'category' | 'variety' | 'detail' | 'variety-detail';
   data?: any;
   icon?: React.ReactNode;
   bgColor?: string;
+  variety?: CropVariety;
 }
 
 // Custom Node Component
@@ -35,7 +36,9 @@ const CropNode = ({ data }: { data: CropNodeData }) => {
       case 'category':
         return 'bg-card border-2 border-primary';
       case 'variety':
-        return 'bg-accent border border-accent-foreground';
+        return 'bg-gradient-to-br from-primary/10 to-secondary/20 border-2 border-primary shadow-lg';
+      case 'variety-detail':
+        return 'bg-muted border border-border';
       case 'detail':
         return 'bg-secondary border border-secondary-foreground';
       default:
@@ -50,11 +53,98 @@ const CropNode = ({ data }: { data: CropNodeData }) => {
       case 'category':
         return 'min-w-40 min-h-20';
       case 'variety':
+        return 'min-w-72 min-h-48'; // Much larger for variety cards
+      case 'variety-detail':
         return 'min-w-36 min-h-16';
       default:
         return 'min-w-32 min-h-12';
     }
   };
+
+  // Special rendering for variety cards
+  if (data.type === 'variety' && data.variety) {
+    const variety = data.variety;
+    return (
+      <Card className={`${getNodeStyle()} ${getSize()} p-4 transition-all duration-300 hover:scale-102 hover:shadow-xl animate-grow`}>
+        <div className="space-y-3">
+          {/* Header */}
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-2">
+              <Crown className="text-primary h-5 w-5" />
+              <h3 className="font-bold text-lg text-primary">{variety.name}</h3>
+            </div>
+            <Badge variant={variety.premiumMarket ? "default" : "secondary"} className="text-xs">
+              {variety.zone}
+            </Badge>
+          </div>
+
+          {/* Key Metrics */}
+          <div className="grid grid-cols-2 gap-2 text-xs">
+            <div className="flex items-center gap-1">
+              <Calendar className="h-3 w-3 text-muted-foreground" />
+              <span className="font-medium">{variety.duration}</span>
+            </div>
+            <div className="flex items-center gap-1">
+              <TrendingUp className="h-3 w-3 text-muted-foreground" />
+              <span className="font-medium">{variety.yield}</span>
+            </div>
+          </div>
+
+          {/* States */}
+          <div className="space-y-1">
+            <div className="text-xs font-medium text-muted-foreground">Suitable States:</div>
+            <div className="flex flex-wrap gap-1">
+              {variety.states.slice(0, 3).map((state, idx) => (
+                <Badge key={idx} variant="outline" className="text-xs">
+                  {state}
+                </Badge>
+              ))}
+              {variety.states.length > 3 && (
+                <span className="text-xs text-muted-foreground">+{variety.states.length - 3}</span>
+              )}
+            </div>
+          </div>
+
+          {/* Resistance & Features */}
+          <div className="space-y-2">
+            <div className="flex items-center gap-2 text-xs">
+              <Shield className="h-3 w-3 text-green-600" />
+              <span className="font-medium">Resistant to: {variety.resistance.slice(0, 2).join(', ')}</span>
+            </div>
+            
+            <div className="flex flex-wrap gap-1">
+              {variety.lateSowingSuitable && (
+                <Badge variant="secondary" className="text-xs flex items-center gap-1">
+                  <CheckCircle className="h-2 w-2" />
+                  Late Sowing
+                </Badge>
+              )}
+              {variety.irrigationResponsive && (
+                <Badge variant="secondary" className="text-xs flex items-center gap-1">
+                  <Droplets className="h-2 w-2" />
+                  Irrigation Responsive
+                </Badge>
+              )}
+              {variety.premiumMarket && (
+                <Badge variant="default" className="text-xs flex items-center gap-1">
+                  <Star className="h-2 w-2" />
+                  Premium Market
+                </Badge>
+              )}
+            </div>
+          </div>
+
+          {/* Grain Quality */}
+          <div className="text-xs">
+            <span className="font-medium text-muted-foreground">Quality: </span>
+            <span>{variety.grainQuality}</span>
+          </div>
+        </div>
+        <Handle type="target" position={Position.Top} className="w-3 h-3" />
+        <Handle type="source" position={Position.Bottom} className="w-3 h-3" />
+      </Card>
+    );
+  }
 
   return (
     <Card className={`${getNodeStyle()} ${getSize()} p-4 transition-all duration-300 hover:scale-105 hover:shadow-lg animate-grow`}>
@@ -101,7 +191,7 @@ export const CropFlowChart: React.FC<CropFlowChartProps> = ({ cropData }) => {
     nodes.push({
       id: 'main',
       type: 'cropNode',
-      position: { x: 400, y: 50 },
+      position: { x: 600, y: 50 },
       data: {
         label: `${cropData.name}`,
         type: 'main',
@@ -110,49 +200,63 @@ export const CropFlowChart: React.FC<CropFlowChartProps> = ({ cropData }) => {
       },
     });
 
-    // Category nodes
+    // Restructured category nodes - more practical focus
     const categories = [
       { 
-        id: 'botanical', 
-        label: 'Botanical Info', 
-        position: { x: 100, y: 200 }, 
-        icon: <Sprout />,
-        data: [cropData.scientificName, cropData.family]
-      },
-      { 
-        id: 'climate', 
-        label: 'Climate & Soil', 
-        position: { x: 300, y: 200 }, 
+        id: 'season-climate', 
+        label: 'Season & Agro-Climatic Fit', 
+        position: { x: 100, y: 180 }, 
         icon: <Thermometer />,
-        data: cropData.climate.temperature
+        data: `${cropData.season.join(', ')} | ${cropData.climate.temperature}`
       },
       { 
-        id: 'varieties', 
-        label: 'Varieties', 
-        position: { x: 500, y: 200 }, 
+        id: 'soil', 
+        label: 'Soil & Climate Conditions', 
+        position: { x: 350, y: 180 }, 
         icon: <Mountain />,
-        data: `${cropData.varieties.length} varieties`
+        data: `pH: ${cropData.soil.ph} | ${cropData.soil.drainage}`
       },
       { 
         id: 'cultivation', 
-        label: 'Cultivation', 
-        position: { x: 700, y: 200 }, 
+        label: 'Cultivation Practices', 
+        position: { x: 600, y: 180 }, 
         icon: <Calendar />,
-        data: cropData.season.join(', ')
+        data: `${cropData.cultivation.sowing.length} practices`
       },
       { 
-        id: 'pests', 
-        label: 'Pests & Diseases', 
-        position: { x: 200, y: 350 }, 
+        id: 'varieties', 
+        label: '🌟 VARIETIES (USP)', 
+        position: { x: 850, y: 180 }, 
+        icon: <Crown />,
+        data: `${cropData.varieties.length} varieties available`
+      },
+      { 
+        id: 'pests-diseases', 
+        label: 'Pest & Disease Profile', 
+        position: { x: 1100, y: 180 }, 
         icon: <Bug />,
         data: `${cropData.pests.length + cropData.diseases.length} issues`
       },
       { 
         id: 'economics', 
-        label: 'Economics', 
-        position: { x: 600, y: 350 }, 
+        label: 'Economics & Market', 
+        position: { x: 200, y: 360 }, 
         icon: <DollarSign />,
-        data: cropData.economics.averageYield
+        data: cropData.economics.marketPrice
+      },
+      { 
+        id: 'nutrition', 
+        label: 'Nutritional Value', 
+        position: { x: 500, y: 360 }, 
+        icon: <Apple />,
+        data: `${cropData.nutritionalValue.calories} | ${cropData.nutritionalValue.protein} protein`
+      },
+      { 
+        id: 'innovations', 
+        label: 'Innovations & Climate Resilience', 
+        position: { x: 800, y: 360 }, 
+        icon: <Zap />,
+        data: `${cropData.innovations.length} innovations`
       },
     ];
 
@@ -179,18 +283,19 @@ export const CropFlowChart: React.FC<CropFlowChartProps> = ({ cropData }) => {
       });
     });
 
-    // Variety nodes
+    // Enhanced Variety nodes - prominently displayed as individual crop stories
     cropData.varieties.forEach((variety: CropVariety, index: number) => {
       const varietyId = `variety-${variety.id}`;
+      
+      // Large prominent variety cards positioned centrally
       nodes.push({
         id: varietyId,
         type: 'cropNode',
-        position: { x: 350 + (index * 150), y: 350 },
+        position: { x: 400 + (index * 400), y: 500 }, // Spaced out horizontally for prominence
         data: {
           label: variety.name,
           type: 'variety',
-          icon: <Leaf />,
-          data: variety.duration,
+          variety: variety, // Pass full variety data for rich display
         },
       });
 
@@ -199,14 +304,30 @@ export const CropFlowChart: React.FC<CropFlowChartProps> = ({ cropData }) => {
         source: 'varieties',
         target: varietyId,
         type: 'smoothstep',
-        style: { stroke: 'hsl(var(--harvest-gold))', strokeWidth: 2 },
+        animated: true,
+        style: { stroke: 'hsl(var(--primary))', strokeWidth: 3 }, // Thicker, more prominent edges
       });
 
-      // Variety details
+      // Variety detail sub-nodes for expanded information
       const detailNodes = [
-        { label: 'Yield', data: variety.yield, offset: -100 },
-        { label: 'States', data: variety.states.slice(0, 2).join(', '), offset: 0 },
-        { label: 'Resistance', data: variety.resistance.slice(0, 2).join(', '), offset: 100 },
+        { 
+          label: 'Cultivation Cost', 
+          data: cropData.economics.costOfCultivation, 
+          offset: -120,
+          icon: <DollarSign />
+        },
+        { 
+          label: 'Disease Resistance', 
+          data: variety.resistance.join(', '), 
+          offset: 0,
+          icon: <Shield />
+        },
+        { 
+          label: 'Market Potential', 
+          data: variety.premiumMarket ? 'Premium Market' : 'Standard Market', 
+          offset: 120,
+          icon: <TrendingUp />
+        },
       ];
 
       detailNodes.forEach((detail, detailIndex) => {
@@ -214,11 +335,12 @@ export const CropFlowChart: React.FC<CropFlowChartProps> = ({ cropData }) => {
         nodes.push({
           id: detailId,
           type: 'cropNode',
-          position: { x: 350 + (index * 150) + detail.offset, y: 500 },
+          position: { x: 400 + (index * 400) + detail.offset, y: 720 },
           data: {
             label: detail.label,
-            type: 'detail',
+            type: 'variety-detail',
             data: detail.data,
+            icon: detail.icon,
           },
         });
 
@@ -227,7 +349,7 @@ export const CropFlowChart: React.FC<CropFlowChartProps> = ({ cropData }) => {
           source: varietyId,
           target: detailId,
           type: 'straight',
-          style: { stroke: 'hsl(var(--muted-foreground))', strokeWidth: 1 },
+          style: { stroke: 'hsl(var(--muted-foreground))', strokeWidth: 1.5 },
         });
       });
     });
@@ -243,8 +365,8 @@ export const CropFlowChart: React.FC<CropFlowChartProps> = ({ cropData }) => {
     [setEdges]
   );
 
-  return (
-    <div className="w-full h-[600px] bg-gradient-to-br from-leaf-light to-background rounded-lg border shadow-nature">
+    return (
+      <div className="w-full h-[800px] bg-gradient-to-br from-leaf-light to-background rounded-lg border shadow-nature">
       <ReactFlow
         nodes={nodes}
         edges={edges}

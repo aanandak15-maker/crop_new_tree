@@ -6,6 +6,12 @@ export interface CropVariety {
   states: string[];
   resistance: string[];
   characteristics: string[];
+  lateSowingSuitable: boolean;
+  irrigationResponsive: boolean;
+  certifiedSeedAvailable: boolean;
+  grainQuality: string;
+  zone: string;
+  premiumMarket: boolean;
 }
 
 export interface CropData {
@@ -38,8 +44,19 @@ export interface CropData {
     averageYield: string;
     marketPrice: string;
     majorStates: string[];
+    costOfCultivation: string;
   };
   sustainability: string[];
+  nutritionalValue: {
+    calories: string;
+    protein: string;
+    carbohydrates: string;
+    fiber: string;
+    vitamins: string[];
+    minerals: string[];
+  };
+  innovations: string[];
+  climateResilience: string[];
 }
 
 export const cropDatabase: CropData[] = [
@@ -67,7 +84,13 @@ export const cropDatabase: CropData[] = [
         yield: "45-50 q/ha",
         states: ["Punjab", "Haryana", "Uttar Pradesh", "Madhya Pradesh"],
         resistance: ["Yellow rust", "Brown rust", "Powdery mildew"],
-        characteristics: ["High protein content", "Good chapati quality", "Semi-dwarf"]
+        characteristics: ["High protein content", "Good chapati quality", "Semi-dwarf"],
+        lateSowingSuitable: false,
+        irrigationResponsive: true,
+        certifiedSeedAvailable: true,
+        grainQuality: "High Protein, Medium Bold",
+        zone: "North Zone",
+        premiumMarket: true
       },
       {
         id: "dbw187",
@@ -76,7 +99,13 @@ export const cropDatabase: CropData[] = [
         yield: "40-45 q/ha",
         states: ["Punjab", "Haryana", "Delhi", "Western UP"],
         resistance: ["Yellow rust", "Leaf rust", "Powdery mildew"],
-        characteristics: ["Heat tolerant", "Late sowing variety", "Good grain quality"]
+        characteristics: ["Heat tolerant", "Late sowing variety", "Good grain quality"],
+        lateSowingSuitable: true,
+        irrigationResponsive: true,
+        certifiedSeedAvailable: true,
+        grainQuality: "Good chapati quality",
+        zone: "North-West Zone",
+        premiumMarket: false
       },
       {
         id: "pusa3085",
@@ -85,7 +114,13 @@ export const cropDatabase: CropData[] = [
         yield: "42-48 q/ha",
         states: ["Bihar", "Jharkhand", "Eastern UP", "West Bengal"],
         resistance: ["Blast", "Brown spot", "Bacterial blight"],
-        characteristics: ["Early maturing", "High yielding", "Disease resistant"]
+        characteristics: ["Early maturing", "High yielding", "Disease resistant"],
+        lateSowingSuitable: false,
+        irrigationResponsive: true,
+        certifiedSeedAvailable: true,
+        grainQuality: "Good milling quality",
+        zone: "Eastern Zone",
+        premiumMarket: false
       }
     ],
     cultivation: {
@@ -100,9 +135,20 @@ export const cropDatabase: CropData[] = [
     economics: {
       averageYield: "32 q/ha (National average)",
       marketPrice: "₹2000-2500/quintal (MSP: ₹2275)",
-      majorStates: ["Uttar Pradesh", "Punjab", "Haryana", "Madhya Pradesh", "Rajasthan"]
+      majorStates: ["Uttar Pradesh", "Punjab", "Haryana", "Madhya Pradesh", "Rajasthan"],
+      costOfCultivation: "₹35,000-45,000/ha"
     },
-    sustainability: ["Crop rotation with legumes", "Zero tillage technology", "Integrated pest management", "Water-saving techniques", "Organic farming practices"]
+    sustainability: ["Crop rotation with legumes", "Zero tillage technology", "Integrated pest management", "Water-saving techniques", "Organic farming practices"],
+    nutritionalValue: {
+      calories: "340 kcal",
+      protein: "12.2%",
+      carbohydrates: "71%",
+      fiber: "12.3g",
+      vitamins: ["Vitamin B1", "Vitamin B3", "Folate"],
+      minerals: ["Iron", "Zinc", "Magnesium", "Phosphorus"]
+    },
+    innovations: ["Drought tolerant varieties", "Precision sowing techniques", "Biofortified wheat (Zinc-enriched)", "Climate-smart varieties"],
+    climateResilience: ["Heat tolerance", "Terminal heat stress resistance", "Water use efficiency", "Lodging resistance"]
   },
   {
     id: "rice",
@@ -121,33 +167,51 @@ export const cropDatabase: CropData[] = [
       drainage: "Poor drainage suitable (puddled field)"
     },
     varieties: [
-      {
-        id: "swarna",
-        name: "Swarna",
-        duration: "145-150 days",
-        yield: "50-55 q/ha",
-        states: ["Andhra Pradesh", "Telangana", "Karnataka", "Tamil Nadu", "Odisha"],
-        resistance: ["Blast", "Brown plant hopper", "Gall midge"],
-        characteristics: ["Medium slender grain", "Good cooking quality", "Widely adapted"]
-      },
-      {
-        id: "ir64",
-        name: "IR 64",
-        duration: "120-125 days",
-        yield: "45-50 q/ha",
-        states: ["Punjab", "Haryana", "Uttar Pradesh", "Bihar"],
-        resistance: ["Blast", "Bacterial blight", "Brown plant hopper"],
-        characteristics: ["Semi-dwarf", "High yielding", "Good milling quality"]
-      },
-      {
-        id: "basmati1509",
-        name: "Pusa Basmati 1509",
-        duration: "115-120 days",
-        yield: "40-45 q/ha",
-        states: ["Punjab", "Haryana", "Uttar Pradesh", "Uttarakhand"],
-        resistance: ["Blast", "Bacterial blight"],
-        characteristics: ["Export quality", "Extra long grain", "High aroma"]
-      }
+        {
+          id: "swarna",
+          name: "Swarna",
+          duration: "145-150 days",
+          yield: "50-55 q/ha",
+          states: ["Andhra Pradesh", "Telangana", "Karnataka", "Tamil Nadu", "Odisha"],
+          resistance: ["Blast", "Brown plant hopper", "Gall midge"],
+          characteristics: ["Medium slender grain", "Good cooking quality", "Widely adapted"],
+          lateSowingSuitable: false,
+          irrigationResponsive: true,
+          certifiedSeedAvailable: true,
+          grainQuality: "Medium slender, good cooking",
+          zone: "South Zone",
+          premiumMarket: true
+        },
+        {
+          id: "ir64",
+          name: "IR 64",
+          duration: "120-125 days",
+          yield: "45-50 q/ha",
+          states: ["Punjab", "Haryana", "Uttar Pradesh", "Bihar"],
+          resistance: ["Blast", "Bacterial blight", "Brown plant hopper"],
+          characteristics: ["Semi-dwarf", "High yielding", "Good milling quality"],
+          lateSowingSuitable: false,
+          irrigationResponsive: true,
+          certifiedSeedAvailable: true,
+          grainQuality: "Good milling, medium grain",
+          zone: "North Zone",
+          premiumMarket: false
+        },
+        {
+          id: "basmati1509",
+          name: "Pusa Basmati 1509",
+          duration: "115-120 days",
+          yield: "40-45 q/ha",
+          states: ["Punjab", "Haryana", "Uttar Pradesh", "Uttarakhand"],
+          resistance: ["Blast", "Bacterial blight"],
+          characteristics: ["Export quality", "Extra long grain", "High aroma"],
+          lateSowingSuitable: true,
+          irrigationResponsive: true,
+          certifiedSeedAvailable: true,
+          grainQuality: "Export quality, extra long",
+          zone: "North-West Zone",
+          premiumMarket: true
+        }
     ],
     cultivation: {
       landPreparation: ["Puddling", "Leveling", "Bunding", "Apply organic matter"],
@@ -161,9 +225,20 @@ export const cropDatabase: CropData[] = [
     economics: {
       averageYield: "26 q/ha (National average)",
       marketPrice: "₹1800-2200/quintal (MSP: ₹2183)",
-      majorStates: ["West Bengal", "Uttar Pradesh", "Punjab", "Tamil Nadu", "Andhra Pradesh"]
+      majorStates: ["West Bengal", "Uttar Pradesh", "Punjab", "Tamil Nadu", "Andhra Pradesh"],
+      costOfCultivation: "₹40,000-55,000/ha"
     },
-    sustainability: ["System of Rice Intensification (SRI)", "Direct seeded rice", "Alternate wetting and drying", "Integrated nutrient management", "Biofortified varieties"]
+    sustainability: ["System of Rice Intensification (SRI)", "Direct seeded rice", "Alternate wetting and drying", "Integrated nutrient management", "Biofortified varieties"],
+    nutritionalValue: {
+      calories: "345 kcal",
+      protein: "6.8%",
+      carbohydrates: "78%",
+      fiber: "1.3g",
+      vitamins: ["Vitamin B1", "Vitamin B3", "Vitamin B6"],
+      minerals: ["Manganese", "Iron", "Zinc", "Phosphorus"]
+    },
+    innovations: ["Direct seeded rice technology", "Aerobic rice cultivation", "Golden rice (Vitamin A enriched)", "Climate-smart varieties"],
+    climateResilience: ["Submergence tolerance", "Salinity tolerance", "Drought tolerance", "Heat stress resistance"]
   },
   {
     id: "maize",
@@ -182,33 +257,51 @@ export const cropDatabase: CropData[] = [
       drainage: "Good drainage required"
     },
     varieties: [
-      {
-        id: "nk6240",
-        name: "NK 6240",
-        duration: "85-90 days",
-        yield: "80-90 q/ha",
-        states: ["Karnataka", "Maharashtra", "Gujarat", "Madhya Pradesh"],
-        resistance: ["Turcicum leaf blight", "Common rust"],
-        characteristics: ["Single cross hybrid", "High yielding", "Stress tolerant"]
-      },
-      {
-        id: "900mgold",
-        name: "900M Gold",
-        duration: "88-92 days",
-        yield: "75-85 q/ha",
-        states: ["Punjab", "Haryana", "Uttar Pradesh", "Bihar"],
-        resistance: ["Downy mildew", "Turcicum leaf blight"],
-        characteristics: ["Triple stack hybrid", "Excellent standability", "Good grain quality"]
-      },
-      {
-        id: "bioseed9544",
-        name: "Bio Seed 9544",
-        duration: "80-85 days",
-        yield: "70-80 q/ha",
-        states: ["Rajasthan", "Gujarat", "Maharashtra", "Karnataka"],
-        resistance: ["Common rust", "Turcicum leaf blight"],
-        characteristics: ["Drought tolerant", "Early maturing", "High shelling %"]
-      }
+        {
+          id: "nk6240",
+          name: "NK 6240",
+          duration: "85-90 days",
+          yield: "80-90 q/ha",
+          states: ["Karnataka", "Maharashtra", "Gujarat", "Madhya Pradesh"],
+          resistance: ["Turcicum leaf blight", "Common rust"],
+          characteristics: ["Single cross hybrid", "High yielding", "Stress tolerant"],
+          lateSowingSuitable: true,
+          irrigationResponsive: true,
+          certifiedSeedAvailable: true,
+          grainQuality: "Good grain, high test weight",
+          zone: "Central Zone",
+          premiumMarket: true
+        },
+        {
+          id: "900mgold",
+          name: "900M Gold",
+          duration: "88-92 days",
+          yield: "75-85 q/ha",
+          states: ["Punjab", "Haryana", "Uttar Pradesh", "Bihar"],
+          resistance: ["Downy mildew", "Turcicum leaf blight"],
+          characteristics: ["Triple stack hybrid", "Excellent standability", "Good grain quality"],
+          lateSowingSuitable: false,
+          irrigationResponsive: true,
+          certifiedSeedAvailable: true,
+          grainQuality: "Excellent grain quality",
+          zone: "North Zone",
+          premiumMarket: true
+        },
+        {
+          id: "bioseed9544",
+          name: "Bio Seed 9544",
+          duration: "80-85 days",
+          yield: "70-80 q/ha",
+          states: ["Rajasthan", "Gujarat", "Maharashtra", "Karnataka"],
+          resistance: ["Common rust", "Turcicum leaf blight"],
+          characteristics: ["Drought tolerant", "Early maturing", "High shelling %"],
+          lateSowingSuitable: true,
+          irrigationResponsive: false,
+          certifiedSeedAvailable: true,
+          grainQuality: "High shelling percentage",
+          zone: "Western Zone",
+          premiumMarket: false
+        }
     ],
     cultivation: {
       landPreparation: ["Deep ploughing", "Harrowing", "Planking", "Ridge and furrow method"],
@@ -222,9 +315,20 @@ export const cropDatabase: CropData[] = [
     economics: {
       averageYield: "28 q/ha (National average)",
       marketPrice: "₹1700-2100/quintal (MSP: ₹2090)",
-      majorStates: ["Karnataka", "Maharashtra", "Madhya Pradesh", "Bihar", "Rajasthan"]
+      majorStates: ["Karnataka", "Maharashtra", "Madhya Pradesh", "Bihar", "Rajasthan"],
+      costOfCultivation: "₹30,000-40,000/ha"
     },
-    sustainability: ["Precision agriculture", "Conservation agriculture", "Integrated pest management", "Quality protein maize", "Biofortified varieties"]
+    sustainability: ["Precision agriculture", "Conservation agriculture", "Integrated pest management", "Quality protein maize", "Biofortified varieties"],
+    nutritionalValue: {
+      calories: "365 kcal",
+      protein: "9.4%",
+      carbohydrates: "74%",
+      fiber: "7.3g",
+      vitamins: ["Vitamin A", "Vitamin C", "Vitamin B6"],
+      minerals: ["Magnesium", "Phosphorus", "Iron", "Zinc"]
+    },
+    innovations: ["Quality Protein Maize (QPM)", "Biofortified varieties", "Hybrid technology", "Precision agriculture"],
+    climateResilience: ["Drought tolerance", "Heat stress tolerance", "Lodging resistance", "Early maturity"]
   }
 ];
 
