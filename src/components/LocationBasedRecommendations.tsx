@@ -37,7 +37,7 @@ const LocationBasedRecommendations: React.FC<LocationBasedRecommendationsProps> 
         const stateMatch = variety.states.some(state => 
           state.toLowerCase().includes(selectedState.toLowerCase())
         );
-        const seasonMatch = !selectedSeason || crop.season.some(s => 
+        const seasonMatch = selectedSeason === 'all' || !selectedSeason || crop.season.some(s => 
           s.toLowerCase() === selectedSeason.toLowerCase()
         );
         return stateMatch && seasonMatch;
@@ -100,7 +100,7 @@ const LocationBasedRecommendations: React.FC<LocationBasedRecommendationsProps> 
               <SelectValue placeholder="Select season (optional)" />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="">All Seasons</SelectItem>
+              <SelectItem value="all">All Seasons</SelectItem>
               {seasons.map((season) => (
                 <SelectItem key={season} value={season.toLowerCase()}>
                   {season}
