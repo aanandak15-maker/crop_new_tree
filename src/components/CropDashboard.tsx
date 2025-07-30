@@ -4,6 +4,7 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Wheat, Sprout, Search, Calendar, MapPin, TrendingUp, Lightbulb } from 'lucide-react';
 import { getAllCropNames, getCropByName } from '@/data/cropData';
 import LocationBasedRecommendations from './LocationBasedRecommendations';
 import EnhancedCropSelector from './EnhancedCropSelector';
