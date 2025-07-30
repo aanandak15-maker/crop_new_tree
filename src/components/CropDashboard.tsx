@@ -160,7 +160,7 @@ const CropDashboard: React.FC<CropDashboardProps> = ({ onCropSelect }) => {
             return (
               <Card 
                 key={cropName}
-                className="group cursor-pointer transition-all duration-300 hover:shadow-nature hover:scale-105 border-2 hover:border-crop-green"
+                className="group cursor-pointer transition-all duration-300 hover:shadow-elegant hover:scale-105 border-2 hover:border-crop-green bg-gradient-to-br from-card to-leaf-light/10"
                 onClick={() => onCropSelect(cropName)}
               >
                 <CardHeader className="pb-4">
@@ -230,7 +230,7 @@ const CropDashboard: React.FC<CropDashboardProps> = ({ onCropSelect }) => {
 
                   {/* Action Button */}
                   <Button 
-                    className="w-full bg-crop-green hover:bg-crop-green/90 text-white"
+                    className="w-full bg-gradient-to-r from-crop-green to-crop-green/80 hover:from-crop-green/90 hover:to-crop-green/70 text-white shadow-elegant transition-all duration-300 hover:shadow-glow"
                     onClick={(e) => {
                       e.stopPropagation();
                       onCropSelect(cropName);

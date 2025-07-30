@@ -49,7 +49,10 @@ All colors MUST be HSL.
     --leaf-light: 110 40% 85%;
     --growth-gradient: linear-gradient(135deg, hsl(120 55% 35%), hsl(45 85% 65%));
     --nature-glow: 0 20px 40px hsl(120 45% 25% / 0.15);
+    --shadow-elegant: 0 10px 30px -10px hsl(120 45% 25% / 0.3);
+    --shadow-glow: 0 0 40px hsl(45 85% 65% / 0.4);
     --transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    --transition-bounce: all 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55);
 
     --radius: 0.5rem;
 

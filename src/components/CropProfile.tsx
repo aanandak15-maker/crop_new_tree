@@ -6,6 +6,8 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
 import { getCropByName, CropData } from '@/data/cropData';
 import VarietyCard from './VarietyCard';
+import CropFlowChart from './CropFlowChart';
+import ComparisonTool from './ComparisonTool';
 import { 
   ArrowLeft, 
   Info, 
@@ -44,9 +46,10 @@ const CropProfile: React.FC<CropProfileProps> = ({ cropName, onBack }) => {
   const tabItems = [
     { id: 'overview', label: 'Overview', icon: Info },
     { id: 'varieties', label: 'Varieties', icon: Sprout },
+    { id: 'cultivation', label: 'Cultivation Process', icon: Calendar },
+    { id: 'comparison', label: 'Compare Varieties', icon: TrendingUp },
     { id: 'climate', label: 'Climate & Soil', icon: Thermometer },
     { id: 'nutrition', label: 'Nutrition', icon: Apple },
-    { id: 'cultivation', label: 'Cultivation', icon: Scissors },
     { id: 'pests', label: 'Pests & Diseases', icon: Bug },
     { id: 'economics', label: 'Economics', icon: TrendingUp },
     { id: 'innovations', label: 'Innovations', icon: Lightbulb },
@@ -326,67 +329,16 @@ const CropProfile: React.FC<CropProfileProps> = ({ cropName, onBack }) => {
             </Card>
           </TabsContent>
 
-          {/* Other tabs with accordion layout */}
-          <TabsContent value="cultivation" className="space-y-6">
-            <Card>
-              <CardHeader>
-                <CardTitle>Cultivation Practices</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <Accordion type="single" collapsible className="space-y-2">
-                  <AccordionItem value="land-prep">
-                    <AccordionTrigger>Land Preparation</AccordionTrigger>
-                    <AccordionContent>
-                      <div className="space-y-2 text-muted-foreground">
-                        {crop.cultivation.landPreparation.map((detail, idx) => (
-                          <p key={idx}>{detail}</p>
-                        ))}
-                      </div>
-                    </AccordionContent>
-                  </AccordionItem>
-                  <AccordionItem value="sowing">
-                    <AccordionTrigger>Sowing</AccordionTrigger>
-                    <AccordionContent>
-                      <div className="space-y-2 text-muted-foreground">
-                        {crop.cultivation.sowing.map((detail, idx) => (
-                          <p key={idx}>{detail}</p>
-                        ))}
-                      </div>
-                    </AccordionContent>
-                  </AccordionItem>
-                  <AccordionItem value="fertilizers">
-                    <AccordionTrigger>Fertilizers</AccordionTrigger>
-                    <AccordionContent>
-                      <div className="space-y-2 text-muted-foreground">
-                        {crop.cultivation.fertilizers.map((detail, idx) => (
-                          <p key={idx}>{detail}</p>
-                        ))}
-                      </div>
-                    </AccordionContent>
-                  </AccordionItem>
-                  <AccordionItem value="irrigation">
-                    <AccordionTrigger>Irrigation</AccordionTrigger>
-                    <AccordionContent>
-                      <div className="space-y-2 text-muted-foreground">
-                        {crop.cultivation.irrigation.map((detail, idx) => (
-                          <p key={idx}>{detail}</p>
-                        ))}
-                      </div>
-                    </AccordionContent>
-                  </AccordionItem>
-                  <AccordionItem value="harvesting">
-                    <AccordionTrigger>Harvesting</AccordionTrigger>
-                    <AccordionContent>
-                      <div className="space-y-2 text-muted-foreground">
-                        {crop.cultivation.harvesting.map((detail, idx) => (
-                          <p key={idx}>{detail}</p>
-                        ))}
-                      </div>
-                    </AccordionContent>
-                  </AccordionItem>
-                </Accordion>
-              </CardContent>
-            </Card>
+          {/* Cultivation Process Tab */}
+          <TabsContent value="cultivation" className="mt-6">
+            <CropFlowChart crop={crop} selectedVariety={selectedVariety} />
+          </TabsContent>
+
+          {/* Comparison Tool Tab */}
+          <TabsContent value="comparison" className="mt-6">
+            <ComparisonTool initialCrop={cropName} onCropSelect={(name) => {
+              console.log('Navigate to crop:', name);
+            }} />
           </TabsContent>
 
           <TabsContent value="pests" className="space-y-6">
