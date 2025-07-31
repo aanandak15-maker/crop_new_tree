@@ -14,7 +14,331 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      crop_images: {
+        Row: {
+          alt_text: string | null
+          caption: string | null
+          created_at: string
+          crop_id: string
+          id: string
+          image_url: string
+          is_primary: boolean | null
+        }
+        Insert: {
+          alt_text?: string | null
+          caption?: string | null
+          created_at?: string
+          crop_id: string
+          id?: string
+          image_url: string
+          is_primary?: boolean | null
+        }
+        Update: {
+          alt_text?: string | null
+          caption?: string | null
+          created_at?: string
+          crop_id?: string
+          id?: string
+          image_url?: string
+          is_primary?: boolean | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "crop_images_crop_id_fkey"
+            columns: ["crop_id"]
+            isOneToOne: false
+            referencedRelation: "crops"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      crops: {
+        Row: {
+          climate_type: string[] | null
+          created_at: string
+          description: string | null
+          growth_duration: string | null
+          id: string
+          name: string
+          scientific_name: string | null
+          season: string[] | null
+          soil_type: string[] | null
+          updated_at: string
+          water_requirement: string | null
+        }
+        Insert: {
+          climate_type?: string[] | null
+          created_at?: string
+          description?: string | null
+          growth_duration?: string | null
+          id?: string
+          name: string
+          scientific_name?: string | null
+          season?: string[] | null
+          soil_type?: string[] | null
+          updated_at?: string
+          water_requirement?: string | null
+        }
+        Update: {
+          climate_type?: string[] | null
+          created_at?: string
+          description?: string | null
+          growth_duration?: string | null
+          id?: string
+          name?: string
+          scientific_name?: string | null
+          season?: string[] | null
+          soil_type?: string[] | null
+          updated_at?: string
+          water_requirement?: string | null
+        }
+        Relationships: []
+      }
+      disease_images: {
+        Row: {
+          alt_text: string | null
+          caption: string | null
+          created_at: string
+          disease_id: string
+          id: string
+          image_url: string
+          is_primary: boolean | null
+        }
+        Insert: {
+          alt_text?: string | null
+          caption?: string | null
+          created_at?: string
+          disease_id: string
+          id?: string
+          image_url: string
+          is_primary?: boolean | null
+        }
+        Update: {
+          alt_text?: string | null
+          caption?: string | null
+          created_at?: string
+          disease_id?: string
+          id?: string
+          image_url?: string
+          is_primary?: boolean | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "disease_images_disease_id_fkey"
+            columns: ["disease_id"]
+            isOneToOne: false
+            referencedRelation: "diseases"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      diseases: {
+        Row: {
+          affected_crops: string[] | null
+          created_at: string
+          description: string | null
+          id: string
+          name: string
+          prevention_methods: string[] | null
+          scientific_name: string | null
+          symptoms: string[] | null
+          treatment_methods: string[] | null
+          updated_at: string
+        }
+        Insert: {
+          affected_crops?: string[] | null
+          created_at?: string
+          description?: string | null
+          id?: string
+          name: string
+          prevention_methods?: string[] | null
+          scientific_name?: string | null
+          symptoms?: string[] | null
+          treatment_methods?: string[] | null
+          updated_at?: string
+        }
+        Update: {
+          affected_crops?: string[] | null
+          created_at?: string
+          description?: string | null
+          id?: string
+          name?: string
+          prevention_methods?: string[] | null
+          scientific_name?: string | null
+          symptoms?: string[] | null
+          treatment_methods?: string[] | null
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      pest_images: {
+        Row: {
+          alt_text: string | null
+          caption: string | null
+          created_at: string
+          id: string
+          image_url: string
+          is_primary: boolean | null
+          pest_id: string
+        }
+        Insert: {
+          alt_text?: string | null
+          caption?: string | null
+          created_at?: string
+          id?: string
+          image_url: string
+          is_primary?: boolean | null
+          pest_id: string
+        }
+        Update: {
+          alt_text?: string | null
+          caption?: string | null
+          created_at?: string
+          id?: string
+          image_url?: string
+          is_primary?: boolean | null
+          pest_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "pest_images_pest_id_fkey"
+            columns: ["pest_id"]
+            isOneToOne: false
+            referencedRelation: "pests"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      pests: {
+        Row: {
+          affected_crops: string[] | null
+          created_at: string
+          description: string | null
+          id: string
+          name: string
+          prevention_methods: string[] | null
+          scientific_name: string | null
+          symptoms: string[] | null
+          treatment_methods: string[] | null
+          updated_at: string
+        }
+        Insert: {
+          affected_crops?: string[] | null
+          created_at?: string
+          description?: string | null
+          id?: string
+          name: string
+          prevention_methods?: string[] | null
+          scientific_name?: string | null
+          symptoms?: string[] | null
+          treatment_methods?: string[] | null
+          updated_at?: string
+        }
+        Update: {
+          affected_crops?: string[] | null
+          created_at?: string
+          description?: string | null
+          id?: string
+          name?: string
+          prevention_methods?: string[] | null
+          scientific_name?: string | null
+          symptoms?: string[] | null
+          treatment_methods?: string[] | null
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      varieties: {
+        Row: {
+          created_at: string
+          crop_id: string
+          disease_resistance: string[] | null
+          duration: string | null
+          grain_quality: string | null
+          id: string
+          market_type: string | null
+          name: string
+          special_features: string[] | null
+          suitable_states: string[] | null
+          updated_at: string
+          yield_potential: string | null
+        }
+        Insert: {
+          created_at?: string
+          crop_id: string
+          disease_resistance?: string[] | null
+          duration?: string | null
+          grain_quality?: string | null
+          id?: string
+          market_type?: string | null
+          name: string
+          special_features?: string[] | null
+          suitable_states?: string[] | null
+          updated_at?: string
+          yield_potential?: string | null
+        }
+        Update: {
+          created_at?: string
+          crop_id?: string
+          disease_resistance?: string[] | null
+          duration?: string | null
+          grain_quality?: string | null
+          id?: string
+          market_type?: string | null
+          name?: string
+          special_features?: string[] | null
+          suitable_states?: string[] | null
+          updated_at?: string
+          yield_potential?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "varieties_crop_id_fkey"
+            columns: ["crop_id"]
+            isOneToOne: false
+            referencedRelation: "crops"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      variety_images: {
+        Row: {
+          alt_text: string | null
+          caption: string | null
+          created_at: string
+          id: string
+          image_url: string
+          is_primary: boolean | null
+          variety_id: string
+        }
+        Insert: {
+          alt_text?: string | null
+          caption?: string | null
+          created_at?: string
+          id?: string
+          image_url: string
+          is_primary?: boolean | null
+          variety_id: string
+        }
+        Update: {
+          alt_text?: string | null
+          caption?: string | null
+          created_at?: string
+          id?: string
+          image_url?: string
+          is_primary?: boolean | null
+          variety_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "variety_images_variety_id_fkey"
+            columns: ["variety_id"]
+            isOneToOne: false
+            referencedRelation: "varieties"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
     }
     Views: {
       [_ in never]: never
