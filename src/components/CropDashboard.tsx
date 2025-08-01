@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -6,6 +6,7 @@ import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Wheat, Sprout, Search, Calendar, MapPin, TrendingUp, Lightbulb } from 'lucide-react';
 import { getAllCropNames, getCropByName } from '@/data/cropData';
+import { supabase } from '@/integrations/supabase/client';
 import LocationBasedRecommendations from './LocationBasedRecommendations';
 import EnhancedCropSelector from './EnhancedCropSelector';
 
@@ -13,24 +14,69 @@ interface CropDashboardProps {
   onCropSelect: (cropName: string) => void;
 }
 
+interface DbCrop {
+  id: string;
+  name: string;
+  scientific_name: string;
+  description: string;
+  season: string[];
+  climate_type: string[];
+  soil_type: string[];
+  water_requirement: string;
+  growth_duration: string;
+}
+
 const CropDashboard: React.FC<CropDashboardProps> = ({ onCropSelect }) => {
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedSeason, setSelectedSeason] = useState<string>('all');
   const [selectedState, setSelectedState] = useState<string>('all');
+  const [dbCrops, setDbCrops] = useState<DbCrop[]>([]);
+  const [loading, setLoading] = useState(true);
 
-  const allCrops = getAllCropNames();
+  const staticCrops = getAllCropNames();
+
+  useEffect(() => {
+    fetchDbCrops();
+  }, []);
+
+  const fetchDbCrops = async () => {
+    try {
+      const { data, error } = await supabase
+        .from('crops')
+        .select('*')
+        .order('created_at', { ascending: false });
+
+      if (error) throw error;
+      setDbCrops(data || []);
+    } catch (error) {
+      console.error('Error fetching crops:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // Combine static and database crops
+  const allCrops = [...staticCrops, ...dbCrops.map(crop => crop.name)];
   
   const filteredCrops = allCrops.filter(cropName => {
-    const crop = getCropByName(cropName);
-    if (!crop) return false;
+    const staticCrop = getCropByName(cropName);
+    const dbCrop = dbCrops.find(c => c.name.toLowerCase() === cropName.toLowerCase());
     
+    if (!staticCrop && !dbCrop) return false;
+    
+    // Handle search for both static and db crops
+    const scientificName = staticCrop?.scientificName || dbCrop?.scientific_name || '';
     const matchesSearch = cropName.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         crop.scientificName.toLowerCase().includes(searchTerm.toLowerCase());
+                         scientificName.toLowerCase().includes(searchTerm.toLowerCase());
     
-    const matchesSeason = selectedSeason === 'all' || crop.season.some(s => s.toLowerCase().includes(selectedSeason));
+    // Handle season filtering
+    const seasons = staticCrop?.season || dbCrop?.season || [];
+    const matchesSeason = selectedSeason === 'all' || 
+      seasons.some(s => s.toLowerCase().includes(selectedSeason.toLowerCase()));
     
-    const matchesState = selectedState === 'all' || 
-                        crop.varieties.some(variety => 
+    // Handle state filtering (only for static crops for now)
+    const matchesState = selectedState === 'all' || !staticCrop ||
+                        staticCrop.varieties.some(variety => 
                           variety.states.some(state => 
                             state.toLowerCase().includes(selectedState.toLowerCase())
                           )
@@ -47,23 +93,34 @@ const CropDashboard: React.FC<CropDashboardProps> = ({ onCropSelect }) => {
   };
 
   const getCropStats = (cropName: string) => {
-    const crop = getCropByName(cropName);
-    if (!crop) return { varieties: 0, avgYield: 0, states: 0 };
+    const staticCrop = getCropByName(cropName);
+    const dbCrop = dbCrops.find(c => c.name.toLowerCase() === cropName.toLowerCase());
     
-    const avgYieldNum = crop.varieties.reduce((sum, v) => {
-      const yieldStr = v.yield.replace(/[^\d.-]/g, '');
-      const yieldRange = yieldStr.split('-');
-      const avgYield = yieldRange.length > 1 ? 
-        (parseFloat(yieldRange[0]) + parseFloat(yieldRange[1])) / 2 : 
-        parseFloat(yieldRange[0]);
-      return sum + (isNaN(avgYield) ? 0 : avgYield);
-    }, 0) / crop.varieties.length;
+    if (staticCrop) {
+      const avgYieldNum = staticCrop.varieties.reduce((sum, v) => {
+        const yieldStr = v.yield.replace(/[^\d.-]/g, '');
+        const yieldRange = yieldStr.split('-');
+        const avgYield = yieldRange.length > 1 ? 
+          (parseFloat(yieldRange[0]) + parseFloat(yieldRange[1])) / 2 : 
+          parseFloat(yieldRange[0]);
+        return sum + (isNaN(avgYield) ? 0 : avgYield);
+      }, 0) / staticCrop.varieties.length;
+      
+      return {
+        varieties: staticCrop.varieties.length,
+        avgYield: Math.round(avgYieldNum),
+        states: [...new Set(staticCrop.varieties.flatMap(v => v.states))].length
+      };
+    } else if (dbCrop) {
+      // For database crops, show basic info
+      return {
+        varieties: 0, // TODO: Add varieties support for db crops
+        avgYield: 0,
+        states: 0
+      };
+    }
     
-    return {
-      varieties: crop.varieties.length,
-      avgYield: Math.round(avgYieldNum),
-      states: [...new Set(crop.varieties.flatMap(v => v.states))].length
-    };
+    return { varieties: 0, avgYield: 0, states: 0 };
   };
 
   return (
@@ -152,10 +209,19 @@ const CropDashboard: React.FC<CropDashboardProps> = ({ onCropSelect }) => {
         {/* Crop Cards Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {filteredCrops.map((cropName) => {
-            const crop = getCropByName(cropName);
+            const staticCrop = getCropByName(cropName);
+            const dbCrop = dbCrops.find(c => c.name.toLowerCase() === cropName.toLowerCase());
             const stats = getCropStats(cropName);
             
-            if (!crop) return null;
+            if (!staticCrop && !dbCrop) return null;
+            
+            // Use static crop data if available, otherwise use db crop
+            const cropData = staticCrop || {
+              name: dbCrop!.name,
+              scientificName: dbCrop!.scientific_name || '',
+              season: dbCrop!.season || [],
+              varieties: []
+            };
 
             return (
               <Card 
@@ -169,15 +235,15 @@ const CropDashboard: React.FC<CropDashboardProps> = ({ onCropSelect }) => {
                       {getCropIcon(cropName)}
                       <div>
                         <CardTitle className="text-xl group-hover:text-crop-green transition-colors">
-                          {crop.name}
+                          {cropData.name}
                         </CardTitle>
                         <CardDescription className="text-sm italic">
-                          {crop.scientificName}
+                          {cropData.scientificName}
                         </CardDescription>
                       </div>
                     </div>
                     <Badge variant="secondary" className="bg-leaf-light text-crop-green">
-                      {crop.season.join(', ')}
+                      {cropData.season.join(', ')}
                     </Badge>
                   </div>
                 </CardHeader>
@@ -201,31 +267,65 @@ const CropDashboard: React.FC<CropDashboardProps> = ({ onCropSelect }) => {
 
                   {/* Top Varieties Preview */}
                   <div>
-                    <div className="text-sm font-medium text-foreground mb-2">Top Varieties:</div>
+                    <div className="text-sm font-medium text-foreground mb-2">
+                      {staticCrop ? "Top Varieties:" : "Details:"}
+                    </div>
                     <div className="flex flex-wrap gap-1">
-                      {crop.varieties.slice(0, 3).map((variety) => (
-                        <Badge key={variety.name} variant="outline" className="text-xs">
-                          {variety.name}
-                        </Badge>
-                      ))}
-                      {crop.varieties.length > 3 && (
-                        <Badge variant="outline" className="text-xs text-muted-foreground">
-                          +{crop.varieties.length - 3} more
-                        </Badge>
+                      {staticCrop ? (
+                        <>
+                          {staticCrop.varieties.slice(0, 3).map((variety) => (
+                            <Badge key={variety.name} variant="outline" className="text-xs">
+                              {variety.name}
+                            </Badge>
+                          ))}
+                          {staticCrop.varieties.length > 3 && (
+                            <Badge variant="outline" className="text-xs text-muted-foreground">
+                              +{staticCrop.varieties.length - 3} more
+                            </Badge>
+                          )}
+                        </>
+                      ) : (
+                        <>
+                          {dbCrop?.growth_duration && (
+                            <Badge variant="outline" className="text-xs">
+                              {dbCrop.growth_duration}
+                            </Badge>
+                          )}
+                          {dbCrop?.water_requirement && (
+                            <Badge variant="outline" className="text-xs">
+                              {dbCrop.water_requirement} water
+                            </Badge>
+                          )}
+                        </>
                       )}
                     </div>
                   </div>
 
                   {/* Climate Info */}
                   <div className="text-sm text-muted-foreground">
-                    <div className="flex items-center gap-2 mb-1">
-                      <span className="font-medium">Temperature:</span>
-                      <span>{crop.climate.temperature}</span>
-                    </div>
-                    <div className="flex items-center gap-2">
-                      <span className="font-medium">Rainfall:</span>
-                      <span>{crop.climate.rainfall}</span>
-                    </div>
+                    {staticCrop ? (
+                      <>
+                        <div className="flex items-center gap-2 mb-1">
+                          <span className="font-medium">Temperature:</span>
+                          <span>{staticCrop.climate.temperature}</span>
+                        </div>
+                        <div className="flex items-center gap-2">
+                          <span className="font-medium">Rainfall:</span>
+                          <span>{staticCrop.climate.rainfall}</span>
+                        </div>
+                      </>
+                    ) : (
+                      <>
+                        <div className="flex items-center gap-2 mb-1">
+                          <span className="font-medium">Climate:</span>
+                          <span>{dbCrop?.climate_type?.join(', ') || 'Not specified'}</span>
+                        </div>
+                        <div className="flex items-center gap-2">
+                          <span className="font-medium">Soil:</span>
+                          <span>{dbCrop?.soil_type?.join(', ') || 'Not specified'}</span>
+                        </div>
+                      </>
+                    )}
                   </div>
 
                   {/* Action Button */}

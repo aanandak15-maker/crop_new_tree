@@ -39,7 +39,29 @@ const CropManagement = () => {
     climate_type: "",
     soil_type: "",
     water_requirement: "",
-    growth_duration: ""
+    growth_duration: "",
+    // Additional detailed fields like wheat
+    family: "",
+    temperature_range: "",
+    rainfall_requirement: "",
+    humidity_range: "",
+    soil_ph: "",
+    drainage_requirement: "",
+    land_preparation: "",
+    seed_rate: "",
+    row_spacing: "",
+    sowing_time: "",
+    fertilizer_requirement: "",
+    irrigation_schedule: "",
+    harvesting_info: "",
+    pest_list: "",
+    disease_list: "",
+    average_yield: "",
+    market_price: "",
+    cost_of_cultivation: "",
+    nutritional_info: "",
+    sustainability_practices: "",
+    innovations: ""
   });
 
   useEffect(() => {
@@ -116,7 +138,29 @@ const CropManagement = () => {
       climate_type: crop.climate_type?.join(', ') || "",
       soil_type: crop.soil_type?.join(', ') || "",
       water_requirement: crop.water_requirement || "",
-      growth_duration: crop.growth_duration || ""
+      growth_duration: crop.growth_duration || "",
+      // Initialize all new fields as empty since they're not in database yet
+      family: "",
+      temperature_range: "",
+      rainfall_requirement: "",
+      humidity_range: "",
+      soil_ph: "",
+      drainage_requirement: "",
+      land_preparation: "",
+      seed_rate: "",
+      row_spacing: "",
+      sowing_time: "",
+      fertilizer_requirement: "",
+      irrigation_schedule: "",
+      harvesting_info: "",
+      pest_list: "",
+      disease_list: "",
+      average_yield: "",
+      market_price: "",
+      cost_of_cultivation: "",
+      nutritional_info: "",
+      sustainability_practices: "",
+      innovations: ""
     });
     setIsDialogOpen(true);
   };
@@ -151,7 +195,28 @@ const CropManagement = () => {
       climate_type: "",
       soil_type: "",
       water_requirement: "",
-      growth_duration: ""
+      growth_duration: "",
+      family: "",
+      temperature_range: "",
+      rainfall_requirement: "",
+      humidity_range: "",
+      soil_ph: "",
+      drainage_requirement: "",
+      land_preparation: "",
+      seed_rate: "",
+      row_spacing: "",
+      sowing_time: "",
+      fertilizer_requirement: "",
+      irrigation_schedule: "",
+      harvesting_info: "",
+      pest_list: "",
+      disease_list: "",
+      average_yield: "",
+      market_price: "",
+      cost_of_cultivation: "",
+      nutritional_info: "",
+      sustainability_practices: "",
+      innovations: ""
     });
   };
 
@@ -170,94 +235,340 @@ const CropManagement = () => {
                 Add Crop
               </Button>
             </DialogTrigger>
-            <DialogContent className="max-w-2xl max-h-[80vh] overflow-y-auto">
+            <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
               <DialogHeader>
                 <DialogTitle>{editingCrop ? "Edit Crop" : "Add New Crop"}</DialogTitle>
                 <DialogDescription>
-                  {editingCrop ? "Update crop information" : "Enter crop details"}
+                  {editingCrop ? "Update crop information" : "Enter detailed crop information like wheat example"}
                 </DialogDescription>
               </DialogHeader>
-              <form onSubmit={handleSubmit} className="space-y-4">
-                <div className="grid grid-cols-2 gap-4">
-                  <div>
-                    <Label htmlFor="name">Crop Name *</Label>
-                    <Input
-                      id="name"
-                      value={formData.name}
-                      onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                      required
-                    />
+              <form onSubmit={handleSubmit} className="space-y-6">
+                {/* Basic Information */}
+                <div className="space-y-4">
+                  <h3 className="text-lg font-semibold">Basic Information</h3>
+                  <div className="grid grid-cols-2 gap-4">
+                    <div>
+                      <Label htmlFor="name">Crop Name *</Label>
+                      <Input
+                        id="name"
+                        value={formData.name}
+                        onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                        required
+                      />
+                    </div>
+                    <div>
+                      <Label htmlFor="scientific_name">Scientific Name</Label>
+                      <Input
+                        id="scientific_name"
+                        value={formData.scientific_name}
+                        onChange={(e) => setFormData({ ...formData, scientific_name: e.target.value })}
+                      />
+                    </div>
                   </div>
-                  <div>
-                    <Label htmlFor="scientific_name">Scientific Name</Label>
-                    <Input
-                      id="scientific_name"
-                      value={formData.scientific_name}
-                      onChange={(e) => setFormData({ ...formData, scientific_name: e.target.value })}
-                    />
+                  
+                  <div className="grid grid-cols-2 gap-4">
+                    <div>
+                      <Label htmlFor="family">Family</Label>
+                      <Input
+                        id="family"
+                        value={formData.family}
+                        onChange={(e) => setFormData({ ...formData, family: e.target.value })}
+                        placeholder="e.g., Poaceae (Gramineae)"
+                      />
+                    </div>
+                    <div>
+                      <Label htmlFor="season">Seasons (comma-separated)</Label>
+                      <Input
+                        id="season"
+                        value={formData.season}
+                        onChange={(e) => setFormData({ ...formData, season: e.target.value })}
+                        placeholder="Kharif, Rabi, Summer"
+                      />
+                    </div>
                   </div>
-                </div>
-                
-                <div>
-                  <Label htmlFor="description">Description</Label>
-                  <Textarea
-                    id="description"
-                    value={formData.description}
-                    onChange={(e) => setFormData({ ...formData, description: e.target.value })}
-                    rows={3}
-                  />
-                </div>
-
-                <div className="grid grid-cols-2 gap-4">
+                  
                   <div>
-                    <Label htmlFor="season">Seasons (comma-separated)</Label>
-                    <Input
-                      id="season"
-                      value={formData.season}
-                      onChange={(e) => setFormData({ ...formData, season: e.target.value })}
-                      placeholder="Kharif, Rabi, Summer"
-                    />
-                  </div>
-                  <div>
-                    <Label htmlFor="growth_duration">Growth Duration</Label>
-                    <Input
-                      id="growth_duration"
-                      value={formData.growth_duration}
-                      onChange={(e) => setFormData({ ...formData, growth_duration: e.target.value })}
-                      placeholder="90-120 days"
-                    />
-                  </div>
-                </div>
-
-                <div className="grid grid-cols-2 gap-4">
-                  <div>
-                    <Label htmlFor="climate_type">Climate Types (comma-separated)</Label>
-                    <Input
-                      id="climate_type"
-                      value={formData.climate_type}
-                      onChange={(e) => setFormData({ ...formData, climate_type: e.target.value })}
-                      placeholder="Tropical, Subtropical"
-                    />
-                  </div>
-                  <div>
-                    <Label htmlFor="soil_type">Soil Types (comma-separated)</Label>
-                    <Input
-                      id="soil_type"
-                      value={formData.soil_type}
-                      onChange={(e) => setFormData({ ...formData, soil_type: e.target.value })}
-                      placeholder="Loamy, Clay, Sandy"
+                    <Label htmlFor="description">Description</Label>
+                    <Textarea
+                      id="description"
+                      value={formData.description}
+                      onChange={(e) => setFormData({ ...formData, description: e.target.value })}
+                      rows={3}
                     />
                   </div>
                 </div>
 
-                <div>
-                  <Label htmlFor="water_requirement">Water Requirement</Label>
-                  <Input
-                    id="water_requirement"
-                    value={formData.water_requirement}
-                    onChange={(e) => setFormData({ ...formData, water_requirement: e.target.value })}
-                    placeholder="Medium, High, Low"
-                  />
+                {/* Climate & Soil Requirements */}
+                <div className="space-y-4">
+                  <h3 className="text-lg font-semibold">Climate & Soil Requirements</h3>
+                  <div className="grid grid-cols-3 gap-4">
+                    <div>
+                      <Label htmlFor="temperature_range">Temperature Range</Label>
+                      <Input
+                        id="temperature_range"
+                        value={formData.temperature_range}
+                        onChange={(e) => setFormData({ ...formData, temperature_range: e.target.value })}
+                        placeholder="15-25°C"
+                      />
+                    </div>
+                    <div>
+                      <Label htmlFor="rainfall_requirement">Rainfall Requirement</Label>
+                      <Input
+                        id="rainfall_requirement"
+                        value={formData.rainfall_requirement}
+                        onChange={(e) => setFormData({ ...formData, rainfall_requirement: e.target.value })}
+                        placeholder="500-700mm annually"
+                      />
+                    </div>
+                    <div>
+                      <Label htmlFor="humidity_range">Humidity Range</Label>
+                      <Input
+                        id="humidity_range"
+                        value={formData.humidity_range}
+                        onChange={(e) => setFormData({ ...formData, humidity_range: e.target.value })}
+                        placeholder="50-70%"
+                      />
+                    </div>
+                  </div>
+
+                  <div className="grid grid-cols-3 gap-4">
+                    <div>
+                      <Label htmlFor="soil_type">Soil Types (comma-separated)</Label>
+                      <Input
+                        id="soil_type"
+                        value={formData.soil_type}
+                        onChange={(e) => setFormData({ ...formData, soil_type: e.target.value })}
+                        placeholder="Loamy, Clay, Sandy"
+                      />
+                    </div>
+                    <div>
+                      <Label htmlFor="soil_ph">Soil pH Range</Label>
+                      <Input
+                        id="soil_ph"
+                        value={formData.soil_ph}
+                        onChange={(e) => setFormData({ ...formData, soil_ph: e.target.value })}
+                        placeholder="6.0-7.5"
+                      />
+                    </div>
+                    <div>
+                      <Label htmlFor="drainage_requirement">Drainage Requirement</Label>
+                      <Input
+                        id="drainage_requirement"
+                        value={formData.drainage_requirement}
+                        onChange={(e) => setFormData({ ...formData, drainage_requirement: e.target.value })}
+                        placeholder="Good drainage essential"
+                      />
+                    </div>
+                  </div>
+
+                  <div className="grid grid-cols-2 gap-4">
+                    <div>
+                      <Label htmlFor="climate_type">Climate Types (comma-separated)</Label>
+                      <Input
+                        id="climate_type"
+                        value={formData.climate_type}
+                        onChange={(e) => setFormData({ ...formData, climate_type: e.target.value })}
+                        placeholder="Tropical, Subtropical"
+                      />
+                    </div>
+                    <div>
+                      <Label htmlFor="water_requirement">Water Requirement</Label>
+                      <Input
+                        id="water_requirement"
+                        value={formData.water_requirement}
+                        onChange={(e) => setFormData({ ...formData, water_requirement: e.target.value })}
+                        placeholder="Medium, High, Low"
+                      />
+                    </div>
+                  </div>
+                </div>
+
+                {/* Cultivation Practices */}
+                <div className="space-y-4">
+                  <h3 className="text-lg font-semibold">Cultivation Practices</h3>
+                  <div className="grid grid-cols-2 gap-4">
+                    <div>
+                      <Label htmlFor="growth_duration">Growth Duration</Label>
+                      <Input
+                        id="growth_duration"
+                        value={formData.growth_duration}
+                        onChange={(e) => setFormData({ ...formData, growth_duration: e.target.value })}
+                        placeholder="90-120 days"
+                      />
+                    </div>
+                    <div>
+                      <Label htmlFor="sowing_time">Sowing Time</Label>
+                      <Input
+                        id="sowing_time"
+                        value={formData.sowing_time}
+                        onChange={(e) => setFormData({ ...formData, sowing_time: e.target.value })}
+                        placeholder="Nov-Dec"
+                      />
+                    </div>
+                  </div>
+
+                  <div className="grid grid-cols-2 gap-4">
+                    <div>
+                      <Label htmlFor="seed_rate">Seed Rate</Label>
+                      <Input
+                        id="seed_rate"
+                        value={formData.seed_rate}
+                        onChange={(e) => setFormData({ ...formData, seed_rate: e.target.value })}
+                        placeholder="100-125 kg/ha"
+                      />
+                    </div>
+                    <div>
+                      <Label htmlFor="row_spacing">Row Spacing</Label>
+                      <Input
+                        id="row_spacing"
+                        value={formData.row_spacing}
+                        onChange={(e) => setFormData({ ...formData, row_spacing: e.target.value })}
+                        placeholder="20-22.5 cm"
+                      />
+                    </div>
+                  </div>
+
+                  <div>
+                    <Label htmlFor="land_preparation">Land Preparation</Label>
+                    <Textarea
+                      id="land_preparation"
+                      value={formData.land_preparation}
+                      onChange={(e) => setFormData({ ...formData, land_preparation: e.target.value })}
+                      placeholder="Deep ploughing, Harrowing, Leveling, Apply FYM 8-10 t/ha"
+                      rows={2}
+                    />
+                  </div>
+
+                  <div>
+                    <Label htmlFor="fertilizer_requirement">Fertilizer Requirement</Label>
+                    <Textarea
+                      id="fertilizer_requirement"
+                      value={formData.fertilizer_requirement}
+                      onChange={(e) => setFormData({ ...formData, fertilizer_requirement: e.target.value })}
+                      placeholder="NPK: 120:60:40 kg/ha, Urea in 3 splits, DAP at sowing"
+                      rows={2}
+                    />
+                  </div>
+
+                  <div>
+                    <Label htmlFor="irrigation_schedule">Irrigation Schedule</Label>
+                    <Textarea
+                      id="irrigation_schedule"
+                      value={formData.irrigation_schedule}
+                      onChange={(e) => setFormData({ ...formData, irrigation_schedule: e.target.value })}
+                      placeholder="Crown root initiation (20-25 DAS), Tillering (40-45 DAS), etc."
+                      rows={2}
+                    />
+                  </div>
+
+                  <div>
+                    <Label htmlFor="harvesting_info">Harvesting Information</Label>
+                    <Textarea
+                      id="harvesting_info"
+                      value={formData.harvesting_info}
+                      onChange={(e) => setFormData({ ...formData, harvesting_info: e.target.value })}
+                      placeholder="Harvest at physiological maturity, Moisture content: 20-25%"
+                      rows={2}
+                    />
+                  </div>
+                </div>
+
+                {/* Pests & Diseases */}
+                <div className="space-y-4">
+                  <h3 className="text-lg font-semibold">Pests & Diseases</h3>
+                  <div className="grid grid-cols-2 gap-4">
+                    <div>
+                      <Label htmlFor="pest_list">Common Pests (comma-separated)</Label>
+                      <Textarea
+                        id="pest_list"
+                        value={formData.pest_list}
+                        onChange={(e) => setFormData({ ...formData, pest_list: e.target.value })}
+                        placeholder="Aphids, Termites, Cutworms, Armyworms"
+                        rows={2}
+                      />
+                    </div>
+                    <div>
+                      <Label htmlFor="disease_list">Common Diseases (comma-separated)</Label>
+                      <Textarea
+                        id="disease_list"
+                        value={formData.disease_list}
+                        onChange={(e) => setFormData({ ...formData, disease_list: e.target.value })}
+                        placeholder="Yellow rust, Brown rust, Powdery mildew"
+                        rows={2}
+                      />
+                    </div>
+                  </div>
+                </div>
+
+                {/* Economics */}
+                <div className="space-y-4">
+                  <h3 className="text-lg font-semibold">Economic Information</h3>
+                  <div className="grid grid-cols-3 gap-4">
+                    <div>
+                      <Label htmlFor="average_yield">Average Yield</Label>
+                      <Input
+                        id="average_yield"
+                        value={formData.average_yield}
+                        onChange={(e) => setFormData({ ...formData, average_yield: e.target.value })}
+                        placeholder="32 q/ha"
+                      />
+                    </div>
+                    <div>
+                      <Label htmlFor="market_price">Market Price</Label>
+                      <Input
+                        id="market_price"
+                        value={formData.market_price}
+                        onChange={(e) => setFormData({ ...formData, market_price: e.target.value })}
+                        placeholder="₹2000-2500/quintal"
+                      />
+                    </div>
+                    <div>
+                      <Label htmlFor="cost_of_cultivation">Cost of Cultivation</Label>
+                      <Input
+                        id="cost_of_cultivation"
+                        value={formData.cost_of_cultivation}
+                        onChange={(e) => setFormData({ ...formData, cost_of_cultivation: e.target.value })}
+                        placeholder="₹35,000-45,000/ha"
+                      />
+                    </div>
+                  </div>
+                </div>
+
+                {/* Additional Information */}
+                <div className="space-y-4">
+                  <h3 className="text-lg font-semibold">Additional Information</h3>
+                  <div>
+                    <Label htmlFor="nutritional_info">Nutritional Information</Label>
+                    <Textarea
+                      id="nutritional_info"
+                      value={formData.nutritional_info}
+                      onChange={(e) => setFormData({ ...formData, nutritional_info: e.target.value })}
+                      placeholder="Calories: 340 kcal, Protein: 12.2%, Carbohydrates: 71%"
+                      rows={2}
+                    />
+                  </div>
+
+                  <div>
+                    <Label htmlFor="sustainability_practices">Sustainability Practices</Label>
+                    <Textarea
+                      id="sustainability_practices"
+                      value={formData.sustainability_practices}
+                      onChange={(e) => setFormData({ ...formData, sustainability_practices: e.target.value })}
+                      placeholder="Crop rotation with legumes, Zero tillage technology, IPM"
+                      rows={2}
+                    />
+                  </div>
+
+                  <div>
+                    <Label htmlFor="innovations">Recent Innovations</Label>
+                    <Textarea
+                      id="innovations"
+                      value={formData.innovations}
+                      onChange={(e) => setFormData({ ...formData, innovations: e.target.value })}
+                      placeholder="Drought tolerant varieties, Precision sowing techniques"
+                      rows={2}
+                    />
+                  </div>
                 </div>
 
                 <div className="flex justify-end space-x-2">
