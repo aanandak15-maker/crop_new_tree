@@ -1,10 +1,11 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
 import { getCropByName, CropData } from '@/data/cropData';
+import { supabase } from '@/integrations/supabase/client';
 import VarietyCard from './VarietyCard';
 import CropFlowChart from './CropFlowChart';
 import ComparisonTool from './ComparisonTool';
@@ -28,11 +29,69 @@ interface CropProfileProps {
   onBack: () => void;
 }
 
+interface DbCrop {
+  id: string;
+  name: string;
+  scientific_name?: string;
+  family?: string;
+  description?: string;
+  season?: string[];
+  climate_type?: string[];
+  soil_type?: string[];
+  water_requirement?: string;
+  growth_duration?: string;
+  temperature_range?: string;
+  rainfall_requirement?: string;
+  humidity_range?: string;
+  soil_ph?: string;
+  drainage_requirement?: string;
+  land_preparation?: string[];
+  seed_rate?: string;
+  row_spacing?: string;
+  sowing_time?: string;
+  fertilizer_requirement?: string[];
+  irrigation_schedule?: string[];
+  harvesting_info?: string[];
+  pest_list?: string[];
+  disease_list?: string[];
+  average_yield?: string;
+  market_price?: string;
+  cost_of_cultivation?: string;
+  nutritional_info?: string;
+  sustainability_practices?: string[];
+  innovations?: string[];
+}
+
 const CropProfile: React.FC<CropProfileProps> = ({ cropName, onBack }) => {
   const [selectedVariety, setSelectedVariety] = useState<string | null>(null);
+  const [dbCrop, setDbCrop] = useState<DbCrop | null>(null);
+  const [loading, setLoading] = useState(true);
+  
   const crop = getCropByName(cropName);
 
-  if (!crop) {
+  useEffect(() => {
+    fetchDbCrop();
+  }, [cropName]);
+
+  const fetchDbCrop = async () => {
+    try {
+      const { data, error } = await supabase
+        .from('crops')
+        .select('*')
+        .ilike('name', cropName)
+        .single();
+      
+      if (!error && data) {
+        setDbCrop(data);
+      }
+    } catch (error) {
+      console.error('Error fetching crop from database:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  if (!crop && !dbCrop && !loading) {
     return (
       <div className="min-h-screen bg-background p-4 flex items-center justify-center">
         <div className="text-center">
@@ -42,6 +101,10 @@ const CropProfile: React.FC<CropProfileProps> = ({ cropName, onBack }) => {
       </div>
     );
   }
+
+  // Use static crop data if available, otherwise use database crop
+  const cropData = crop || dbCrop;
+  if (!cropData) return null;
 
   const tabItems = [
     { id: 'overview', label: 'Overview', icon: Info },
@@ -66,11 +129,15 @@ const CropProfile: React.FC<CropProfileProps> = ({ cropName, onBack }) => {
               Back to Dashboard
             </Button>
             <div className="flex-1">
-              <h1 className="text-2xl md:text-3xl font-bold text-foreground">{crop.name}</h1>
-              <p className="text-muted-foreground italic">{crop.scientificName}</p>
+              <h1 className="text-2xl md:text-3xl font-bold text-foreground">
+                {crop?.name || dbCrop?.name}
+              </h1>
+              <p className="text-muted-foreground italic">
+                {crop?.scientificName || dbCrop?.scientific_name}
+              </p>
             </div>
             <Badge className="bg-crop-green text-white">
-              {crop.season.join(', ')}
+              {(crop?.season || dbCrop?.season || []).join(', ')}
             </Badge>
           </div>
         </div>
@@ -106,7 +173,7 @@ const CropProfile: React.FC<CropProfileProps> = ({ cropName, onBack }) => {
                   </CardTitle>
                 </CardHeader>
                 <CardContent>
-                  <div className="text-3xl font-bold text-crop-green">{crop.varieties.length}</div>
+                  <div className="text-3xl font-bold text-crop-green">{crop?.varieties?.length || 0}</div>
                   <p className="text-sm text-muted-foreground">Available varieties</p>
                 </CardContent>
               </Card>
@@ -120,7 +187,7 @@ const CropProfile: React.FC<CropProfileProps> = ({ cropName, onBack }) => {
                 </CardHeader>
                 <CardContent>
                   <div className="text-3xl font-bold text-primary">
-                    {[...new Set(crop.varieties.flatMap(v => v.states))].length}
+                    {crop ? [...new Set(crop.varieties.flatMap(v => v.states))].length : 0}
                   </div>
                   <p className="text-sm text-muted-foreground">Growing states</p>
                 </CardContent>
@@ -135,7 +202,7 @@ const CropProfile: React.FC<CropProfileProps> = ({ cropName, onBack }) => {
                 </CardHeader>
                 <CardContent>
                   <div className="text-3xl font-bold text-harvest-gold">
-                    {(() => {
+                    {crop ? (() => {
                       const avgYield = crop.varieties.reduce((sum, v) => {
                         const yieldStr = v.yield.replace(/[^\d.-]/g, '');
                         const yieldRange = yieldStr.split('-');
@@ -145,7 +212,7 @@ const CropProfile: React.FC<CropProfileProps> = ({ cropName, onBack }) => {
                         return sum + (isNaN(avg) ? 0 : avg);
                       }, 0) / crop.varieties.length;
                       return Math.round(avgYield);
-                    })()}
+                    })() : (dbCrop?.average_yield || 'N/A')}
                   </div>
                   <p className="text-sm text-muted-foreground">Quintals/hectare</p>
                 </CardContent>
@@ -160,7 +227,7 @@ const CropProfile: React.FC<CropProfileProps> = ({ cropName, onBack }) => {
                 </CardHeader>
                 <CardContent>
                   <div className="text-3xl font-bold text-secondary">
-                    {(() => {
+                    {crop ? (() => {
                       const avgDuration = crop.varieties.reduce((sum, v) => {
                         const durationStr = v.duration.replace(/[^\d.-]/g, '');
                         const durationRange = durationStr.split('-');
@@ -170,7 +237,7 @@ const CropProfile: React.FC<CropProfileProps> = ({ cropName, onBack }) => {
                         return sum + (isNaN(avg) ? 0 : avg);
                       }, 0) / crop.varieties.length;
                       return Math.round(avgDuration);
-                    })()}
+                    })() : (dbCrop?.growth_duration || 'N/A')}
                   </div>
                   <p className="text-sm text-muted-foreground">Days average</p>
                 </CardContent>
@@ -185,19 +252,21 @@ const CropProfile: React.FC<CropProfileProps> = ({ cropName, onBack }) => {
                 <div>
                   <h4 className="font-semibold mb-2">Botanical Classification</h4>
                   <div className="space-y-1 text-sm text-muted-foreground">
-                    <p><span className="font-medium">Family:</span> {crop.family}</p>
-                    <p><span className="font-medium">Scientific Name:</span> {crop.scientificName}</p>
-                    <p><span className="font-medium">Season:</span> {crop.season.join(', ')}</p>
+                    <p><span className="font-medium">Family:</span> {crop?.family || dbCrop?.family || 'Not specified'}</p>
+                    <p><span className="font-medium">Scientific Name:</span> {crop?.scientificName || dbCrop?.scientific_name || 'Not specified'}</p>
+                    <p><span className="font-medium">Season:</span> {(crop?.season || dbCrop?.season || []).join(', ')}</p>
                   </div>
                 </div>
                 <div>
                   <h4 className="font-semibold mb-2">Major Growing States</h4>
                   <div className="flex flex-wrap gap-1">
-                    {[...new Set(crop.varieties.flatMap(v => v.states))].slice(0, 8).map((state) => (
+                    {crop ? [...new Set(crop.varieties.flatMap(v => v.states))].slice(0, 8).map((state) => (
                       <Badge key={state} variant="outline" className="text-xs">
                         {state}
                       </Badge>
-                    ))}
+                    )) : (
+                      <Badge variant="outline" className="text-xs">No varieties data</Badge>
+                    )}
                   </div>
                 </div>
               </CardContent>
@@ -215,18 +284,26 @@ const CropProfile: React.FC<CropProfileProps> = ({ cropName, onBack }) => {
               </p>
             </div>
 
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-              {crop.varieties.map((variety) => (
-                <VarietyCard 
-                  key={variety.name} 
-                  variety={variety} 
-                  isSelected={selectedVariety === variety.name}
-                  onSelect={() => setSelectedVariety(
-                    selectedVariety === variety.name ? null : variety.name
-                  )}
-                />
-              ))}
-            </div>
+            {crop?.varieties ? (
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                {crop.varieties.map((variety) => (
+                  <VarietyCard 
+                    key={variety.name} 
+                    variety={variety} 
+                    isSelected={selectedVariety === variety.name}
+                    onSelect={() => setSelectedVariety(
+                      selectedVariety === variety.name ? null : variety.name
+                    )}
+                  />
+                ))}
+              </div>
+            ) : (
+              <Card>
+                <CardContent className="text-center py-12">
+                  <p className="text-muted-foreground">No variety information available for this crop yet.</p>
+                </CardContent>
+              </Card>
+            )}
           </TabsContent>
 
           {/* Climate & Soil Tab */}
@@ -242,19 +319,25 @@ const CropProfile: React.FC<CropProfileProps> = ({ cropName, onBack }) => {
                 <CardContent className="space-y-3">
                   <div>
                     <span className="font-medium">Temperature:</span>
-                    <span className="ml-2 text-muted-foreground">{crop.climate.temperature}</span>
+                    <span className="ml-2 text-muted-foreground">
+                      {crop?.climate?.temperature || dbCrop?.temperature_range || 'Not specified'}
+                    </span>
                   </div>
                   <div>
                     <span className="font-medium">Rainfall:</span>
-                    <span className="ml-2 text-muted-foreground">{crop.climate.rainfall}</span>
+                    <span className="ml-2 text-muted-foreground">
+                      {crop?.climate?.rainfall || dbCrop?.rainfall_requirement || 'Not specified'}
+                    </span>
                   </div>
                   <div>
                     <span className="font-medium">Humidity:</span>
-                    <span className="ml-2 text-muted-foreground">{crop.climate.humidity}</span>
+                    <span className="ml-2 text-muted-foreground">
+                      {crop?.climate?.humidity || dbCrop?.humidity_range || 'Not specified'}
+                    </span>
                   </div>
                   <div>
                     <span className="font-medium">Season:</span>
-                    <Badge className="ml-2">{crop.season.join(', ')}</Badge>
+                    <Badge className="ml-2">{(crop?.season || dbCrop?.season || []).join(', ')}</Badge>
                   </div>
                 </CardContent>
               </Card>
@@ -269,15 +352,21 @@ const CropProfile: React.FC<CropProfileProps> = ({ cropName, onBack }) => {
                 <CardContent className="space-y-3">
                   <div>
                     <span className="font-medium">Type:</span>
-                    <span className="ml-2 text-muted-foreground">{crop.soil.type.join(', ')}</span>
+                    <span className="ml-2 text-muted-foreground">
+                      {(crop?.soil?.type || dbCrop?.soil_type || []).join(', ') || 'Not specified'}
+                    </span>
                   </div>
                   <div>
                     <span className="font-medium">pH:</span>
-                    <span className="ml-2 text-muted-foreground">{crop.soil.ph}</span>
+                    <span className="ml-2 text-muted-foreground">
+                      {crop?.soil?.ph || dbCrop?.soil_ph || 'Not specified'}
+                    </span>
                   </div>
                   <div>
                     <span className="font-medium">Drainage:</span>
-                    <span className="ml-2 text-muted-foreground">{crop.soil.drainage}</span>
+                    <span className="ml-2 text-muted-foreground">
+                      {crop?.soil?.drainage || dbCrop?.drainage_requirement || 'Not specified'}
+                    </span>
                   </div>
                 </CardContent>
               </Card>
@@ -286,52 +375,137 @@ const CropProfile: React.FC<CropProfileProps> = ({ cropName, onBack }) => {
 
           {/* Nutrition Tab */}
           <TabsContent value="nutrition" className="space-y-6">
-            <Card>
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <Apple className="h-5 w-5 text-primary" />
-                  Nutritional Value (per 100g)
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                  <div className="text-center p-4 bg-muted rounded-lg">
-                    <div className="text-2xl font-bold text-primary">{crop.nutritionalValue.calories}</div>
-                    <div className="text-sm text-muted-foreground">Calories</div>
+            {crop?.nutritionalValue ? (
+              <Card>
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2">
+                    <Apple className="h-5 w-5 text-primary" />
+                    Nutritional Value (per 100g)
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                    <div className="text-center p-4 bg-muted rounded-lg">
+                      <div className="text-2xl font-bold text-primary">{crop.nutritionalValue.calories}</div>
+                      <div className="text-sm text-muted-foreground">Calories</div>
+                    </div>
+                    <div className="text-center p-4 bg-muted rounded-lg">
+                      <div className="text-2xl font-bold text-crop-green">{crop.nutritionalValue.protein}</div>
+                      <div className="text-sm text-muted-foreground">Protein</div>
+                    </div>
+                    <div className="text-center p-4 bg-muted rounded-lg">
+                      <div className="text-2xl font-bold text-harvest-gold">{crop.nutritionalValue.carbohydrates}</div>
+                      <div className="text-sm text-muted-foreground">Carbs</div>
+                    </div>
+                    <div className="text-center p-4 bg-muted rounded-lg">
+                      <div className="text-2xl font-bold text-secondary">{crop.nutritionalValue.fiber}</div>
+                      <div className="text-sm text-muted-foreground">Fiber</div>
+                    </div>
                   </div>
-                  <div className="text-center p-4 bg-muted rounded-lg">
-                    <div className="text-2xl font-bold text-crop-green">{crop.nutritionalValue.protein}g</div>
-                    <div className="text-sm text-muted-foreground">Protein</div>
+                  <div className="mt-4">
+                    <h4 className="font-semibold mb-2">Key Nutrients</h4>
+                    <div className="flex flex-wrap gap-2">
+                      <h5 className="font-medium mb-1">Vitamins:</h5>
+                      {crop.nutritionalValue.vitamins.map((vitamin) => (
+                        <Badge key={vitamin} variant="outline">{vitamin}</Badge>
+                      ))}
+                      <h5 className="font-medium mb-1 ml-4">Minerals:</h5>
+                      {crop.nutritionalValue.minerals.map((mineral) => (
+                        <Badge key={mineral} variant="outline">{mineral}</Badge>
+                      ))}
+                    </div>
                   </div>
-                  <div className="text-center p-4 bg-muted rounded-lg">
-                    <div className="text-2xl font-bold text-harvest-gold">{crop.nutritionalValue.carbohydrates}g</div>
-                    <div className="text-sm text-muted-foreground">Carbs</div>
-                  </div>
-                  <div className="text-center p-4 bg-muted rounded-lg">
-                    <div className="text-2xl font-bold text-secondary">{crop.nutritionalValue.fiber}g</div>
-                    <div className="text-sm text-muted-foreground">Fiber</div>
-                  </div>
-                </div>
-                <div className="mt-4">
-                  <h4 className="font-semibold mb-2">Key Nutrients</h4>
-                  <div className="flex flex-wrap gap-2">
-                    <h5 className="font-medium mb-1">Vitamins:</h5>
-                    {crop.nutritionalValue.vitamins.map((vitamin) => (
-                      <Badge key={vitamin} variant="outline">{vitamin}</Badge>
-                    ))}
-                    <h5 className="font-medium mb-1 ml-4">Minerals:</h5>
-                    {crop.nutritionalValue.minerals.map((mineral) => (
-                      <Badge key={mineral} variant="outline">{mineral}</Badge>
-                    ))}
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
+                </CardContent>
+              </Card>
+            ) : (
+              <Card>
+                <CardContent className="text-center py-12">
+                  <Apple className="h-16 w-16 text-muted-foreground mx-auto mb-4" />
+                  <h3 className="text-xl font-semibold text-foreground mb-2">Nutritional Data Not Available</h3>
+                  <p className="text-muted-foreground">
+                    {dbCrop?.nutritional_info || 'Detailed nutritional information is not available for this crop yet.'}
+                  </p>
+                </CardContent>
+              </Card>
+            )}
           </TabsContent>
 
           {/* Cultivation Process Tab */}
           <TabsContent value="cultivation" className="mt-6">
-            <CropFlowChart crop={crop} selectedVariety={selectedVariety} />
+            {crop ? (
+              <CropFlowChart crop={crop} selectedVariety={selectedVariety} />
+            ) : (
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                {dbCrop?.land_preparation && (
+                  <Card>
+                    <CardHeader>
+                      <CardTitle>Land Preparation</CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                      <ul className="space-y-2">
+                        {dbCrop.land_preparation.map((item, index) => (
+                          <li key={index} className="flex items-start gap-2">
+                            <span className="w-1.5 h-1.5 bg-primary rounded-full mt-2 flex-shrink-0"></span>
+                            {item}
+                          </li>
+                        ))}
+                      </ul>
+                    </CardContent>
+                  </Card>
+                )}
+                {dbCrop?.fertilizer_requirement && (
+                  <Card>
+                    <CardHeader>
+                      <CardTitle>Fertilizer Requirements</CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                      <ul className="space-y-2">
+                        {dbCrop.fertilizer_requirement.map((item, index) => (
+                          <li key={index} className="flex items-start gap-2">
+                            <span className="w-1.5 h-1.5 bg-primary rounded-full mt-2 flex-shrink-0"></span>
+                            {item}
+                          </li>
+                        ))}
+                      </ul>
+                    </CardContent>
+                  </Card>
+                )}
+                {dbCrop?.irrigation_schedule && (
+                  <Card>
+                    <CardHeader>
+                      <CardTitle>Irrigation Schedule</CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                      <ul className="space-y-2">
+                        {dbCrop.irrigation_schedule.map((item, index) => (
+                          <li key={index} className="flex items-start gap-2">
+                            <span className="w-1.5 h-1.5 bg-primary rounded-full mt-2 flex-shrink-0"></span>
+                            {item}
+                          </li>
+                        ))}
+                      </ul>
+                    </CardContent>
+                  </Card>
+                )}
+                {dbCrop?.harvesting_info && (
+                  <Card>
+                    <CardHeader>
+                      <CardTitle>Harvesting Information</CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                      <ul className="space-y-2">
+                        {dbCrop.harvesting_info.map((item, index) => (
+                          <li key={index} className="flex items-start gap-2">
+                            <span className="w-1.5 h-1.5 bg-primary rounded-full mt-2 flex-shrink-0"></span>
+                            {item}
+                          </li>
+                        ))}
+                      </ul>
+                    </CardContent>
+                  </Card>
+                )}
+              </div>
+            )}
           </TabsContent>
 
           {/* Comparison Tool Tab */}
@@ -349,7 +523,7 @@ const CropProfile: React.FC<CropProfileProps> = ({ cropName, onBack }) => {
                 </CardHeader>
                 <CardContent>
                   <div className="space-y-3">
-                    {crop.pests.map((pest, index) => (
+                    {(crop?.pests || dbCrop?.pest_list || []).map((pest, index) => (
                       <div key={index} className="p-3 bg-muted rounded-lg">
                         <h4 className="font-medium">{pest}</h4>
                       </div>
@@ -364,7 +538,7 @@ const CropProfile: React.FC<CropProfileProps> = ({ cropName, onBack }) => {
                 </CardHeader>
                 <CardContent>
                   <div className="space-y-3">
-                    {crop.diseases.map((disease, index) => (
+                    {(crop?.diseases || dbCrop?.disease_list || []).map((disease, index) => (
                       <div key={index} className="p-3 bg-muted rounded-lg">
                         <h4 className="font-medium">{disease}</h4>
                       </div>
@@ -383,26 +557,34 @@ const CropProfile: React.FC<CropProfileProps> = ({ cropName, onBack }) => {
               <CardContent>
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                   <div className="text-center p-4 bg-muted rounded-lg">
-                    <div className="text-2xl font-bold text-crop-green">{crop.economics.costOfCultivation}</div>
+                    <div className="text-2xl font-bold text-crop-green">
+                      {crop?.economics?.costOfCultivation || dbCrop?.cost_of_cultivation || 'Not specified'}
+                    </div>
                     <div className="text-sm text-muted-foreground">Cost/hectare</div>
                   </div>
                   <div className="text-center p-4 bg-muted rounded-lg">
-                    <div className="text-2xl font-bold text-harvest-gold">{crop.economics.marketPrice}</div>
+                    <div className="text-2xl font-bold text-harvest-gold">
+                      {crop?.economics?.marketPrice || dbCrop?.market_price || 'Not specified'}
+                    </div>
                     <div className="text-sm text-muted-foreground">Market Price</div>
                   </div>
                   <div className="text-center p-4 bg-muted rounded-lg">
-                    <div className="text-2xl font-bold text-primary">{crop.economics.averageYield}</div>
+                    <div className="text-2xl font-bold text-primary">
+                      {crop?.economics?.averageYield || dbCrop?.average_yield || 'Not specified'}
+                    </div>
                     <div className="text-sm text-muted-foreground">Average Yield</div>
                   </div>
                 </div>
-                <div className="mt-4">
-                  <h4 className="font-semibold mb-2">Major Growing States</h4>
-                  <div className="flex flex-wrap gap-2">
-                    {crop.economics.majorStates.map((state) => (
-                      <Badge key={state} variant="outline">{state}</Badge>
-                    ))}
+                {crop?.economics?.majorStates && (
+                  <div className="mt-4">
+                    <h4 className="font-semibold mb-2">Major Growing States</h4>
+                    <div className="flex flex-wrap gap-2">
+                      {crop.economics.majorStates.map((state) => (
+                        <Badge key={state} variant="outline">{state}</Badge>
+                      ))}
+                    </div>
                   </div>
-                </div>
+                )}
               </CardContent>
             </Card>
           </TabsContent>
@@ -417,20 +599,22 @@ const CropProfile: React.FC<CropProfileProps> = ({ cropName, onBack }) => {
               </CardHeader>
               <CardContent>
                 <div className="space-y-4">
-                  <div>
-                    <h4 className="font-semibold mb-2">Climate Resilience Features</h4>
-                    <div className="space-y-2">
-                      {crop.climateResilience.map((feature, index) => (
-                        <div key={index} className="p-3 bg-muted rounded-lg">
-                          <p className="text-muted-foreground">{feature}</p>
-                        </div>
-                      ))}
+                  {crop?.climateResilience && (
+                    <div>
+                      <h4 className="font-semibold mb-2">Climate Resilience Features</h4>
+                      <div className="space-y-2">
+                        {crop.climateResilience.map((feature, index) => (
+                          <div key={index} className="p-3 bg-muted rounded-lg">
+                            <p className="text-muted-foreground">{feature}</p>
+                          </div>
+                        ))}
+                      </div>
                     </div>
-                  </div>
+                  )}
                   <div>
                     <h4 className="font-semibold mb-2">Recent Innovations</h4>
                     <div className="space-y-2">
-                      {crop.innovations.map((innovation, index) => (
+                      {(crop?.innovations || dbCrop?.innovations || []).map((innovation, index) => (
                         <div key={index} className="p-3 bg-muted rounded-lg">
                           <p className="text-muted-foreground">{innovation}</p>
                         </div>
@@ -440,7 +624,7 @@ const CropProfile: React.FC<CropProfileProps> = ({ cropName, onBack }) => {
                   <div>
                     <h4 className="font-semibold mb-2">Sustainability Practices</h4>
                     <div className="space-y-2">
-                      {crop.sustainability.map((practice, index) => (
+                      {(crop?.sustainability || dbCrop?.sustainability_practices || []).map((practice, index) => (
                         <div key={index} className="p-3 bg-muted rounded-lg">
                           <p className="text-muted-foreground">{practice}</p>
                         </div>

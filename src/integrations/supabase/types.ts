@@ -54,41 +54,104 @@ export type Database = {
       }
       crops: {
         Row: {
+          average_yield: string | null
           climate_type: string[] | null
+          cost_of_cultivation: string | null
           created_at: string
           description: string | null
+          disease_list: string[] | null
+          drainage_requirement: string | null
+          family: string | null
+          fertilizer_requirement: string[] | null
           growth_duration: string | null
+          harvesting_info: string[] | null
+          humidity_range: string | null
           id: string
+          innovations: string[] | null
+          irrigation_schedule: string[] | null
+          land_preparation: string[] | null
+          market_price: string | null
           name: string
+          nutritional_info: string | null
+          pest_list: string[] | null
+          rainfall_requirement: string | null
+          row_spacing: string | null
           scientific_name: string | null
           season: string[] | null
+          seed_rate: string | null
+          soil_ph: string | null
           soil_type: string[] | null
+          sowing_time: string | null
+          sustainability_practices: string[] | null
+          temperature_range: string | null
           updated_at: string
           water_requirement: string | null
         }
         Insert: {
+          average_yield?: string | null
           climate_type?: string[] | null
+          cost_of_cultivation?: string | null
           created_at?: string
           description?: string | null
+          disease_list?: string[] | null
+          drainage_requirement?: string | null
+          family?: string | null
+          fertilizer_requirement?: string[] | null
           growth_duration?: string | null
+          harvesting_info?: string[] | null
+          humidity_range?: string | null
           id?: string
+          innovations?: string[] | null
+          irrigation_schedule?: string[] | null
+          land_preparation?: string[] | null
+          market_price?: string | null
           name: string
+          nutritional_info?: string | null
+          pest_list?: string[] | null
+          rainfall_requirement?: string | null
+          row_spacing?: string | null
           scientific_name?: string | null
           season?: string[] | null
+          seed_rate?: string | null
+          soil_ph?: string | null
           soil_type?: string[] | null
+          sowing_time?: string | null
+          sustainability_practices?: string[] | null
+          temperature_range?: string | null
           updated_at?: string
           water_requirement?: string | null
         }
         Update: {
+          average_yield?: string | null
           climate_type?: string[] | null
+          cost_of_cultivation?: string | null
           created_at?: string
           description?: string | null
+          disease_list?: string[] | null
+          drainage_requirement?: string | null
+          family?: string | null
+          fertilizer_requirement?: string[] | null
           growth_duration?: string | null
+          harvesting_info?: string[] | null
+          humidity_range?: string | null
           id?: string
+          innovations?: string[] | null
+          irrigation_schedule?: string[] | null
+          land_preparation?: string[] | null
+          market_price?: string | null
           name?: string
+          nutritional_info?: string | null
+          pest_list?: string[] | null
+          rainfall_requirement?: string | null
+          row_spacing?: string | null
           scientific_name?: string | null
           season?: string[] | null
+          seed_rate?: string | null
+          soil_ph?: string | null
           soil_type?: string[] | null
+          sowing_time?: string | null
+          sustainability_practices?: string[] | null
+          temperature_range?: string | null
           updated_at?: string
           water_requirement?: string | null
         }

@@ -1,0 +1,23 @@
+-- Add missing columns to crops table to match the detailed form structure
+ALTER TABLE public.crops 
+ADD COLUMN IF NOT EXISTS family text,
+ADD COLUMN IF NOT EXISTS temperature_range text,
+ADD COLUMN IF NOT EXISTS rainfall_requirement text,
+ADD COLUMN IF NOT EXISTS humidity_range text,
+ADD COLUMN IF NOT EXISTS soil_ph text,
+ADD COLUMN IF NOT EXISTS drainage_requirement text,
+ADD COLUMN IF NOT EXISTS land_preparation text[],
+ADD COLUMN IF NOT EXISTS seed_rate text,
+ADD COLUMN IF NOT EXISTS row_spacing text,
+ADD COLUMN IF NOT EXISTS sowing_time text,
+ADD COLUMN IF NOT EXISTS fertilizer_requirement text[],
+ADD COLUMN IF NOT EXISTS irrigation_schedule text[],
+ADD COLUMN IF NOT EXISTS harvesting_info text[],
+ADD COLUMN IF NOT EXISTS pest_list text[],
+ADD COLUMN IF NOT EXISTS disease_list text[],
+ADD COLUMN IF NOT EXISTS average_yield text,
+ADD COLUMN IF NOT EXISTS market_price text,
+ADD COLUMN IF NOT EXISTS cost_of_cultivation text,
+ADD COLUMN IF NOT EXISTS nutritional_info text,
+ADD COLUMN IF NOT EXISTS sustainability_practices text[],
+ADD COLUMN IF NOT EXISTS innovations text[];
