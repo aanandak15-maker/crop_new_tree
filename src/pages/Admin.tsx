@@ -1,12 +1,13 @@
 import React, { useState } from "react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import CropManagement from "@/components/admin/CropManagement";
+import EnhancedCropManagement from "@/components/admin/EnhancedCropManagement";
 import VarietyManagement from "@/components/admin/VarietyManagement";
 import PestManagement from "@/components/admin/PestManagement";
 import DiseaseManagement from "@/components/admin/DiseaseManagement";
+import CropPestDiseaseRelations from "@/components/admin/CropPestDiseaseRelations";
 import ExcelImport from "@/components/admin/ExcelImport";
-import { Sprout, Bug, Shield, Upload, Database } from "lucide-react";
+import { Sprout, Bug, Shield, Upload, Database, Link } from "lucide-react";
 
 const Admin = () => {
   const [activeTab, setActiveTab] = useState("crops");
@@ -27,7 +28,7 @@ const Admin = () => {
         </Card>
 
         <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
-          <TabsList className="grid w-full grid-cols-5">
+          <TabsList className="grid w-full grid-cols-6">
             <TabsTrigger value="crops" className="flex items-center gap-2">
               <Sprout className="h-4 w-4" />
               Crops
@@ -44,6 +45,10 @@ const Admin = () => {
               <Shield className="h-4 w-4" />
               Diseases
             </TabsTrigger>
+            <TabsTrigger value="relations" className="flex items-center gap-2">
+              <Link className="h-4 w-4" />
+              Relations
+            </TabsTrigger>
             <TabsTrigger value="import" className="flex items-center gap-2">
               <Upload className="h-4 w-4" />
               Import
@@ -51,7 +56,7 @@ const Admin = () => {
           </TabsList>
 
           <TabsContent value="crops">
-            <CropManagement />
+            <EnhancedCropManagement />
           </TabsContent>
 
           <TabsContent value="varieties">
@@ -64,6 +69,10 @@ const Admin = () => {
 
           <TabsContent value="diseases">
             <DiseaseManagement />
+          </TabsContent>
+
+          <TabsContent value="relations">
+            <CropPestDiseaseRelations />
           </TabsContent>
 
           <TabsContent value="import">
