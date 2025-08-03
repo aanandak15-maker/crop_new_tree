@@ -14,6 +14,48 @@ export type Database = {
   }
   public: {
     Tables: {
+      crop_diseases: {
+        Row: {
+          created_at: string
+          crop_id: string
+          disease_id: string
+          id: string
+          occurrence_frequency: string | null
+          severity_level: string | null
+        }
+        Insert: {
+          created_at?: string
+          crop_id: string
+          disease_id: string
+          id?: string
+          occurrence_frequency?: string | null
+          severity_level?: string | null
+        }
+        Update: {
+          created_at?: string
+          crop_id?: string
+          disease_id?: string
+          id?: string
+          occurrence_frequency?: string | null
+          severity_level?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "crop_diseases_crop_id_fkey"
+            columns: ["crop_id"]
+            isOneToOne: false
+            referencedRelation: "crops"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "crop_diseases_disease_id_fkey"
+            columns: ["disease_id"]
+            isOneToOne: false
+            referencedRelation: "diseases"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       crop_images: {
         Row: {
           alt_text: string | null
@@ -48,6 +90,48 @@ export type Database = {
             columns: ["crop_id"]
             isOneToOne: false
             referencedRelation: "crops"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      crop_pests: {
+        Row: {
+          created_at: string
+          crop_id: string
+          id: string
+          occurrence_frequency: string | null
+          pest_id: string
+          severity_level: string | null
+        }
+        Insert: {
+          created_at?: string
+          crop_id: string
+          id?: string
+          occurrence_frequency?: string | null
+          pest_id: string
+          severity_level?: string | null
+        }
+        Update: {
+          created_at?: string
+          crop_id?: string
+          id?: string
+          occurrence_frequency?: string | null
+          pest_id?: string
+          severity_level?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "crop_pests_crop_id_fkey"
+            columns: ["crop_id"]
+            isOneToOne: false
+            referencedRelation: "crops"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "crop_pests_pest_id_fkey"
+            columns: ["pest_id"]
+            isOneToOne: false
+            referencedRelation: "pests"
             referencedColumns: ["id"]
           },
         ]
@@ -313,43 +397,73 @@ export type Database = {
       }
       varieties: {
         Row: {
+          agronomic_traits: Json | null
+          breeder_info: string | null
           created_at: string
           crop_id: string
+          description: string | null
           disease_resistance: string[] | null
           duration: string | null
           grain_quality: string | null
           id: string
           market_type: string | null
+          maturity_group: string | null
           name: string
+          parentage: string | null
+          plant_height: string | null
+          recommended_regions: string[] | null
+          release_year: number | null
+          seed_color: string | null
           special_features: string[] | null
+          stress_tolerance: Json | null
           suitable_states: string[] | null
           updated_at: string
           yield_potential: string | null
         }
         Insert: {
+          agronomic_traits?: Json | null
+          breeder_info?: string | null
           created_at?: string
           crop_id: string
+          description?: string | null
           disease_resistance?: string[] | null
           duration?: string | null
           grain_quality?: string | null
           id?: string
           market_type?: string | null
+          maturity_group?: string | null
           name: string
+          parentage?: string | null
+          plant_height?: string | null
+          recommended_regions?: string[] | null
+          release_year?: number | null
+          seed_color?: string | null
           special_features?: string[] | null
+          stress_tolerance?: Json | null
           suitable_states?: string[] | null
           updated_at?: string
           yield_potential?: string | null
         }
         Update: {
+          agronomic_traits?: Json | null
+          breeder_info?: string | null
           created_at?: string
           crop_id?: string
+          description?: string | null
           disease_resistance?: string[] | null
           duration?: string | null
           grain_quality?: string | null
           id?: string
           market_type?: string | null
+          maturity_group?: string | null
           name?: string
+          parentage?: string | null
+          plant_height?: string | null
+          recommended_regions?: string[] | null
+          release_year?: number | null
+          seed_color?: string | null
           special_features?: string[] | null
+          stress_tolerance?: Json | null
           suitable_states?: string[] | null
           updated_at?: string
           yield_potential?: string | null
