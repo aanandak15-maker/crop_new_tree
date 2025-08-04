@@ -65,27 +65,59 @@ interface DbCrop {
 const CropProfile: React.FC<CropProfileProps> = ({ cropName, onBack }) => {
   const [selectedVariety, setSelectedVariety] = useState<string | null>(null);
   const [dbCrop, setDbCrop] = useState<DbCrop | null>(null);
+  const [dbVarieties, setDbVarieties] = useState<any[]>([]);
+  const [dbPests, setDbPests] = useState<any[]>([]);
+  const [dbDiseases, setDbDiseases] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   
   const crop = getCropByName(cropName);
 
   useEffect(() => {
-    fetchDbCrop();
+    fetchAllCropData();
   }, [cropName]);
 
-  const fetchDbCrop = async () => {
+  const fetchAllCropData = async () => {
     try {
-      const { data, error } = await supabase
+      // Fetch crop data
+      const { data: cropData, error: cropError } = await supabase
         .from('crops')
         .select('*')
         .ilike('name', cropName)
-        .single();
+        .maybeSingle();
       
-      if (!error && data) {
-        setDbCrop(data);
+      if (cropData) {
+        setDbCrop(cropData);
+        
+        // Fetch varieties for this crop
+        const { data: varietiesData } = await supabase
+          .from('varieties')
+          .select('*')
+          .eq('crop_id', cropData.id);
+        
+        // Fetch pests for this crop
+        const { data: pestsData } = await supabase
+          .from('crop_pests')
+          .select(`
+            *,
+            pests:pest_id (*)
+          `)
+          .eq('crop_id', cropData.id);
+        
+        // Fetch diseases for this crop
+        const { data: diseasesData } = await supabase
+          .from('crop_diseases')
+          .select(`
+            *,
+            diseases:disease_id (*)
+          `)
+          .eq('crop_id', cropData.id);
+        
+        setDbVarieties(varietiesData || []);
+        setDbPests(pestsData || []);
+        setDbDiseases(diseasesData || []);
       }
     } catch (error) {
-      console.error('Error fetching crop from database:', error);
+      console.error('Error fetching crop data from database:', error);
     } finally {
       setLoading(false);
     }
@@ -173,7 +205,9 @@ const CropProfile: React.FC<CropProfileProps> = ({ cropName, onBack }) => {
                   </CardTitle>
                 </CardHeader>
                 <CardContent>
-                  <div className="text-3xl font-bold text-crop-green">{crop?.varieties?.length || 0}</div>
+                  <div className="text-3xl font-bold text-crop-green">
+                    {crop?.varieties?.length || dbVarieties.length || 0}
+                  </div>
                   <p className="text-sm text-muted-foreground">Available varieties</p>
                 </CardContent>
               </Card>
@@ -284,9 +318,10 @@ const CropProfile: React.FC<CropProfileProps> = ({ cropName, onBack }) => {
               </p>
             </div>
 
-            {crop?.varieties ? (
+{crop?.varieties || dbVarieties.length > 0 ? (
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                {crop.varieties.map((variety) => (
+                {/* Static varieties */}
+                {crop?.varieties?.map((variety) => (
                   <VarietyCard 
                     key={variety.name} 
                     variety={variety} 
@@ -295,6 +330,66 @@ const CropProfile: React.FC<CropProfileProps> = ({ cropName, onBack }) => {
                       selectedVariety === variety.name ? null : variety.name
                     )}
                   />
+                ))}
+                
+                {/* Database varieties */}
+                {dbVarieties.map((variety) => (
+                  <Card key={variety.id} className="border-2 hover:border-crop-green transition-colors cursor-pointer">
+                    <CardHeader>
+                      <CardTitle className="flex items-center justify-between">
+                        <span>{variety.name}</span>
+                        <Badge>{variety.maturity_group || 'Standard'}</Badge>
+                      </CardTitle>
+                      <CardDescription>{variety.description}</CardDescription>
+                    </CardHeader>
+                    <CardContent className="space-y-3">
+                      <div className="grid grid-cols-2 gap-4 text-sm">
+                        <div>
+                          <span className="font-medium">Duration:</span>
+                          <span className="ml-2">{variety.duration || 'Not specified'}</span>
+                        </div>
+                        <div>
+                          <span className="font-medium">Yield:</span>
+                          <span className="ml-2">{variety.yield_potential || 'Not specified'}</span>
+                        </div>
+                        <div>
+                          <span className="font-medium">Plant Height:</span>
+                          <span className="ml-2">{variety.plant_height || 'Not specified'}</span>
+                        </div>
+                        <div>
+                          <span className="font-medium">Grain Quality:</span>
+                          <span className="ml-2">{variety.grain_quality || 'Not specified'}</span>
+                        </div>
+                      </div>
+                      
+                      {variety.suitable_states && variety.suitable_states.length > 0 && (
+                        <div>
+                          <span className="font-medium text-sm">Suitable States:</span>
+                          <div className="flex flex-wrap gap-1 mt-1">
+                            {variety.suitable_states.slice(0, 6).map((state: string) => (
+                              <Badge key={state} variant="outline" className="text-xs">{state}</Badge>
+                            ))}
+                            {variety.suitable_states.length > 6 && (
+                              <Badge variant="outline" className="text-xs">
+                                +{variety.suitable_states.length - 6} more
+                              </Badge>
+                            )}
+                          </div>
+                        </div>
+                      )}
+                      
+                      {variety.disease_resistance && variety.disease_resistance.length > 0 && (
+                        <div>
+                          <span className="font-medium text-sm">Disease Resistance:</span>
+                          <div className="flex flex-wrap gap-1 mt-1">
+                            {variety.disease_resistance.map((disease: string) => (
+                              <Badge key={disease} variant="secondary" className="text-xs">{disease}</Badge>
+                            ))}
+                          </div>
+                        </div>
+                      )}
+                    </CardContent>
+                  </Card>
                 ))}
               </div>
             ) : (
@@ -516,37 +611,127 @@ const CropProfile: React.FC<CropProfileProps> = ({ cropName, onBack }) => {
           </TabsContent>
 
           <TabsContent value="pests" className="space-y-6">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <Card>
-                <CardHeader>
-                  <CardTitle>Major Pests</CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <div className="space-y-3">
-                    {(crop?.pests || dbCrop?.pest_list || []).map((pest, index) => (
-                      <div key={index} className="p-3 bg-muted rounded-lg">
-                        <h4 className="font-medium">{pest}</h4>
-                      </div>
-                    ))}
-                  </div>
-                </CardContent>
-              </Card>
+            {(dbPests.length > 0 || dbDiseases.length > 0) ? (
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                {/* Pests */}
+                <Card>
+                  <CardHeader>
+                    <CardTitle className="flex items-center gap-2">
+                      <Bug className="h-5 w-5 text-red-500" />
+                      Common Pests
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="space-y-4">
+                      {/* Database pests display - fallback for static data not available */}
+                      
+                      {/* Database pests */}
+                      {dbPests.map((pestRelation) => (
+                        <div key={pestRelation.id} className="border-b pb-3 last:border-b-0">
+                          <div className="flex items-center gap-2 mb-2">
+                            <h4 className="font-semibold text-red-700">{pestRelation.pests?.name}</h4>
+                            <Badge 
+                              variant={pestRelation.severity_level === 'high' ? 'destructive' : 
+                                     pestRelation.severity_level === 'medium' ? 'default' : 'secondary'}
+                              className="text-xs"
+                            >
+                              {pestRelation.severity_level} severity
+                            </Badge>
+                          </div>
+                          <p className="text-sm text-muted-foreground mb-2">
+                            {pestRelation.pests?.description}
+                          </p>
+                          <div className="space-y-1">
+                            {pestRelation.pests?.symptoms && (
+                              <div className="text-sm">
+                                <span className="font-medium">Symptoms:</span>
+                                <span className="ml-2">{pestRelation.pests.symptoms.join(', ')}</span>
+                              </div>
+                            )}
+                            {pestRelation.pests?.treatment_methods && (
+                              <div className="text-sm">
+                                <span className="font-medium">Treatment:</span>
+                                <span className="ml-2">{pestRelation.pests.treatment_methods.join(', ')}</span>
+                              </div>
+                            )}
+                            <div className="text-sm">
+                              <span className="font-medium">Frequency:</span>
+                              <span className="ml-2">{pestRelation.occurrence_frequency}</span>
+                            </div>
+                          </div>
+                        </div>
+                      ))}
+                      
+                      {dbPests.length === 0 && (
+                        <p className="text-sm text-muted-foreground italic">No pest information available</p>
+                      )}
+                    </div>
+                  </CardContent>
+                </Card>
 
+                {/* Diseases */}
+                <Card>
+                  <CardHeader>
+                    <CardTitle className="flex items-center gap-2">
+                      <Bug className="h-5 w-5 text-orange-500" />
+                      Common Diseases
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="space-y-4">
+                      {/* Database diseases display - fallback for static data not available */}
+                      
+                      {/* Database diseases */}
+                      {dbDiseases.map((diseaseRelation) => (
+                        <div key={diseaseRelation.id} className="border-b pb-3 last:border-b-0">
+                          <div className="flex items-center gap-2 mb-2">
+                            <h4 className="font-semibold text-orange-700">{diseaseRelation.diseases?.name}</h4>
+                            <Badge 
+                              variant={diseaseRelation.severity_level === 'high' ? 'destructive' : 
+                                     diseaseRelation.severity_level === 'medium' ? 'default' : 'secondary'}
+                              className="text-xs"
+                            >
+                              {diseaseRelation.severity_level} severity
+                            </Badge>
+                          </div>
+                          <p className="text-sm text-muted-foreground mb-2">
+                            {diseaseRelation.diseases?.description}
+                          </p>
+                          <div className="space-y-1">
+                            {diseaseRelation.diseases?.symptoms && (
+                              <div className="text-sm">
+                                <span className="font-medium">Symptoms:</span>
+                                <span className="ml-2">{diseaseRelation.diseases.symptoms.join(', ')}</span>
+                              </div>
+                            )}
+                            {diseaseRelation.diseases?.treatment_methods && (
+                              <div className="text-sm">
+                                <span className="font-medium">Treatment:</span>
+                                <span className="ml-2">{diseaseRelation.diseases.treatment_methods.join(', ')}</span>
+                              </div>
+                            )}
+                            <div className="text-sm">
+                              <span className="font-medium">Frequency:</span>
+                              <span className="ml-2">{diseaseRelation.occurrence_frequency}</span>
+                            </div>
+                          </div>
+                        </div>
+                      ))}
+                      
+                      {dbDiseases.length === 0 && (
+                        <p className="text-sm text-muted-foreground italic">No disease information available</p>
+                      )}
+                    </div>
+                  </CardContent>
+                </Card>
+              </div>
+            ) : (
               <Card>
-                <CardHeader>
-                  <CardTitle>Major Diseases</CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <div className="space-y-3">
-                    {(crop?.diseases || dbCrop?.disease_list || []).map((disease, index) => (
-                      <div key={index} className="p-3 bg-muted rounded-lg">
-                        <h4 className="font-medium">{disease}</h4>
-                      </div>
-                    ))}
-                  </div>
+                <CardContent className="text-center py-12">
+                  <p className="text-muted-foreground">No pest and disease information available yet.</p>
                 </CardContent>
               </Card>
-            </div>
+            )}
           </TabsContent>
 
           <TabsContent value="economics" className="space-y-6">

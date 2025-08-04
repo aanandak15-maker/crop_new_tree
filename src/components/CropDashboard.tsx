@@ -24,6 +24,7 @@ interface DbCrop {
   soil_type: string[];
   water_requirement: string;
   growth_duration: string;
+  average_yield?: string;
 }
 
 const CropDashboard: React.FC<CropDashboardProps> = ({ onCropSelect }) => {
@@ -112,11 +113,14 @@ const CropDashboard: React.FC<CropDashboardProps> = ({ onCropSelect }) => {
         states: [...new Set(staticCrop.varieties.flatMap(v => v.states))].length
       };
     } else if (dbCrop) {
-      // For database crops, show basic info
+      // Extract yield from database crop
+      const yieldStr = dbCrop.average_yield?.replace(/[^\d.-]/g, '') || '0';
+      const yieldNum = parseFloat(yieldStr) || 0;
+      
       return {
-        varieties: 0, // TODO: Add varieties support for db crops
-        avgYield: 0,
-        states: 0
+        varieties: 0, // Will be updated when varieties are fetched
+        avgYield: Math.round(yieldNum),
+        states: dbCrop.soil_type?.length || 0
       };
     }
     
