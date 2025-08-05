@@ -10,7 +10,9 @@ import ExcelImport from "@/components/admin/ExcelImport";
 import AuditLogs from "@/components/admin/AuditLogs";
 import ImageManager from "@/components/admin/ImageManager";
 import DataValidation from "@/components/admin/DataValidation";
-import { Sprout, Bug, Shield, Upload, Database, Link, History, Image, CheckCircle } from "lucide-react";
+import DataBackupVersioning from "@/components/admin/DataBackupVersioning";
+import ContentManagement from "@/components/admin/ContentManagement";
+import { Sprout, Bug, Shield, Upload, Database, Link, History, Image, CheckCircle, Calendar, Globe } from "lucide-react";
 
 const Admin = () => {
   const [activeTab, setActiveTab] = useState("crops");
@@ -31,7 +33,7 @@ const Admin = () => {
         </Card>
 
         <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
-          <TabsList className="grid w-full grid-cols-9">
+          <TabsList className="grid w-full grid-cols-11">
             <TabsTrigger value="crops" className="flex items-center gap-2">
               <Sprout className="h-4 w-4" />
               Crops
@@ -67,6 +69,14 @@ const Admin = () => {
             <TabsTrigger value="audit" className="flex items-center gap-2">
               <History className="h-4 w-4" />
               Audit
+            </TabsTrigger>
+            <TabsTrigger value="backup" className="flex items-center gap-2">
+              <Calendar className="h-4 w-4" />
+              Backup
+            </TabsTrigger>
+            <TabsTrigger value="content" className="flex items-center gap-2">
+              <Globe className="h-4 w-4" />
+              Content
             </TabsTrigger>
           </TabsList>
 
@@ -104,6 +114,14 @@ const Admin = () => {
 
           <TabsContent value="audit">
             <AuditLogs />
+          </TabsContent>
+
+          <TabsContent value="backup">
+            <DataBackupVersioning />
+          </TabsContent>
+
+          <TabsContent value="content">
+            <ContentManagement />
           </TabsContent>
         </Tabs>
       </div>
