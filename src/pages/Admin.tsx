@@ -7,7 +7,10 @@ import PestManagement from "@/components/admin/PestManagement";
 import DiseaseManagement from "@/components/admin/DiseaseManagement";
 import CropPestDiseaseRelations from "@/components/admin/CropPestDiseaseRelations";
 import ExcelImport from "@/components/admin/ExcelImport";
-import { Sprout, Bug, Shield, Upload, Database, Link } from "lucide-react";
+import AuditLogs from "@/components/admin/AuditLogs";
+import ImageManager from "@/components/admin/ImageManager";
+import DataValidation from "@/components/admin/DataValidation";
+import { Sprout, Bug, Shield, Upload, Database, Link, History, Image, CheckCircle } from "lucide-react";
 
 const Admin = () => {
   const [activeTab, setActiveTab] = useState("crops");
@@ -28,7 +31,7 @@ const Admin = () => {
         </Card>
 
         <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
-          <TabsList className="grid w-full grid-cols-6">
+          <TabsList className="grid w-full grid-cols-9">
             <TabsTrigger value="crops" className="flex items-center gap-2">
               <Sprout className="h-4 w-4" />
               Crops
@@ -52,6 +55,18 @@ const Admin = () => {
             <TabsTrigger value="import" className="flex items-center gap-2">
               <Upload className="h-4 w-4" />
               Import
+            </TabsTrigger>
+            <TabsTrigger value="images" className="flex items-center gap-2">
+              <Image className="h-4 w-4" />
+              Images
+            </TabsTrigger>
+            <TabsTrigger value="validation" className="flex items-center gap-2">
+              <CheckCircle className="h-4 w-4" />
+              Validation
+            </TabsTrigger>
+            <TabsTrigger value="audit" className="flex items-center gap-2">
+              <History className="h-4 w-4" />
+              Audit
             </TabsTrigger>
           </TabsList>
 
@@ -77,6 +92,18 @@ const Admin = () => {
 
           <TabsContent value="import">
             <ExcelImport />
+          </TabsContent>
+
+          <TabsContent value="images">
+            <ImageManager />
+          </TabsContent>
+
+          <TabsContent value="validation">
+            <DataValidation />
+          </TabsContent>
+
+          <TabsContent value="audit">
+            <AuditLogs />
           </TabsContent>
         </Tabs>
       </div>
