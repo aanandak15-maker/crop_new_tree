@@ -12,7 +12,8 @@ import ImageManager from "@/components/admin/ImageManager";
 import DataValidation from "@/components/admin/DataValidation";
 import DataBackupVersioning from "@/components/admin/DataBackupVersioning";
 import ContentManagement from "@/components/admin/ContentManagement";
-import { Sprout, Bug, Shield, Upload, Database, Link, History, Image, CheckCircle, Calendar, Globe } from "lucide-react";
+import PerformanceMonitoring from "@/components/admin/PerformanceMonitoring";
+import { Sprout, Bug, Shield, Upload, Database, Link, History, Image, CheckCircle, Calendar, Globe, Activity } from "lucide-react";
 
 const Admin = () => {
   const [activeTab, setActiveTab] = useState("crops");
@@ -33,7 +34,7 @@ const Admin = () => {
         </Card>
 
         <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
-          <TabsList className="grid w-full grid-cols-11">
+          <TabsList className="grid w-full grid-cols-12">
             <TabsTrigger value="crops" className="flex items-center gap-2">
               <Sprout className="h-4 w-4" />
               Crops
@@ -77,6 +78,10 @@ const Admin = () => {
             <TabsTrigger value="content" className="flex items-center gap-2">
               <Globe className="h-4 w-4" />
               Content
+            </TabsTrigger>
+            <TabsTrigger value="performance" className="flex items-center gap-2">
+              <Activity className="h-4 w-4" />
+              Performance
             </TabsTrigger>
           </TabsList>
 
@@ -122,6 +127,10 @@ const Admin = () => {
 
           <TabsContent value="content">
             <ContentManagement />
+          </TabsContent>
+
+          <TabsContent value="performance">
+            <PerformanceMonitoring />
           </TabsContent>
         </Tabs>
       </div>
