@@ -13,7 +13,8 @@ import DataValidation from "@/components/admin/DataValidation";
 import DataBackupVersioning from "@/components/admin/DataBackupVersioning";
 import ContentManagement from "@/components/admin/ContentManagement";
 import PerformanceMonitoring from "@/components/admin/PerformanceMonitoring";
-import { Sprout, Bug, Shield, Upload, Database, Link, History, Image, CheckCircle, Calendar, Globe, Activity } from "lucide-react";
+import { AIDocumentProcessor } from "@/components/admin/ai-doc-processor";
+import { Sprout, Bug, Shield, Upload, Database, Link, History, Image, CheckCircle, Calendar, Globe, Activity, Sparkles } from "lucide-react";
 
 const Admin = () => {
   const [activeTab, setActiveTab] = useState("crops");
@@ -83,6 +84,10 @@ const Admin = () => {
               <Activity className="h-4 w-4" />
               Performance
             </TabsTrigger>
+            <TabsTrigger value="ai-processor" className="flex items-center gap-2">
+              <Sparkles className="h-4 w-4" />
+              AI Processor
+            </TabsTrigger>
           </TabsList>
 
           <TabsContent value="crops">
@@ -131,6 +136,10 @@ const Admin = () => {
 
           <TabsContent value="performance">
             <PerformanceMonitoring />
+          </TabsContent>
+
+          <TabsContent value="ai-processor">
+            <AIDocumentProcessor />
           </TabsContent>
         </Tabs>
       </div>

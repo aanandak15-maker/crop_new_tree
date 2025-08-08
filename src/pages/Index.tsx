@@ -2,6 +2,12 @@ import React, { useState } from "react";
 import { Toaster } from "@/components/ui/toaster";
 import CropDashboard from "@/components/CropDashboard";
 import CropProfile from "@/components/CropProfile";
+import TestCropData from "@/components/TestCropData";
+import MinimalTest from "@/components/MinimalTest";
+import CropDataTest from "@/components/CropDataTest";
+import SimpleCropDashboard from "@/components/SimpleCropDashboard";
+import SimpleCropProfile from "@/components/SimpleCropProfile";
+import ProfessionalCropProfile from "@/components/ProfessionalCropProfile";
 
 const Index = () => {
   const [selectedCrop, setSelectedCrop] = useState<string | null>(null);
@@ -17,9 +23,9 @@ const Index = () => {
   return (
     <div className="min-h-screen">
       {selectedCrop ? (
-        <CropProfile cropName={selectedCrop} onBack={handleBack} />
+        <ProfessionalCropProfile cropName={selectedCrop} onBack={handleBack} />
       ) : (
-        <CropDashboard onCropSelect={handleCropSelect} />
+        <SimpleCropDashboard onCropSelect={handleCropSelect} />
       )}
       <Toaster />
     </div>
