@@ -1061,7 +1061,7 @@ const SimpleCropProfile: React.FC<SimpleCropProfileProps> = ({ cropName, onBack 
                            </Badge>
                          )}
                        </div>
-                     </div>
+            </div>
 
                      {/* Special Features */}
                      {variety.special_features && variety.special_features.length > 0 && (
@@ -1175,7 +1175,7 @@ const SimpleCropProfile: React.FC<SimpleCropProfileProps> = ({ cropName, onBack 
                   <div className="w-16 h-16 bg-blue-400 rounded-full flex items-center justify-center">
                     <Sprout className="h-8 w-8 text-white" />
                   </div>
-                  <div>
+                <div>
                     <h1 className="text-3xl font-bold text-gray-800">Cultivation Guide</h1>
                     <p className="text-gray-600">Complete growing practices and management techniques</p>
                   </div>
@@ -1228,8 +1228,8 @@ const SimpleCropProfile: React.FC<SimpleCropProfileProps> = ({ cropName, onBack 
                   <div className="flex items-center gap-3 mb-6">
                     <div className="w-12 h-12 bg-green-400 rounded-lg flex items-center justify-center">
                       <Sprout className="h-6 w-6 text-white" />
-                    </div>
-                    <div>
+                </div>
+                <div>
                       <h3 className="text-xl font-bold text-gray-800">Land Preparation</h3>
                       <p className="text-sm text-gray-600">Essential steps for optimal soil conditions</p>
                     </div>
@@ -1876,11 +1876,11 @@ const SimpleCropProfile: React.FC<SimpleCropProfileProps> = ({ cropName, onBack 
                     </div>
                     <div className="ml-11">
                       {crop.innovations && crop.innovations.length > 0 ? (
-                        <div className="flex flex-wrap gap-1">
+                  <div className="flex flex-wrap gap-1">
                           {crop.innovations.map((innovation, index) => (
                             <Badge key={index} className="bg-blue-100 text-blue-800 border-blue-200 text-xs">
                               {innovation}
-                            </Badge>
+                        </Badge>
                           ))}
                         </div>
                       ) : (
@@ -1901,84 +1901,169 @@ const SimpleCropProfile: React.FC<SimpleCropProfileProps> = ({ cropName, onBack 
                           {crop.sustainability_practices.map((practice, index) => (
                             <Badge key={index} className="bg-green-100 text-green-800 border-green-200 text-xs">
                               {practice}
-                            </Badge>
+                      </Badge>
                           ))}
                         </div>
                       ) : (
                         <p className="text-gray-700">Not specified</p>
-                      )}
-                    </div>
+                    )}
                   </div>
+                </div>
                 </div>
               </div>
             </div>
           </TabsContent>
 
           {/* Pests & Diseases Tab */}
-          <TabsContent value="pests-diseases" className="space-y-6">
-            {/* Main Pest and Disease */}
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          <TabsContent value="pests-diseases" className="space-y-8">
+            {/* Hero Section */}
+            <div className="relative overflow-hidden rounded-xl bg-gradient-to-br from-red-50 to-orange-50 border border-red-200 p-8">
+              <div className="absolute top-0 right-0 w-32 h-32 bg-red-100 rounded-full -translate-y-16 translate-x-16 opacity-50"></div>
+              <div className="absolute bottom-0 left-0 w-24 h-24 bg-orange-100 rounded-full translate-y-12 -translate-x-12 opacity-50"></div>
+              <div className="relative z-10">
+                <div className="flex items-center gap-4 mb-4">
+                  <div className="w-16 h-16 bg-red-400 rounded-full flex items-center justify-center">
+                    <Bug className="h-8 w-8 text-white" />
+                  </div>
+                  <div>
+                    <h1 className="text-3xl font-bold text-gray-800">Pests & Diseases</h1>
+                    <p className="text-gray-600">Comprehensive pest and disease management information</p>
+                  </div>
+                </div>
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-6">
+                  <div className="bg-white rounded-lg p-4 border border-red-100">
+                    <div className="flex items-center gap-2 mb-2">
+                      <div className="w-8 h-8 bg-red-100 rounded-lg flex items-center justify-center">
+                        <Bug className="h-4 w-4 text-red-600" />
+                      </div>
+                      <span className="font-semibold text-gray-800">Pests</span>
+                    </div>
+                    <p className="text-2xl font-bold text-red-600">{crop.pest_name ? '1 Main' : '0'}</p>
+                  </div>
+                  <div className="bg-white rounded-lg p-4 border border-red-100">
+                    <div className="flex items-center gap-2 mb-2">
+                      <div className="w-8 h-8 bg-orange-100 rounded-lg flex items-center justify-center">
+                        <Shield className="h-4 w-4 text-orange-600" />
+                      </div>
+                      <span className="font-semibold text-gray-800">Diseases</span>
+                    </div>
+                    <p className="text-2xl font-bold text-orange-600">{crop.disease_name ? '1 Main' : '0'}</p>
+                  </div>
+                  <div className="bg-white rounded-lg p-4 border border-red-100">
+                    <div className="flex items-center gap-2 mb-2">
+                      <div className="w-8 h-8 bg-purple-100 rounded-lg flex items-center justify-center">
+                        <Activity className="h-4 w-4 text-purple-600" />
+                      </div>
+                      <span className="font-semibold text-gray-800">Additional</span>
+                    </div>
+                    <p className="text-2xl font-bold text-purple-600">{((crop.additional_pests?.length || 0) + (crop.additional_diseases?.length || 0))}</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+                        {/* Main Pest and Disease */}
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
               {/* Detailed Pest Information */}
               {crop.pest_name && (
-                <Card className="bg-white border border-gray-200">
-                  <CardHeader>
-                    <CardTitle className="flex items-center gap-2 text-gray-800">
-                      <Bug className="h-5 w-5 text-red-500" />
-                      Pest Details
-                    </CardTitle>
-                  </CardHeader>
-                  <CardContent className="space-y-4 text-sm text-gray-600">
+                <div className="bg-gradient-to-br from-red-50 to-pink-50 border border-red-200 rounded-xl p-6 hover:shadow-lg transition-all duration-300">
+                  <div className="flex items-center gap-3 mb-6">
+                    <div className="w-12 h-12 bg-red-400 rounded-lg flex items-center justify-center">
+                      <Bug className="h-6 w-6 text-white" />
+                    </div>
+                    <div>
+                      <h3 className="text-xl font-bold text-gray-800">Pest Details</h3>
+                      <p className="text-sm text-gray-600">Main pest affecting this crop</p>
+                    </div>
+                  </div>
+                  <div className="space-y-4">
                     {/* Pest Image */}
                     {crop.pest_image && (
                       <div className="mb-4">
                         <img 
                           src={crop.pest_image} 
                           alt={`${crop.pest_name} pest`}
-                          className="w-full h-48 object-cover rounded-lg border border-gray-200"
+                          className="w-full h-48 object-cover rounded-lg border border-red-200"
                         />
                       </div>
                     )}
-                    <div>
-                      <span className="font-medium">Pest Name:</span> {crop.pest_name}
+                    <div className="bg-white rounded-lg p-4 border border-red-100">
+                      <div className="flex items-center gap-3 mb-2">
+                        <div className="w-8 h-8 bg-red-100 rounded-lg flex items-center justify-center">
+                          <Bug className="h-4 w-4 text-red-600" />
+                        </div>
+                        <span className="font-semibold text-gray-800">Pest Name</span>
+                      </div>
+                      <p className="text-gray-700 ml-11">{crop.pest_name}</p>
                     </div>
                     {crop.pest_symptoms && (
-                      <div>
-                        <span className="font-medium">Symptoms:</span> {crop.pest_symptoms}
+                      <div className="bg-white rounded-lg p-4 border border-red-100">
+                        <div className="flex items-center gap-3 mb-2">
+                          <div className="w-8 h-8 bg-orange-100 rounded-lg flex items-center justify-center">
+                            <Activity className="h-4 w-4 text-orange-600" />
+                          </div>
+                          <span className="font-semibold text-gray-800">Symptoms</span>
+                        </div>
+                        <p className="text-gray-700 ml-11">{crop.pest_symptoms}</p>
                       </div>
                     )}
                     {crop.pest_life_cycle && (
-                      <div>
-                        <span className="font-medium">Life Cycle:</span> {crop.pest_life_cycle}
+                      <div className="bg-white rounded-lg p-4 border border-red-100">
+                        <div className="flex items-center gap-3 mb-2">
+                          <div className="w-8 h-8 bg-blue-100 rounded-lg flex items-center justify-center">
+                            <Activity className="h-4 w-4 text-blue-600" />
+                          </div>
+                          <span className="font-semibold text-gray-800">Life Cycle</span>
+                        </div>
+                        <p className="text-gray-700 ml-11">{crop.pest_life_cycle}</p>
                       </div>
                     )}
                     {crop.pest_etl && (
-                      <div>
-                        <span className="font-medium">ETL (Economic Threshold Level):</span> {crop.pest_etl}
+                      <div className="bg-white rounded-lg p-4 border border-red-100">
+                        <div className="flex items-center gap-3 mb-2">
+                          <div className="w-8 h-8 bg-yellow-100 rounded-lg flex items-center justify-center">
+                            <Activity className="h-4 w-4 text-yellow-600" />
+                          </div>
+                          <span className="font-semibold text-gray-800">ETL (Economic Threshold Level)</span>
+                        </div>
+                        <p className="text-gray-700 ml-11">{crop.pest_etl}</p>
                       </div>
                     )}
                     {crop.pest_management && (
-                      <div>
-                        <span className="font-medium">Management:</span> {crop.pest_management}
+                      <div className="bg-white rounded-lg p-4 border border-red-100">
+                        <div className="flex items-center gap-3 mb-2">
+                          <div className="w-8 h-8 bg-green-100 rounded-lg flex items-center justify-center">
+                            <Shield className="h-4 w-4 text-green-600" />
+                          </div>
+                          <span className="font-semibold text-gray-800">Management</span>
+                        </div>
+                        <p className="text-gray-700 ml-11">{crop.pest_management}</p>
                       </div>
                     )}
                     {crop.pest_biocontrol && (
-                      <div>
-                        <span className="font-medium">Biological Control:</span> {crop.pest_biocontrol}
+                      <div className="bg-white rounded-lg p-4 border border-red-100">
+                        <div className="flex items-center gap-3 mb-2">
+                          <div className="w-8 h-8 bg-purple-100 rounded-lg flex items-center justify-center">
+                            <Leaf className="h-4 w-4 text-purple-600" />
+                          </div>
+                          <span className="font-semibold text-gray-800">Biological Control</span>
+                        </div>
+                        <p className="text-gray-700 ml-11">{crop.pest_biocontrol}</p>
                       </div>
                     )}
-                  </CardContent>
-                </Card>
+                  </div>
+                </div>
               )}
 
               {/* Detailed Disease Information */}
               {crop.disease_name && (
                 <Card className="bg-white border border-gray-200">
-                  <CardHeader>
+                <CardHeader>
                     <CardTitle className="flex items-center gap-2 text-gray-800">
                       <Shield className="h-5 w-5 text-orange-500" />
                       Disease Details
-                    </CardTitle>
-                  </CardHeader>
+                  </CardTitle>
+                </CardHeader>
                   <CardContent className="space-y-4 text-sm text-gray-600">
                     {/* Disease Image */}
                     {crop.disease_image && (
@@ -2018,19 +2103,19 @@ const SimpleCropProfile: React.FC<SimpleCropProfileProps> = ({ cropName, onBack 
                         <span className="font-medium">Biological Control:</span> {crop.disease_biocontrol}
                       </div>
                     )}
-                  </CardContent>
-                </Card>
+                </CardContent>
+              </Card>
               )}
 
               {/* Fallback for basic pest/disease lists */}
               {!crop.pest_name && crop.pest_list && crop.pest_list.length > 0 && (
                 <Card className="bg-white border border-gray-200">
-                  <CardHeader>
+                <CardHeader>
                     <CardTitle className="flex items-center gap-2 text-gray-800">
                       <Bug className="h-5 w-5 text-red-500" />
                       Common Pests
-                    </CardTitle>
-                  </CardHeader>
+                  </CardTitle>
+                </CardHeader>
                   <CardContent>
                     <div className="space-y-2">
                       {crop.pest_list.map((pest, index) => (
@@ -2040,8 +2125,8 @@ const SimpleCropProfile: React.FC<SimpleCropProfileProps> = ({ cropName, onBack 
                         </div>
                       ))}
                     </div>
-                  </CardContent>
-                </Card>
+                </CardContent>
+              </Card>
               )}
 
               {!crop.disease_name && crop.disease_list && crop.disease_list.length > 0 && (
@@ -2058,7 +2143,7 @@ const SimpleCropProfile: React.FC<SimpleCropProfileProps> = ({ cropName, onBack 
                         <div key={index} className="flex items-center gap-2">
                           <div className="w-2 h-2 bg-orange-500 rounded-full"></div>
                           <span className="text-sm text-gray-600">{disease}</span>
-                        </div>
+            </div>
                       ))}
                     </div>
                   </CardContent>
@@ -2072,19 +2157,19 @@ const SimpleCropProfile: React.FC<SimpleCropProfileProps> = ({ cropName, onBack 
                 <div className="text-center">
                   <h3 className="text-lg font-semibold text-gray-800 mb-2">Additional Pests & Diseases</h3>
                   <p className="text-gray-600">Comprehensive list of other common pests and diseases affecting this crop</p>
-                </div>
+            </div>
 
                 {/* Additional Pests */}
                 {crop.additional_pests && crop.additional_pests.length > 0 && (
-                  <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
                     {crop.additional_pests.map((pest, index) => (
                       <Card key={index} className="bg-white border border-gray-200">
-                        <CardHeader>
+                    <CardHeader>
                           <CardTitle className="flex items-center gap-2 text-gray-800">
                             <Bug className="h-5 w-5 text-red-500" />
                             {pest.name}
-                          </CardTitle>
-                        </CardHeader>
+                      </CardTitle>
+                    </CardHeader>
                         <CardContent className="space-y-4 text-sm text-gray-600">
                           {/* Pest Image */}
                           {pest.image && (
@@ -2096,21 +2181,21 @@ const SimpleCropProfile: React.FC<SimpleCropProfileProps> = ({ cropName, onBack 
                               />
                             </div>
                           )}
-                          <div>
+                        <div>
                             <span className="font-medium">Symptoms:</span> {pest.symptoms}
-                          </div>
-                          <div>
+                        </div>
+                        <div>
                             <span className="font-medium">Life Cycle:</span> {pest.lifeCycle}
-                          </div>
+                        </div>
                           <div>
                             <span className="font-medium">ETL:</span> {pest.etl}
-                          </div>
-                          <div>
+                      </div>
+                      <div>
                             <span className="font-medium">Management:</span> {pest.management}
-                          </div>
+                        </div>
                           <div>
                             <span className="font-medium">Biological Control:</span> {pest.biocontrol}
-                          </div>
+                      </div>
                         </CardContent>
                       </Card>
                     ))}
@@ -2154,10 +2239,10 @@ const SimpleCropProfile: React.FC<SimpleCropProfileProps> = ({ cropName, onBack 
                           <div>
                             <span className="font-medium">Biological Control:</span> {disease.biocontrol}
                           </div>
-                        </CardContent>
-                      </Card>
-                    ))}
-                  </div>
+                    </CardContent>
+                  </Card>
+                ))}
+              </div>
                 )}
               </div>
             ) : null}
@@ -2217,15 +2302,15 @@ const SimpleCropProfile: React.FC<SimpleCropProfileProps> = ({ cropName, onBack 
                 </Card>
               ) : (
                 <Card className="text-center py-12 bg-white border border-gray-200">
-                  <CardContent>
+                <CardContent>
                     <Shield className="h-12 w-12 text-gray-400 mx-auto mb-4" />
                     <h3 className="text-lg font-semibold mb-2 text-gray-800">No nematode data available</h3>
                     <p className="text-gray-600 max-w-prose mx-auto">
                       Detailed nematode information has not been added for this crop yet
-                    </p>
-                  </CardContent>
-                </Card>
-              )}
+                  </p>
+                </CardContent>
+              </Card>
+            )}
             </div>
           </TabsContent>
 
@@ -2294,12 +2379,12 @@ const SimpleCropProfile: React.FC<SimpleCropProfileProps> = ({ cropName, onBack 
           <TabsContent value="morphology" className="space-y-6">
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
               <Card className="bg-white border border-gray-200">
-                <CardHeader>
+                  <CardHeader>
                   <CardTitle className="flex items-center gap-2 text-gray-800">
                     <Leaf className="h-5 w-5 text-green-500" />
                     Plant Morphology
-                  </CardTitle>
-                </CardHeader>
+                    </CardTitle>
+                  </CardHeader>
                 <CardContent className="space-y-3 text-sm text-gray-600">
                   {crop.root_system && (
                     <div>
@@ -2341,8 +2426,8 @@ const SimpleCropProfile: React.FC<SimpleCropProfileProps> = ({ cropName, onBack 
                       <span className="font-medium">Edible Part:</span> {crop.edible_part}
                     </div>
                   )}
-                </CardContent>
-              </Card>
+                  </CardContent>
+                </Card>
             </div>
           </TabsContent>
 
@@ -2350,12 +2435,12 @@ const SimpleCropProfile: React.FC<SimpleCropProfileProps> = ({ cropName, onBack 
           <TabsContent value="genetics" className="space-y-6">
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
               <Card className="bg-white border border-gray-200">
-                <CardHeader>
+                  <CardHeader>
                   <CardTitle className="flex items-center gap-2 text-gray-800">
                     <Sprout className="h-5 w-5 text-green-500" />
                     Genetic Information
-                  </CardTitle>
-                </CardHeader>
+                    </CardTitle>
+                  </CardHeader>
                 <CardContent className="space-y-3 text-sm text-gray-600">
                   {crop.chromosome_number && (
                     <div>
@@ -2387,8 +2472,8 @@ const SimpleCropProfile: React.FC<SimpleCropProfileProps> = ({ cropName, onBack 
                       <span className="font-medium">Research Institutes:</span> {crop.research_institutes}
                     </div>
                   )}
-                </CardContent>
-              </Card>
+                  </CardContent>
+                </Card>
             </div>
           </TabsContent>
 
@@ -2396,17 +2481,17 @@ const SimpleCropProfile: React.FC<SimpleCropProfileProps> = ({ cropName, onBack 
           <TabsContent value="reproduction" className="space-y-6">
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
               <Card className="bg-white border border-gray-200">
-                <CardHeader>
+                  <CardHeader>
                   <CardTitle className="flex items-center gap-2 text-gray-800">
                     <Apple className="h-5 w-5 text-red-500" />
                     Reproductive Biology
-                  </CardTitle>
-                </CardHeader>
+                    </CardTitle>
+                  </CardHeader>
                 <CardContent className="space-y-3 text-sm text-gray-600">
                   {crop.pollination && (
                     <div>
                       <span className="font-medium">Pollination:</span> {crop.pollination}
-                    </div>
+                        </div>
                   )}
                   {crop.propagation_type && (
                     <div>
@@ -2438,8 +2523,8 @@ const SimpleCropProfile: React.FC<SimpleCropProfileProps> = ({ cropName, onBack 
                       <span className="font-medium">Training System:</span> {crop.training_system}
                     </div>
                   )}
-                </CardContent>
-              </Card>
+                  </CardContent>
+                </Card>
             </div>
           </TabsContent>
 
