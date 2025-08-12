@@ -8,11 +8,13 @@ import { getCropByName } from '@/data/cropData';
 import DataVisualization from './DataVisualization';
 import CollapsibleSection from './CollapsibleSection';
 import InfoTooltip from './InfoTooltip';
+import AIInsights from './AIInsights';
+import CropComparison from './CropComparison';
 import { 
   ArrowLeft, Info, Wheat, Leaf, Shield, Apple, TrendingUp, 
   Sprout, Bug, MapPin, Clock, Loader2, AlertTriangle, Droplets, 
   Thermometer, Sun, Zap, Target, Users, Globe, Award, 
-  BookOpen, Lightbulb, Heart, Brain, Activity
+  BookOpen, Lightbulb, Heart, Brain, Activity, GitCompare
 } from 'lucide-react';
 
 interface EnhancedCropProfileProps {
@@ -25,6 +27,7 @@ const EnhancedCropProfile: React.FC<EnhancedCropProfileProps> = ({ cropName, onB
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [activeTab, setActiveTab] = useState('overview');
+  const [showComparison, setShowComparison] = useState(false);
 
   useEffect(() => {
     const fetchCrop = async () => {
@@ -348,6 +351,15 @@ const EnhancedCropProfile: React.FC<EnhancedCropProfileProps> = ({ cropName, onB
               </div>
             </div>
             <div className="flex items-center gap-2">
+              <Button
+                onClick={() => setShowComparison(true)}
+                variant="outline"
+                size="sm"
+                className="bg-blue-50 text-blue-800 border-blue-200 hover:bg-blue-100"
+              >
+                <GitCompare className="h-4 w-4 mr-2" />
+                Compare
+              </Button>
               <Badge variant="outline" className="bg-yellow-50 text-yellow-800 border-yellow-200">
                 Enhanced View
               </Badge>
@@ -389,6 +401,7 @@ const EnhancedCropProfile: React.FC<EnhancedCropProfileProps> = ({ cropName, onB
           <TabsContent value="overview" className="space-y-6">
             {renderQuickStats()}
             {renderDataVisualization()}
+            <AIInsights crop={crop} />
           </TabsContent>
 
           {/* Advanced Tab */}
@@ -412,6 +425,11 @@ const EnhancedCropProfile: React.FC<EnhancedCropProfileProps> = ({ cropName, onB
           </TabsContent>
         </Tabs>
       </div>
+
+      {/* Crop Comparison Modal */}
+      {showComparison && (
+        <CropComparison onClose={() => setShowComparison(false)} />
+      )}
     </div>
   );
 };
