@@ -3227,141 +3227,454 @@ const SimpleCropProfile: React.FC<SimpleCropProfileProps> = ({ cropName, onBack 
           </TabsContent>
 
           {/* Government Tab */}
-          <TabsContent value="government" className="space-y-6">
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-              <Card className="bg-white border border-gray-200">
-                <CardHeader>
-                  <CardTitle className="flex items-center gap-2 text-gray-800">
-                    <Shield className="h-5 w-5 text-blue-500" />
-                    Government Support & Policy
-                  </CardTitle>
-                </CardHeader>
-                <CardContent className="space-y-3 text-sm text-gray-600">
+          <TabsContent value="government" className="space-y-8">
+            {/* Hero Section */}
+            <div className="relative overflow-hidden rounded-xl bg-gradient-to-br from-blue-50 to-indigo-50 border border-blue-200 p-8">
+              <div className="absolute top-0 right-0 w-32 h-32 bg-blue-100 rounded-full -translate-y-16 translate-x-16 opacity-50"></div>
+              <div className="absolute bottom-0 left-0 w-24 h-24 bg-indigo-100 rounded-full translate-y-12 -translate-x-12 opacity-50"></div>
+              <div className="relative z-10">
+                <div className="flex items-center gap-4 mb-4">
+                  <div className="w-16 h-16 bg-blue-400 rounded-full flex items-center justify-center">
+                    <Shield className="h-8 w-8 text-white" />
+                  </div>
+                  <div>
+                    <h1 className="text-3xl font-bold text-gray-800">Government Support & Policy</h1>
+                    <p className="text-gray-600">Subsidies, schemes, and regulatory information</p>
+                  </div>
+                </div>
+                <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mt-6">
+                  <div className="bg-white rounded-lg p-4 border border-blue-100">
+                    <div className="flex items-center gap-2 mb-2">
+                      <div className="w-8 h-8 bg-blue-100 rounded-lg flex items-center justify-center">
+                        <Shield className="h-4 w-4 text-blue-600" />
+                      </div>
+                      <span className="font-semibold text-gray-800">Subsidies</span>
+                    </div>
+                    <p className="text-2xl font-bold text-blue-600">{crop.subsidies ? 'Available' : 'N/A'}</p>
+                  </div>
+                  <div className="bg-white rounded-lg p-4 border border-blue-100">
+                    <div className="flex items-center gap-2 mb-2">
+                      <div className="w-8 h-8 bg-green-100 rounded-lg flex items-center justify-center">
+                        <Activity className="h-4 w-4 text-green-600" />
+                      </div>
+                      <span className="font-semibold text-gray-800">Schemes</span>
+                    </div>
+                    <p className="text-2xl font-bold text-green-600">{crop.schemes ? 'Available' : 'N/A'}</p>
+                  </div>
+                  <div className="bg-white rounded-lg p-4 border border-blue-100">
+                    <div className="flex items-center gap-2 mb-2">
+                      <div className="w-8 h-8 bg-purple-100 rounded-lg flex items-center justify-center">
+                        <Activity className="h-4 w-4 text-purple-600" />
+                      </div>
+                      <span className="font-semibold text-gray-800">Agencies</span>
+                    </div>
+                    <p className="text-2xl font-bold text-purple-600">{crop.support_agencies ? 'Available' : 'N/A'}</p>
+                  </div>
+                  <div className="bg-white rounded-lg p-4 border border-blue-100">
+                    <div className="flex items-center gap-2 mb-2">
+                      <div className="w-8 h-8 bg-yellow-100 rounded-lg flex items-center justify-center">
+                        <Activity className="h-4 w-4 text-yellow-600" />
+                      </div>
+                      <span className="font-semibold text-gray-800">Certifications</span>
+                    </div>
+                    <p className="text-2xl font-bold text-yellow-600">{crop.certifications ? 'Required' : 'N/A'}</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+              <div className="bg-gradient-to-br from-blue-50 to-indigo-50 border border-blue-200 rounded-xl p-6 hover:shadow-lg transition-all duration-300">
+                <div className="flex items-center gap-3 mb-6">
+                  <div className="w-12 h-12 bg-blue-400 rounded-lg flex items-center justify-center">
+                    <Shield className="h-6 w-6 text-white" />
+                  </div>
+                  <div>
+                    <h3 className="text-xl font-bold text-gray-800">Government Support & Policy</h3>
+                    <p className="text-sm text-gray-600">Subsidies, schemes, and regulatory information</p>
+                  </div>
+                </div>
+                <div className="space-y-4">
                   {crop.subsidies && (
-                    <div>
-                      <span className="font-medium">Available Subsidies:</span> {crop.subsidies}
+                    <div className="bg-white rounded-lg p-4 border border-blue-100">
+                      <div className="flex items-center gap-3 mb-2">
+                        <div className="w-8 h-8 bg-blue-100 rounded-lg flex items-center justify-center">
+                          <Shield className="h-4 w-4 text-blue-600" />
+                        </div>
+                        <span className="font-semibold text-gray-800">Available Subsidies</span>
+                      </div>
+                      <p className="text-gray-700 ml-11">{crop.subsidies}</p>
                     </div>
                   )}
                   {crop.schemes && (
-                    <div>
-                      <span className="font-medium">Applicable Schemes:</span> {crop.schemes}
+                    <div className="bg-white rounded-lg p-4 border border-blue-100">
+                      <div className="flex items-center gap-3 mb-2">
+                        <div className="w-8 h-8 bg-green-100 rounded-lg flex items-center justify-center">
+                          <Activity className="h-4 w-4 text-green-600" />
+                        </div>
+                        <span className="font-semibold text-gray-800">Applicable Schemes</span>
+                      </div>
+                      <p className="text-gray-700 ml-11">{crop.schemes}</p>
                     </div>
                   )}
                   {crop.support_agencies && (
-                    <div>
-                      <span className="font-medium">Support Agencies:</span> {crop.support_agencies}
+                    <div className="bg-white rounded-lg p-4 border border-blue-100">
+                      <div className="flex items-center gap-3 mb-2">
+                        <div className="w-8 h-8 bg-purple-100 rounded-lg flex items-center justify-center">
+                          <Activity className="h-4 w-4 text-purple-600" />
+                        </div>
+                        <span className="font-semibold text-gray-800">Support Agencies</span>
+                      </div>
+                      <p className="text-gray-700 ml-11">{crop.support_agencies}</p>
                     </div>
                   )}
                   {crop.certifications && (
-                    <div>
-                      <span className="font-medium">Required Certifications:</span> {crop.certifications}
+                    <div className="bg-white rounded-lg p-4 border border-blue-100">
+                      <div className="flex items-center gap-3 mb-2">
+                        <div className="w-8 h-8 bg-yellow-100 rounded-lg flex items-center justify-center">
+                          <Activity className="h-4 w-4 text-yellow-600" />
+                        </div>
+                        <span className="font-semibold text-gray-800">Required Certifications</span>
+                      </div>
+                      <p className="text-gray-700 ml-11">{crop.certifications}</p>
                     </div>
                   )}
-                </CardContent>
-              </Card>
+                </div>
+              </div>
             </div>
           </TabsContent>
 
           {/* Technology Tab */}
-          <TabsContent value="technology" className="space-y-6">
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-              <Card className="bg-white border border-gray-200">
-                <CardHeader>
-                  <CardTitle className="flex items-center gap-2 text-gray-800">
-                    <TrendingUp className="h-5 w-5 text-purple-500" />
-                    Technology & Innovation
-                  </CardTitle>
-                </CardHeader>
-                <CardContent className="space-y-3 text-sm text-gray-600">
+          <TabsContent value="technology" className="space-y-8">
+            {/* Hero Section */}
+            <div className="relative overflow-hidden rounded-xl bg-gradient-to-br from-purple-50 to-pink-50 border border-purple-200 p-8">
+              <div className="absolute top-0 right-0 w-32 h-32 bg-purple-100 rounded-full -translate-y-16 translate-x-16 opacity-50"></div>
+              <div className="absolute bottom-0 left-0 w-24 h-24 bg-pink-100 rounded-full translate-y-12 -translate-x-12 opacity-50"></div>
+              <div className="relative z-10">
+                <div className="flex items-center gap-4 mb-4">
+                  <div className="w-16 h-16 bg-purple-400 rounded-full flex items-center justify-center">
+                    <TrendingUp className="h-8 w-8 text-white" />
+                  </div>
+                  <div>
+                    <h1 className="text-3xl font-bold text-gray-800">Technology & Innovation</h1>
+                    <p className="text-gray-600">AI/ML, IoT, and smart farming applications</p>
+                  </div>
+                </div>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-6">
+                  <div className="bg-white rounded-lg p-4 border border-purple-100">
+                    <div className="flex items-center gap-2 mb-2">
+                      <div className="w-8 h-8 bg-purple-100 rounded-lg flex items-center justify-center">
+                        <TrendingUp className="h-4 w-4 text-purple-600" />
+                      </div>
+                      <span className="font-semibold text-gray-800">AI/ML/IoT</span>
+                    </div>
+                    <p className="text-2xl font-bold text-purple-600">{crop.ai_ml_iot ? 'Available' : 'N/A'}</p>
+                  </div>
+                  <div className="bg-white rounded-lg p-4 border border-purple-100">
+                    <div className="flex items-center gap-2 mb-2">
+                      <div className="w-8 h-8 bg-pink-100 rounded-lg flex items-center justify-center">
+                        <Activity className="h-4 w-4 text-pink-600" />
+                      </div>
+                      <span className="font-semibold text-gray-800">Smart Farming</span>
+                    </div>
+                    <p className="text-2xl font-bold text-pink-600">{crop.smart_farming ? 'Available' : 'N/A'}</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+              <div className="bg-gradient-to-br from-purple-50 to-pink-50 border border-purple-200 rounded-xl p-6 hover:shadow-lg transition-all duration-300">
+                <div className="flex items-center gap-3 mb-6">
+                  <div className="w-12 h-12 bg-purple-400 rounded-lg flex items-center justify-center">
+                    <TrendingUp className="h-6 w-6 text-white" />
+                  </div>
+                  <div>
+                    <h3 className="text-xl font-bold text-gray-800">Technology & Innovation</h3>
+                    <p className="text-sm text-gray-600">AI/ML, IoT, and smart farming applications</p>
+                  </div>
+                </div>
+                <div className="space-y-4">
                   {crop.ai_ml_iot && (
-                    <div>
-                      <span className="font-medium">AI/ML/IoT Use Cases:</span> {crop.ai_ml_iot}
+                    <div className="bg-white rounded-lg p-4 border border-purple-100">
+                      <div className="flex items-center gap-3 mb-2">
+                        <div className="w-8 h-8 bg-purple-100 rounded-lg flex items-center justify-center">
+                          <TrendingUp className="h-4 w-4 text-purple-600" />
+                        </div>
+                        <span className="font-semibold text-gray-800">AI/ML/IoT Use Cases</span>
+                      </div>
+                      <p className="text-gray-700 ml-11">{crop.ai_ml_iot}</p>
                     </div>
                   )}
                   {crop.smart_farming && (
-                    <div>
-                      <span className="font-medium">Smart Farming Scope:</span> {crop.smart_farming}
+                    <div className="bg-white rounded-lg p-4 border border-purple-100">
+                      <div className="flex items-center gap-3 mb-2">
+                        <div className="w-8 h-8 bg-pink-100 rounded-lg flex items-center justify-center">
+                          <Activity className="h-4 w-4 text-pink-600" />
+                        </div>
+                        <span className="font-semibold text-gray-800">Smart Farming Scope</span>
+                      </div>
+                      <p className="text-gray-700 ml-11">{crop.smart_farming}</p>
                     </div>
                   )}
-                </CardContent>
-              </Card>
+                </div>
+              </div>
             </div>
           </TabsContent>
 
           {/* Cultural Tab */}
-          <TabsContent value="cultural" className="space-y-6">
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-              <Card className="bg-white border border-gray-200">
-                <CardHeader>
-                  <CardTitle className="flex items-center gap-2 text-gray-800">
-                    <Info className="h-5 w-5 text-indigo-500" />
-                    Cultural & Traditional Relevance
-                  </CardTitle>
-                </CardHeader>
-                <CardContent className="space-y-3 text-sm text-gray-600">
+          <TabsContent value="cultural" className="space-y-8">
+            {/* Hero Section */}
+            <div className="relative overflow-hidden rounded-xl bg-gradient-to-br from-indigo-50 to-purple-50 border border-indigo-200 p-8">
+              <div className="absolute top-0 right-0 w-32 h-32 bg-indigo-100 rounded-full -translate-y-16 translate-x-16 opacity-50"></div>
+              <div className="absolute bottom-0 left-0 w-24 h-24 bg-purple-100 rounded-full translate-y-12 -translate-x-12 opacity-50"></div>
+              <div className="relative z-10">
+                <div className="flex items-center gap-4 mb-4">
+                  <div className="w-16 h-16 bg-indigo-400 rounded-full flex items-center justify-center">
+                    <Info className="h-8 w-8 text-white" />
+                  </div>
+                  <div>
+                    <h1 className="text-3xl font-bold text-gray-800">Cultural & Traditional Relevance</h1>
+                    <p className="text-gray-600">Religious, traditional, and cultural significance</p>
+                  </div>
+                </div>
+                <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mt-6">
+                  <div className="bg-white rounded-lg p-4 border border-indigo-100">
+                    <div className="flex items-center gap-2 mb-2">
+                      <div className="w-8 h-8 bg-indigo-100 rounded-lg flex items-center justify-center">
+                        <Info className="h-4 w-4 text-indigo-600" />
+                      </div>
+                      <span className="font-semibold text-gray-800">Religious Use</span>
+                    </div>
+                    <p className="text-2xl font-bold text-indigo-600">{crop.religious_use ? 'Present' : 'N/A'}</p>
+                  </div>
+                  <div className="bg-white rounded-lg p-4 border border-indigo-100">
+                    <div className="flex items-center gap-2 mb-2">
+                      <div className="w-8 h-8 bg-purple-100 rounded-lg flex items-center justify-center">
+                        <Activity className="h-4 w-4 text-purple-600" />
+                      </div>
+                      <span className="font-semibold text-gray-800">Traditional</span>
+                    </div>
+                    <p className="text-2xl font-bold text-purple-600">{crop.traditional_uses ? 'Present' : 'N/A'}</p>
+                  </div>
+                  <div className="bg-white rounded-lg p-4 border border-indigo-100">
+                    <div className="flex items-center gap-2 mb-2">
+                      <div className="w-8 h-8 bg-green-100 rounded-lg flex items-center justify-center">
+                        <Star className="h-4 w-4 text-green-600" />
+                      </div>
+                      <span className="font-semibold text-gray-800">GI Status</span>
+                    </div>
+                    <p className="text-2xl font-bold text-green-600">{crop.gi_status ? 'Protected' : 'N/A'}</p>
+                  </div>
+                  <div className="bg-white rounded-lg p-4 border border-indigo-100">
+                    <div className="flex items-center gap-2 mb-2">
+                      <div className="w-8 h-8 bg-yellow-100 rounded-lg flex items-center justify-center">
+                        <Activity className="h-4 w-4 text-yellow-600" />
+                      </div>
+                      <span className="font-semibold text-gray-800">Fun Facts</span>
+                    </div>
+                    <p className="text-2xl font-bold text-yellow-600">{crop.fun_fact ? 'Available' : 'N/A'}</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+              <div className="bg-gradient-to-br from-indigo-50 to-purple-50 border border-indigo-200 rounded-xl p-6 hover:shadow-lg transition-all duration-300">
+                <div className="flex items-center gap-3 mb-6">
+                  <div className="w-12 h-12 bg-indigo-400 rounded-lg flex items-center justify-center">
+                    <Info className="h-6 w-6 text-white" />
+                  </div>
+                  <div>
+                    <h3 className="text-xl font-bold text-gray-800">Cultural & Traditional Relevance</h3>
+                    <p className="text-sm text-gray-600">Religious, traditional, and cultural significance</p>
+                  </div>
+                </div>
+                <div className="space-y-4">
                   {crop.religious_use && (
-                    <div>
-                      <span className="font-medium">Religious/Cultural Use:</span> {crop.religious_use}
+                    <div className="bg-white rounded-lg p-4 border border-indigo-100">
+                      <div className="flex items-center gap-3 mb-2">
+                        <div className="w-8 h-8 bg-indigo-100 rounded-lg flex items-center justify-center">
+                          <Info className="h-4 w-4 text-indigo-600" />
+                        </div>
+                        <span className="font-semibold text-gray-800">Religious/Cultural Use</span>
+                      </div>
+                      <p className="text-gray-700 ml-11">{crop.religious_use}</p>
                     </div>
                   )}
                   {crop.traditional_uses && (
-                    <div>
-                      <span className="font-medium">Traditional Uses:</span> {crop.traditional_uses}
+                    <div className="bg-white rounded-lg p-4 border border-indigo-100">
+                      <div className="flex items-center gap-3 mb-2">
+                        <div className="w-8 h-8 bg-purple-100 rounded-lg flex items-center justify-center">
+                          <Activity className="h-4 w-4 text-purple-600" />
+                        </div>
+                        <span className="font-semibold text-gray-800">Traditional Uses</span>
+                      </div>
+                      <p className="text-gray-700 ml-11">{crop.traditional_uses}</p>
                     </div>
                   )}
                   {crop.gi_status && (
-                    <div>
-                      <span className="font-medium">GI Status:</span> {crop.gi_status}
+                    <div className="bg-white rounded-lg p-4 border border-indigo-100">
+                      <div className="flex items-center gap-3 mb-2">
+                        <div className="w-8 h-8 bg-green-100 rounded-lg flex items-center justify-center">
+                          <Star className="h-4 w-4 text-green-600" />
+                        </div>
+                        <span className="font-semibold text-gray-800">GI Status</span>
+                      </div>
+                      <p className="text-gray-700 ml-11">{crop.gi_status}</p>
                     </div>
                   )}
                   {crop.fun_fact && (
-                    <div>
-                      <span className="font-medium">Fun Fact/Trivia:</span> {crop.fun_fact}
+                    <div className="bg-white rounded-lg p-4 border border-indigo-100">
+                      <div className="flex items-center gap-3 mb-2">
+                        <div className="w-8 h-8 bg-yellow-100 rounded-lg flex items-center justify-center">
+                          <Activity className="h-4 w-4 text-yellow-600" />
+                        </div>
+                        <span className="font-semibold text-gray-800">Fun Fact/Trivia</span>
+                      </div>
+                      <p className="text-gray-700 ml-11">{crop.fun_fact}</p>
                     </div>
                   )}
-                </CardContent>
-              </Card>
+                </div>
+              </div>
             </div>
           </TabsContent>
 
           {/* Insights Tab */}
-          <TabsContent value="insights" className="space-y-6">
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-              <Card className="bg-white border border-gray-200">
-                <CardHeader>
-                  <CardTitle className="flex items-center gap-2 text-gray-800">
-                    <Wheat className="h-5 w-5 text-yellow-500" />
-                    Insights & Analysis
-                  </CardTitle>
-                </CardHeader>
-                <CardContent className="space-y-3 text-sm text-gray-600">
+          <TabsContent value="insights" className="space-y-8">
+            {/* Hero Section */}
+            <div className="relative overflow-hidden rounded-xl bg-gradient-to-br from-yellow-50 to-amber-50 border border-yellow-200 p-8">
+              <div className="absolute top-0 right-0 w-32 h-32 bg-yellow-100 rounded-full -translate-y-16 translate-x-16 opacity-50"></div>
+              <div className="absolute bottom-0 left-0 w-24 h-24 bg-amber-100 rounded-full translate-y-12 -translate-x-12 opacity-50"></div>
+              <div className="relative z-10">
+                <div className="flex items-center gap-4 mb-4">
+                  <div className="w-16 h-16 bg-yellow-400 rounded-full flex items-center justify-center">
+                    <Wheat className="h-8 w-8 text-white" />
+                  </div>
+                  <div>
+                    <h1 className="text-3xl font-bold text-gray-800">Insights & Analysis</h1>
+                    <p className="text-gray-600">Key takeaways and SWOT analysis</p>
+                  </div>
+                </div>
+                <div className="grid grid-cols-1 md:grid-cols-5 gap-4 mt-6">
+                  <div className="bg-white rounded-lg p-4 border border-yellow-100">
+                    <div className="flex items-center gap-2 mb-2">
+                      <div className="w-8 h-8 bg-yellow-100 rounded-lg flex items-center justify-center">
+                        <Wheat className="h-4 w-4 text-yellow-600" />
+                      </div>
+                      <span className="font-semibold text-gray-800">Key Points</span>
+                    </div>
+                    <p className="text-2xl font-bold text-yellow-600">{crop.key_takeaways ? 'Set' : 'N/A'}</p>
+                  </div>
+                  <div className="bg-white rounded-lg p-4 border border-green-100">
+                    <div className="flex items-center gap-2 mb-2">
+                      <div className="w-8 h-8 bg-green-100 rounded-lg flex items-center justify-center">
+                        <Activity className="h-4 w-4 text-green-600" />
+                      </div>
+                      <span className="font-semibold text-gray-800">Strengths</span>
+                    </div>
+                    <p className="text-2xl font-bold text-green-600">{crop.swot_strengths ? 'Set' : 'N/A'}</p>
+                  </div>
+                  <div className="bg-white rounded-lg p-4 border border-red-100">
+                    <div className="flex items-center gap-2 mb-2">
+                      <div className="w-8 h-8 bg-red-100 rounded-lg flex items-center justify-center">
+                        <Activity className="h-4 w-4 text-red-600" />
+                      </div>
+                      <span className="font-semibold text-gray-800">Weaknesses</span>
+                    </div>
+                    <p className="text-2xl font-bold text-red-600">{crop.swot_weaknesses ? 'Set' : 'N/A'}</p>
+                  </div>
+                  <div className="bg-white rounded-lg p-4 border border-blue-100">
+                    <div className="flex items-center gap-2 mb-2">
+                      <div className="w-8 h-8 bg-blue-100 rounded-lg flex items-center justify-center">
+                        <Activity className="h-4 w-4 text-blue-600" />
+                      </div>
+                      <span className="font-semibold text-gray-800">Opportunities</span>
+                    </div>
+                    <p className="text-2xl font-bold text-blue-600">{crop.swot_opportunities ? 'Set' : 'N/A'}</p>
+                  </div>
+                  <div className="bg-white rounded-lg p-4 border border-orange-100">
+                    <div className="flex items-center gap-2 mb-2">
+                      <div className="w-8 h-8 bg-orange-100 rounded-lg flex items-center justify-center">
+                        <Activity className="h-4 w-4 text-orange-600" />
+                      </div>
+                      <span className="font-semibold text-gray-800">Threats</span>
+                    </div>
+                    <p className="text-2xl font-bold text-orange-600">{crop.swot_threats ? 'Set' : 'N/A'}</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+              <div className="bg-gradient-to-br from-yellow-50 to-amber-50 border border-yellow-200 rounded-xl p-6 hover:shadow-lg transition-all duration-300">
+                <div className="flex items-center gap-3 mb-6">
+                  <div className="w-12 h-12 bg-yellow-400 rounded-lg flex items-center justify-center">
+                    <Wheat className="h-6 w-6 text-white" />
+                  </div>
+                  <div>
+                    <h3 className="text-xl font-bold text-gray-800">Insights & Analysis</h3>
+                    <p className="text-sm text-gray-600">Key takeaways and SWOT analysis</p>
+                  </div>
+                </div>
+                <div className="space-y-4">
                   {crop.key_takeaways && (
-                    <div>
-                      <span className="font-medium">Key Takeaways:</span> {crop.key_takeaways}
+                    <div className="bg-white rounded-lg p-4 border border-yellow-100">
+                      <div className="flex items-center gap-3 mb-2">
+                        <div className="w-8 h-8 bg-yellow-100 rounded-lg flex items-center justify-center">
+                          <Wheat className="h-4 w-4 text-yellow-600" />
+                        </div>
+                        <span className="font-semibold text-gray-800">Key Takeaways</span>
+                      </div>
+                      <p className="text-gray-700 ml-11">{crop.key_takeaways}</p>
                     </div>
                   )}
                   {crop.swot_strengths && (
-                    <div>
-                      <span className="font-medium">Strengths:</span> {crop.swot_strengths}
+                    <div className="bg-white rounded-lg p-4 border border-green-100">
+                      <div className="flex items-center gap-3 mb-2">
+                        <div className="w-8 h-8 bg-green-100 rounded-lg flex items-center justify-center">
+                          <Activity className="h-4 w-4 text-green-600" />
+                        </div>
+                        <span className="font-semibold text-gray-800">Strengths</span>
+                      </div>
+                      <p className="text-gray-700 ml-11">{crop.swot_strengths}</p>
                     </div>
                   )}
                   {crop.swot_weaknesses && (
-                    <div>
-                      <span className="font-medium">Weaknesses:</span> {crop.swot_weaknesses}
+                    <div className="bg-white rounded-lg p-4 border border-red-100">
+                      <div className="flex items-center gap-3 mb-2">
+                        <div className="w-8 h-8 bg-red-100 rounded-lg flex items-center justify-center">
+                          <Activity className="h-4 w-4 text-red-600" />
+                        </div>
+                        <span className="font-semibold text-gray-800">Weaknesses</span>
+                      </div>
+                      <p className="text-gray-700 ml-11">{crop.swot_weaknesses}</p>
                     </div>
                   )}
                   {crop.swot_opportunities && (
-                    <div>
-                      <span className="font-medium">Opportunities:</span> {crop.swot_opportunities}
+                    <div className="bg-white rounded-lg p-4 border border-blue-100">
+                      <div className="flex items-center gap-3 mb-2">
+                        <div className="w-8 h-8 bg-blue-100 rounded-lg flex items-center justify-center">
+                          <Activity className="h-4 w-4 text-blue-600" />
+                        </div>
+                        <span className="font-semibold text-gray-800">Opportunities</span>
+                      </div>
+                      <p className="text-gray-700 ml-11">{crop.swot_opportunities}</p>
                     </div>
                   )}
                   {crop.swot_threats && (
-                    <div>
-                      <span className="font-medium">Threats:</span> {crop.swot_threats}
+                    <div className="bg-white rounded-lg p-4 border border-orange-100">
+                      <div className="flex items-center gap-3 mb-2">
+                        <div className="w-8 h-8 bg-orange-100 rounded-lg flex items-center justify-center">
+                          <Activity className="h-4 w-4 text-orange-600" />
+                        </div>
+                        <span className="font-semibold text-gray-800">Threats</span>
+                      </div>
+                      <p className="text-gray-700 ml-11">{crop.swot_threats}</p>
                     </div>
                   )}
-                </CardContent>
-              </Card>
+                </div>
+              </div>
             </div>
           </TabsContent>
         </Tabs>
