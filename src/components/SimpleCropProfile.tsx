@@ -8,7 +8,7 @@ import { getCropByName } from '@/data/cropData';
 import { 
   ArrowLeft, Info, Wheat, Leaf, Shield, Apple, TrendingUp, 
   Sprout, Bug, MapPin, Clock, Loader2, AlertTriangle, Droplets, Thermometer, 
-  Cloud, Activity
+  Cloud, Activity, Star
 } from 'lucide-react';
 
 interface CropVariety {
@@ -927,126 +927,240 @@ const SimpleCropProfile: React.FC<SimpleCropProfileProps> = ({ cropName, onBack 
           </TabsContent>
 
           {/* Varieties Tab */}
-          <TabsContent value="varieties" className="space-y-6">
-            <div className="text-center mb-6">
-              <h2 className="text-[clamp(20px,2.5vw,28px)] font-bold text-gray-800 mb-2">
-                🌟 Crop Varieties - Our Specialty
-              </h2>
-              <p className="text-gray-600 max-w-prose mx-auto">
-                Detailed variety profiles with state-wise recommendations
-              </p>
+          <TabsContent value="varieties" className="space-y-8">
+            {/* Hero Section */}
+            <div className="relative overflow-hidden rounded-xl bg-gradient-to-br from-green-50 to-emerald-50 border border-green-200 p-8">
+              <div className="absolute top-0 right-0 w-32 h-32 bg-green-100 rounded-full -translate-y-16 translate-x-16 opacity-50"></div>
+              <div className="absolute bottom-0 left-0 w-24 h-24 bg-emerald-100 rounded-full translate-y-12 -translate-x-12 opacity-50"></div>
+              <div className="relative z-10">
+                <div className="flex items-center gap-4 mb-4">
+                  <div className="w-16 h-16 bg-green-400 rounded-full flex items-center justify-center">
+                    <Sprout className="h-8 w-8 text-white" />
+                  </div>
+                  <div>
+                    <h1 className="text-3xl font-bold text-gray-800">Crop Varieties</h1>
+                    <p className="text-gray-600">Comprehensive variety profiles with detailed specifications</p>
+                  </div>
+                </div>
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-6">
+                  <div className="bg-white rounded-lg p-4 border border-green-100">
+                    <div className="flex items-center gap-2 mb-2">
+                      <div className="w-8 h-8 bg-green-100 rounded-lg flex items-center justify-center">
+                        <Sprout className="h-4 w-4 text-green-600" />
+                      </div>
+                      <span className="font-semibold text-gray-800">Total Varieties</span>
+                    </div>
+                    <p className="text-2xl font-bold text-green-600">{crop.varieties?.length || 0}</p>
+                  </div>
+                  <div className="bg-white rounded-lg p-4 border border-green-100">
+                    <div className="flex items-center gap-2 mb-2">
+                      <div className="w-8 h-8 bg-blue-100 rounded-lg flex items-center justify-center">
+                        <MapPin className="h-4 w-4 text-blue-600" />
+                      </div>
+                      <span className="font-semibold text-gray-800">Coverage</span>
+                    </div>
+                    <p className="text-2xl font-bold text-blue-600">{crop.varieties ? [...new Set(crop.varieties.flatMap(v => v.suitable_states || []))].length : 0} States</p>
+                  </div>
+                  <div className="bg-white rounded-lg p-4 border border-green-100">
+                    <div className="flex items-center gap-2 mb-2">
+                      <div className="w-8 h-8 bg-yellow-100 rounded-lg flex items-center justify-center">
+                        <TrendingUp className="h-4 w-4 text-yellow-600" />
+                      </div>
+                      <span className="font-semibold text-gray-800">Premium</span>
+                    </div>
+                    <p className="text-2xl font-bold text-yellow-600">{crop.varieties?.filter(v => v.premium_market).length || 0} Varieties</p>
+                  </div>
+                </div>
+              </div>
             </div>
 
             {crop.varieties && crop.varieties.length > 0 ? (
-              <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
                 {crop.varieties.map((variety, index) => (
-                  <Card key={variety.id} className="border border-gray-200 hover:border-yellow-400 transition-all duration-200 ease-out cursor-pointer bg-white">
-                    <CardHeader>
-                      <CardTitle className="flex items-center justify-between text-gray-800">
-                        <span>{variety.name}</span>
-                        <Badge variant="secondary" className="bg-gray-100 text-gray-700">#{index + 1}</Badge>
-                      </CardTitle>
-                    </CardHeader>
-                    <CardContent className="space-y-4">
-                      <div className="grid grid-cols-2 gap-4 text-sm">
-                        <div>
-                          <span className="font-medium text-gray-800">Yield:</span>
-                          <span className="ml-2 text-gray-600">{variety.yield_potential || 'Not specified'}</span>
+                  <div key={variety.id} className="bg-gradient-to-br from-white to-gray-50 border border-gray-200 rounded-xl p-6 hover:shadow-xl transition-all duration-300 hover:border-green-300 group">
+                    {/* Header */}
+                    <div className="flex items-center justify-between mb-6">
+                      <div className="flex items-center gap-3">
+                        <div className="w-12 h-12 bg-gradient-to-br from-green-400 to-emerald-500 rounded-lg flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
+                          <Sprout className="h-6 w-6 text-white" />
                         </div>
                         <div>
-                          <span className="font-medium text-gray-800">Duration:</span>
-                          <span className="ml-2 text-gray-600">{variety.duration || 'Not specified'}</span>
-                        </div>
-                        <div>
-                          <span className="font-medium text-gray-800">Zone:</span>
-                          <span className="ml-2 text-gray-600">{variety.zone || 'Not specified'}</span>
-                        </div>
-                        <div>
-                          <span className="font-medium text-gray-800">Quality:</span>
-                          <span className="ml-2 text-gray-600">{variety.grain_quality || 'Not specified'}</span>
+                          <h3 className="text-xl font-bold text-gray-800">{variety.name}</h3>
+                          <p className="text-sm text-gray-600">Variety #{index + 1}</p>
                         </div>
                       </div>
-                      
-                      <div>
-                        <span className="font-medium text-sm text-gray-800">Suitable States:</span>
-                        <div className="flex flex-wrap gap-1 mt-1">
-                          {variety.suitable_states ? variety.suitable_states.slice(0, 6).map((state) => (
-                            <Badge key={state} variant="outline" className="text-xs border-gray-300 text-gray-700">{state}</Badge>
-                          )) : []}
-                          {variety.suitable_states && variety.suitable_states.length > 6 && (
-                            <Badge variant="outline" className="text-xs border-gray-300 text-gray-700">
-                              +{variety.suitable_states.length - 6} more
-                            </Badge>
-                          )}
-                        </div>
-                      </div>
-
-                      {variety.special_features && variety.special_features.length > 0 && (
-                        <div>
-                          <span className="font-medium text-sm text-gray-800">Special Features:</span>
-                          <div className="flex flex-wrap gap-1 mt-1">
-                            {variety.special_features.slice(0, 4).map((feature, idx) => (
-                              <Badge key={idx} variant="outline" className="text-xs border-green-300 text-green-700">{feature}</Badge>
-                            ))}
-                            {variety.special_features.length > 4 && (
-                              <Badge variant="outline" className="text-xs border-green-300 text-green-700">
-                                +{variety.special_features.length - 4} more
-                              </Badge>
-                            )}
-                          </div>
-                        </div>
-                      )}
-
-                      {variety.disease_resistance && variety.disease_resistance.length > 0 && (
-                        <div>
-                          <span className="font-medium text-sm text-gray-800">Disease Resistance:</span>
-                          <div className="flex flex-wrap gap-1 mt-1">
-                            {variety.disease_resistance.slice(0, 3).map((disease, idx) => (
-                              <Badge key={idx} variant="outline" className="text-xs border-red-300 text-red-700">{disease}</Badge>
-                            ))}
-                            {variety.disease_resistance.length > 3 && (
-                              <Badge variant="outline" className="text-xs border-red-300 text-red-700">
-                                +{variety.disease_resistance.length - 3} more
-                              </Badge>
-                            )}
-                          </div>
-                        </div>
-                      )}
-
-                      <div className="flex flex-wrap gap-2 text-xs">
+                      <div className="flex flex-col items-end gap-1">
+                        <Badge className="bg-green-100 text-green-800 border-green-200">
+                          {variety.zone || 'General'}
+                        </Badge>
                         {variety.premium_market && (
-                          <Badge variant="outline" className="border-yellow-300 text-yellow-700">Premium Market</Badge>
-                        )}
-                        {variety.late_sowing_suitable && (
-                          <Badge variant="outline" className="border-blue-300 text-blue-700">Late Sowing</Badge>
-                        )}
-                        {variety.irrigation_responsive && (
-                          <Badge variant="outline" className="border-purple-300 text-purple-700">Irrigation Responsive</Badge>
-                        )}
-                        {variety.certified_seed_available && (
-                          <Badge variant="outline" className="border-green-300 text-green-700">Certified Seed</Badge>
+                          <Badge className="bg-yellow-100 text-yellow-800 border-yellow-200 text-xs">
+                            Premium
+                          </Badge>
                         )}
                       </div>
+                    </div>
 
+                    {/* Key Metrics */}
+                    <div className="grid grid-cols-2 gap-4 mb-6">
+                      <div className="bg-white rounded-lg p-4 border border-gray-100">
+                        <div className="flex items-center gap-2 mb-2">
+                          <div className="w-6 h-6 bg-green-100 rounded-lg flex items-center justify-center">
+                            <TrendingUp className="h-3 w-3 text-green-600" />
+                          </div>
+                          <span className="font-medium text-gray-700 text-sm">Yield</span>
+                        </div>
+                        <p className="text-lg font-bold text-gray-800">{variety.yield_potential || 'Not specified'}</p>
+                      </div>
+                      <div className="bg-white rounded-lg p-4 border border-gray-100">
+                        <div className="flex items-center gap-2 mb-2">
+                          <div className="w-6 h-6 bg-blue-100 rounded-lg flex items-center justify-center">
+                            <Clock className="h-3 w-3 text-blue-600" />
+                          </div>
+                          <span className="font-medium text-gray-700 text-sm">Duration</span>
+                        </div>
+                        <p className="text-lg font-bold text-gray-800">{variety.duration || 'Not specified'}</p>
+                      </div>
+                      <div className="bg-white rounded-lg p-4 border border-gray-100">
+                        <div className="flex items-center gap-2 mb-2">
+                          <div className="w-6 h-6 bg-purple-100 rounded-lg flex items-center justify-center">
+                            <Star className="h-3 w-3 text-purple-600" />
+                          </div>
+                          <span className="font-medium text-gray-700 text-sm">Quality</span>
+                        </div>
+                        <p className="text-sm font-medium text-gray-800">{variety.grain_quality || 'Not specified'}</p>
+                      </div>
+                      <div className="bg-white rounded-lg p-4 border border-gray-100">
+                        <div className="flex items-center gap-2 mb-2">
+                          <div className="w-6 h-6 bg-orange-100 rounded-lg flex items-center justify-center">
+                            <MapPin className="h-3 w-3 text-orange-600" />
+                          </div>
+                          <span className="font-medium text-gray-700 text-sm">States</span>
+                        </div>
+                        <p className="text-sm font-medium text-gray-800">{variety.suitable_states?.length || 0} States</p>
+                      </div>
+                                         </div>
+
+                     {/* Suitable States */}
+                     <div className="mb-6">
+                       <div className="flex items-center gap-2 mb-3">
+                         <div className="w-5 h-5 bg-blue-100 rounded-lg flex items-center justify-center">
+                           <MapPin className="h-3 w-3 text-blue-600" />
+                         </div>
+                         <span className="font-semibold text-gray-800">Suitable States</span>
+                       </div>
+                       <div className="flex flex-wrap gap-2">
+                         {variety.suitable_states ? variety.suitable_states.slice(0, 8).map((state) => (
+                           <Badge key={state} className="bg-blue-100 text-blue-800 border-blue-200 hover:bg-blue-200 transition-colors">
+                             {state}
+                           </Badge>
+                         )) : []}
+                         {variety.suitable_states && variety.suitable_states.length > 8 && (
+                           <Badge className="bg-gray-100 text-gray-600 border-gray-200">
+                             +{variety.suitable_states.length - 8} more
+                           </Badge>
+                         )}
+                       </div>
+                     </div>
+
+                     {/* Special Features */}
+                     {variety.special_features && variety.special_features.length > 0 && (
+                       <div className="mb-6">
+                         <div className="flex items-center gap-2 mb-3">
+                           <div className="w-5 h-5 bg-green-100 rounded-lg flex items-center justify-center">
+                             <Star className="h-3 w-3 text-green-600" />
+                           </div>
+                           <span className="font-semibold text-gray-800">Special Features</span>
+                         </div>
+                         <div className="flex flex-wrap gap-2">
+                           {variety.special_features.slice(0, 4).map((feature, idx) => (
+                             <Badge key={idx} className="bg-green-100 text-green-800 border-green-200">
+                               {feature}
+                             </Badge>
+                           ))}
+                           {variety.special_features.length > 4 && (
+                             <Badge className="bg-gray-100 text-gray-600 border-gray-200">
+                               +{variety.special_features.length - 4} more
+                             </Badge>
+                           )}
+                         </div>
+                       </div>
+                     )}
+
+                     {/* Disease Resistance */}
+                     {variety.disease_resistance && variety.disease_resistance.length > 0 && (
+                       <div className="mb-6">
+                         <div className="flex items-center gap-2 mb-3">
+                           <div className="w-5 h-5 bg-red-100 rounded-lg flex items-center justify-center">
+                             <Shield className="h-3 w-3 text-red-600" />
+                           </div>
+                           <span className="font-semibold text-gray-800">Disease Resistance</span>
+                         </div>
+                         <div className="flex flex-wrap gap-2">
+                           {variety.disease_resistance.slice(0, 3).map((disease, idx) => (
+                             <Badge key={idx} className="bg-red-100 text-red-800 border-red-200">
+                               {disease}
+                             </Badge>
+                           ))}
+                           {variety.disease_resistance.length > 3 && (
+                             <Badge className="bg-gray-100 text-gray-600 border-gray-200">
+                               +{variety.disease_resistance.length - 3} more
+                             </Badge>
+                           )}
+                         </div>
+                       </div>
+                     )}
+
+                     {/* Characteristics */}
+                     <div className="flex flex-wrap gap-2 mb-4">
+                       {variety.premium_market && (
+                         <Badge className="bg-yellow-100 text-yellow-800 border-yellow-200">
+                           Premium Market
+                         </Badge>
+                       )}
+                       {variety.late_sowing_suitable && (
+                         <Badge className="bg-blue-100 text-blue-800 border-blue-200">
+                           Late Sowing
+                         </Badge>
+                       )}
+                       {variety.irrigation_responsive && (
+                         <Badge className="bg-purple-100 text-purple-800 border-purple-200">
+                           Irrigation Responsive
+                         </Badge>
+                       )}
+                       {variety.certified_seed_available && (
+                         <Badge className="bg-green-100 text-green-800 border-green-200">
+                           Certified Seed
+                         </Badge>
+                       )}
+                     </div>
+
+                                           {/* Description */}
                       {variety.description && (
-                        <p className="text-sm text-gray-600">
-                          {variety.description}
-                        </p>
+                        <div className="bg-gray-50 rounded-lg p-4 border border-gray-100">
+                          <p className="text-sm text-gray-700 leading-relaxed">
+                            {variety.description}
+                          </p>
+                        </div>
                       )}
-                    </CardContent>
-                  </Card>
+                    </div>
                 ))}
               </div>
             ) : (
-              <Card className="text-center py-12 bg-white border border-gray-200">
-                <CardContent>
-                  <Sprout className="h-12 w-12 text-gray-400 mx-auto mb-4" />
-                  <h3 className="text-lg font-semibold mb-2 text-gray-800">No varieties available</h3>
-                  <p className="text-gray-600 max-w-prose mx-auto">
-                    Variety information has not been added for this crop yet
-                  </p>
-                </CardContent>
-              </Card>
+              <div className="bg-gradient-to-br from-gray-50 to-gray-100 border border-gray-200 rounded-xl p-12 text-center">
+                <div className="w-20 h-20 bg-gray-200 rounded-full flex items-center justify-center mx-auto mb-6">
+                  <Sprout className="h-10 w-10 text-gray-400" />
+                </div>
+                <h3 className="text-2xl font-bold mb-3 text-gray-800">No Varieties Available</h3>
+                <p className="text-gray-600 max-w-prose mx-auto text-lg">
+                  Variety information has not been added for this crop yet. Check back later for detailed variety profiles.
+                </p>
+                <div className="mt-6 flex justify-center">
+                  <div className="bg-white rounded-lg p-4 border border-gray-200">
+                    <p className="text-sm text-gray-500">Variety data will include yield potential, disease resistance, and regional suitability</p>
+                  </div>
+                </div>
+              </div>
             )}
           </TabsContent>
 
