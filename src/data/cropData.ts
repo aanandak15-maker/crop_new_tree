@@ -65,6 +65,8 @@ export interface CropData {
     plantingMaterial?: string;
     germinationPercent?: string;
     rootstockCompatibility?: string;
+    nurseryPractices?: string;
+    trainingSystem?: string;
   };
   varieties: CropVariety[];
   cultivation: {
@@ -250,6 +252,8 @@ export const cropDatabase: CropData[] = [
       plantingMaterial: "Certified seeds",
       germinationPercent: "85-95% under optimal conditions",
       rootstockCompatibility: "Not applicable (annual crop)",
+      nurseryPractices: "Direct seeding, no nursery required",
+      trainingSystem: "Not applicable (annual crop)"
     },
     varieties: [
       {
@@ -855,6 +859,19 @@ export const cropDatabase: CropData[] = [
     technology: {
       aiMlIot: "Precision agriculture, IoT sensors, AI-based crop monitoring",
       smartFarming: "Drones for spraying, GPS-guided farming, Smart irrigation"
+    },
+    cultural: {
+      religiousUse: "Used in religious ceremonies, bread for communion",
+      traditionalUses: "Traditional bread making, medicinal uses in Ayurveda",
+      giStatus: "Several GI tags for regional wheat varieties",
+      funFact: "Wheat has been cultivated for over 10,000 years and is mentioned in ancient texts"
+    },
+    insights: {
+      keyTakeaways: "High nutritional value, climate resilient, essential food security crop",
+      swotStrengths: "High protein content, versatile usage, global demand",
+      swotWeaknesses: "Water intensive, climate sensitive, storage challenges",
+      swotOpportunities: "Growing health consciousness, organic market, export potential",
+      swotThreats: "Climate change, pest resistance, market volatility"
     },
     sustainability: ["Organic farming", "Conservation agriculture", "Integrated pest management", "Water conservation", "Soil health improvement"],
     innovations: ["High-yielding varieties", "Disease-resistant strains", "Climate-smart agriculture", "Precision farming"],

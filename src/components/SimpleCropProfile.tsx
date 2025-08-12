@@ -258,6 +258,138 @@ const SimpleCropProfile: React.FC<SimpleCropProfileProps> = ({ cropName, onBack 
             innovations: staticCrop.innovations || null,
             sustainability_practices: staticCrop.sustainability || null,
             water_requirement: staticCrop.climate?.rainfall || null,
+            
+            // Advanced agronomy fields
+            npk_n: staticCrop.management?.npkN || null,
+            npk_p: staticCrop.management?.npkP || null,
+            npk_k: staticCrop.management?.npkK || null,
+            micronutrient_needs: staticCrop.management?.micronutrientNeeds || null,
+            biofertilizer_usage: staticCrop.management?.biofertilizerUsage || null,
+            application_schedule_method: staticCrop.management?.applicationScheduleMethod || null,
+            application_schedule_stages: staticCrop.management?.applicationScheduleStages || null,
+            application_schedule_frequency: staticCrop.management?.applicationScheduleFrequency || null,
+            water_quality: staticCrop.management?.waterQuality || null,
+            optimum_temp: staticCrop.climate?.optimumTemp || null,
+            tolerable_temp: staticCrop.climate?.tolerableTemp || null,
+            altitude: staticCrop.climate?.altitude || null,
+            soil_texture: staticCrop.soil?.texture || null,
+            light_requirement: staticCrop.soil?.lightRequirement || null,
+            spacing: staticCrop.cultivation?.spacing || null,
+            planting_season: staticCrop.cultivation?.plantingSeason || null,
+            
+            // Weed management
+            common_weeds: staticCrop.weeds?.commonWeeds || null,
+            weed_season: staticCrop.weeds?.weedSeason || null,
+            weed_control_method: staticCrop.weeds?.weedControlMethod || null,
+            critical_period_weed: staticCrop.weeds?.criticalPeriodWeed || null,
+            
+            // Detailed pest management
+            pest_name: staticCrop.pestDetails?.name || null,
+            pest_symptoms: staticCrop.pestDetails?.symptoms || null,
+            pest_life_cycle: staticCrop.pestDetails?.lifeCycle || null,
+            pest_etl: staticCrop.pestDetails?.etl || null,
+            pest_management: staticCrop.pestDetails?.management || null,
+            pest_biocontrol: staticCrop.pestDetails?.biocontrol || null,
+            
+            // Detailed disease management
+            disease_name: staticCrop.diseaseDetails?.name || null,
+            disease_causal_agent: staticCrop.diseaseDetails?.causalAgent || null,
+            disease_symptoms: staticCrop.diseaseDetails?.symptoms || null,
+            disease_life_cycle: staticCrop.diseaseDetails?.lifeCycle || null,
+            disease_management: staticCrop.diseaseDetails?.management || null,
+            disease_biocontrol: staticCrop.diseaseDetails?.biocontrol || null,
+            
+            // Disorder management
+            disorder_name: staticCrop.disorders?.name || null,
+            disorder_cause: staticCrop.disorders?.cause || null,
+            disorder_symptoms: staticCrop.disorders?.symptoms || null,
+            disorder_impact: staticCrop.disorders?.impact || null,
+            disorder_control: staticCrop.disorders?.control || null,
+            
+            // Nematode management
+            nematode_name: staticCrop.nematodes?.name || null,
+            nematode_symptoms: staticCrop.nematodes?.symptoms || null,
+            nematode_life_cycle: staticCrop.nematodes?.lifeCycle || null,
+            nematode_etl: staticCrop.nematodes?.etl || null,
+            nematode_management: staticCrop.nematodes?.management || null,
+            nematode_biocontrol: staticCrop.nematodes?.biocontrol || null,
+            
+            // Detailed nutrition
+            calories: staticCrop.nutrition?.calories || null,
+            protein: staticCrop.nutrition?.protein || null,
+            carbohydrates: staticCrop.nutrition?.carbohydrates || null,
+            fat: staticCrop.nutrition?.fat || null,
+            fiber: staticCrop.nutrition?.fiber || null,
+            vitamins: Array.isArray(staticCrop.nutrition?.vitamins) ? staticCrop.nutrition.vitamins.join(', ') : null,
+            minerals: Array.isArray(staticCrop.nutrition?.minerals) ? staticCrop.nutrition.minerals.join(', ') : null,
+            bioactive_compounds: staticCrop.nutrition?.bioactiveCompounds || null,
+            health_benefits: staticCrop.nutrition?.healthBenefits || null,
+            
+            // Post-harvest and market
+            harvest_time: staticCrop.harvest?.harvestTime || null,
+            maturity_indicators: staticCrop.harvest?.maturityIndicators || null,
+            harvesting_tools: staticCrop.harvest?.harvestingTools || null,
+            post_harvest_losses: staticCrop.harvest?.postHarvestLosses || null,
+            storage_conditions: staticCrop.harvest?.storageConditions || null,
+            shelf_life: staticCrop.harvest?.shelfLife || null,
+            processed_products: staticCrop.harvest?.processedProducts || null,
+            packaging_types: staticCrop.harvest?.packagingTypes || null,
+            cold_chain: staticCrop.harvest?.coldChain || null,
+            ripening_characteristics: staticCrop.harvest?.ripeningCharacteristics || null,
+            pre_cooling: staticCrop.harvest?.preCooling || null,
+            market_trends: staticCrop.market?.marketTrends || null,
+            export_potential: staticCrop.market?.exportPotential || null,
+            export_destinations: staticCrop.market?.exportDestinations || null,
+            value_chain_players: staticCrop.market?.valueChainPlayers || null,
+            certifications: staticCrop.market?.certifications || null,
+            subsidies: staticCrop.market?.subsidies || null,
+            schemes: staticCrop.market?.schemes || null,
+            support_agencies: staticCrop.market?.supportAgencies || null,
+            
+            // Advanced analytics
+            ai_ml_iot: staticCrop.technology?.aiMlIot || null,
+            smart_farming: staticCrop.technology?.smartFarming || null,
+            sustainability_potential: staticCrop.sustainabilityDetails?.potential || null,
+            waste_to_wealth: staticCrop.sustainabilityDetails?.wasteToWealth || null,
+            climate_resilience: staticCrop.climateResilience ? staticCrop.climateResilience.join(', ') : null,
+            carbon_footprint: staticCrop.sustainabilityDetails?.carbonFootprint || null,
+            religious_use: staticCrop.cultural?.religiousUse || null,
+            traditional_uses: staticCrop.cultural?.traditionalUses || null,
+            gi_status: staticCrop.cultural?.giStatus || null,
+            fun_fact: staticCrop.cultural?.funFact || null,
+            key_takeaways: staticCrop.insights?.keyTakeaways || null,
+            swot_strengths: staticCrop.insights?.swotStrengths || null,
+            swot_weaknesses: staticCrop.insights?.swotWeaknesses || null,
+            swot_opportunities: staticCrop.insights?.swotOpportunities || null,
+            swot_threats: staticCrop.insights?.swotThreats || null,
+            
+            // Morphology fields
+            root_system: staticCrop.morphology?.rootSystem || null,
+            leaf: staticCrop.morphology?.leaf || null,
+            flowering_season: staticCrop.morphology?.floweringSeason || null,
+            inflorescence_type: staticCrop.morphology?.inflorescenceType || null,
+            fruit_type: staticCrop.morphology?.fruitType || null,
+            fruit_development: staticCrop.morphology?.fruitDevelopment || null,
+            unique_morphology: staticCrop.morphology?.uniqueMorphology || null,
+            edible_part: staticCrop.morphology?.ediblePart || null,
+            
+            // Genetics fields
+            chromosome_number: staticCrop.genetics?.chromosomeNumber || null,
+            breeding_methods: staticCrop.genetics?.breedingMethods || null,
+            biotech_advances: staticCrop.genetics?.biotechAdvances || null,
+            hybrid_varieties: staticCrop.genetics?.hybridVarieties || null,
+            patents: staticCrop.genetics?.patents || null,
+            research_institutes: staticCrop.genetics?.researchInstitutes || null,
+            
+            // Reproductive biology fields
+            pollination: staticCrop.reproduction?.pollination || null,
+            propagation_type: staticCrop.reproduction?.propagationType || null,
+            planting_material: staticCrop.reproduction?.plantingMaterial || null,
+            germination_percent: staticCrop.reproduction?.germinationPercent || null,
+            rootstock_compatibility: staticCrop.reproduction?.rootstockCompatibility || null,
+            nursery_practices: staticCrop.reproduction?.nurseryPractices || null,
+            training_system: staticCrop.reproduction?.trainingSystem || null,
+            
             varieties: (staticCrop.varieties || []).map(v => ({
               id: v.id,
               name: v.name,
