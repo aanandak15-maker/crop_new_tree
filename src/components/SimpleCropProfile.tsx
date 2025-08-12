@@ -7,7 +7,7 @@ import { supabase } from '@/integrations/supabase/client';
 import { getCropByName } from '@/data/cropData';
 import { 
   ArrowLeft, Info, Wheat, Leaf, Shield, Apple, TrendingUp, 
-  Sprout, Bug, MapPin, Clock, Loader2
+  Sprout, Bug, MapPin, Clock, Loader2, AlertTriangle, Droplets, Thermometer
 } from 'lucide-react';
 
 interface CropVariety {
@@ -53,6 +53,110 @@ interface CropData {
   innovations: string[] | null;
   sustainability_practices: string[] | null;
   water_requirement: string | null;
+  // Advanced agronomy fields
+  npk_n?: string;
+  npk_p?: string;
+  npk_k?: string;
+  micronutrient_needs?: string;
+  biofertilizer_usage?: string;
+  application_schedule_method?: string;
+  application_schedule_stages?: string;
+  application_schedule_frequency?: string;
+  water_quality?: string;
+  optimum_temp?: string;
+  tolerable_temp?: string;
+  altitude?: string;
+  soil_texture?: string;
+  light_requirement?: string;
+  spacing?: string;
+  planting_season?: string;
+  
+  // Weed management
+  common_weeds?: string;
+  weed_season?: string;
+  weed_control_method?: string;
+  critical_period_weed?: string;
+  
+  // Detailed pest management
+  pest_name?: string;
+  pest_symptoms?: string;
+  pest_life_cycle?: string;
+  pest_etl?: string;
+  pest_management?: string;
+  pest_biocontrol?: string;
+  
+  // Detailed disease management
+  disease_name?: string;
+  disease_causal_agent?: string;
+  disease_symptoms?: string;
+  disease_life_cycle?: string;
+  disease_management?: string;
+  disease_biocontrol?: string;
+  
+  // Disorder management
+  disorder_name?: string;
+  disorder_cause?: string;
+  disorder_symptoms?: string;
+  disorder_impact?: string;
+  disorder_control?: string;
+  
+  // Nematode management
+  nematode_name?: string;
+  nematode_symptoms?: string;
+  nematode_life_cycle?: string;
+  nematode_etl?: string;
+  nematode_management?: string;
+  nematode_biocontrol?: string;
+  
+  // Detailed nutrition
+  calories?: string;
+  protein?: string;
+  carbohydrates?: string;
+  fat?: string;
+  fiber?: string;
+  vitamins?: string;
+  minerals?: string;
+  bioactive_compounds?: string;
+  health_benefits?: string;
+  
+  // Post-harvest and market
+  harvest_time?: string;
+  maturity_indicators?: string;
+  harvesting_tools?: string;
+  post_harvest_losses?: string;
+  storage_conditions?: string;
+  shelf_life?: string;
+  processed_products?: string;
+  packaging_types?: string;
+  cold_chain?: string;
+  ripening_characteristics?: string;
+  pre_cooling?: string;
+  market_trends?: string;
+  export_potential?: string;
+  export_destinations?: string;
+  value_chain_players?: string;
+  certifications?: string;
+  subsidies?: string;
+  schemes?: string;
+  support_agencies?: string;
+  
+  // Advanced analytics
+  ai_ml_iot?: string;
+  smart_farming?: string;
+  sustainability_potential?: string;
+  waste_to_wealth?: string;
+  climate_resilience?: string;
+  carbon_footprint?: string;
+  religious_use?: string;
+  traditional_uses?: string;
+  gi_status?: string;
+  fun_fact?: string;
+  key_takeaways?: string;
+  swot_strengths?: string;
+  swot_weaknesses?: string;
+  swot_opportunities?: string;
+  swot_threats?: string;
+  
   varieties?: CropVariety[];
 }
 
@@ -289,6 +393,18 @@ const SimpleCropProfile: React.FC<SimpleCropProfileProps> = ({ cropName, onBack 
                 <TrendingUp className="h-4 w-4" />
                 <span className="hidden sm:inline">Market</span>
               </TabsTrigger>
+              <TabsTrigger value="pests-diseases" className="flex items-center gap-2 px-4 py-2 data-[state=active]:bg-yellow-400 data-[state=active]:text-gray-800">
+                <Bug className="h-4 w-4" />
+                <span className="hidden sm:inline">Pests & Diseases</span>
+              </TabsTrigger>
+              <TabsTrigger value="nematodes" className="flex items-center gap-2 px-4 py-2 data-[state=active]:bg-yellow-400 data-[state=active]:text-gray-800">
+                <Shield className="h-4 w-4" />
+                <span className="hidden sm:inline">Nematodes</span>
+              </TabsTrigger>
+              <TabsTrigger value="disorders" className="flex items-center gap-2 px-4 py-2 data-[state=active]:bg-yellow-400 data-[state=active]:text-gray-800">
+                <AlertTriangle className="h-4 w-4" />
+                <span className="hidden sm:inline">Disorders</span>
+              </TabsTrigger>
             </TabsList>
           </div>
 
@@ -461,6 +577,7 @@ const SimpleCropProfile: React.FC<SimpleCropProfileProps> = ({ cropName, onBack 
           {/* Cultivation Tab */}
           <TabsContent value="cultivation" className="space-y-6">
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+              {/* Land Preparation */}
               {crop.land_preparation && crop.land_preparation.length > 0 && (
                 <Card className="bg-white border border-gray-200">
                   <CardHeader>
@@ -479,6 +596,7 @@ const SimpleCropProfile: React.FC<SimpleCropProfileProps> = ({ cropName, onBack 
                 </Card>
               )}
 
+              {/* Sowing Information */}
               {crop.sowing_time && (
                 <Card className="bg-white border border-gray-200">
                   <CardHeader>
@@ -494,12 +612,48 @@ const SimpleCropProfile: React.FC<SimpleCropProfileProps> = ({ cropName, onBack 
                   </CardContent>
                 </Card>
               )}
+
+              {/* Climate & Soil Requirements */}
+              {(crop.optimum_temp || crop.tolerable_temp || crop.altitude || crop.soil_texture) && (
+                <Card className="bg-white border border-gray-200">
+                  <CardHeader>
+                    <CardTitle className="flex items-center gap-2 text-gray-800">
+                      <Thermometer className="h-5 w-5 text-orange-500" />
+                      Climate & Soil
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent className="space-y-2 text-sm text-gray-600">
+                    <p><span className="font-medium">Optimum Temperature:</span> {crop.optimum_temp || 'Not specified'}</p>
+                    <p><span className="font-medium">Tolerable Temperature:</span> {crop.tolerable_temp || 'Not specified'}</p>
+                    <p><span className="font-medium">Altitude:</span> {crop.altitude || 'Not specified'}</p>
+                    <p><span className="font-medium">Soil Texture:</span> {crop.soil_texture || 'Not specified'}</p>
+                  </CardContent>
+                </Card>
+              )}
+
+              {/* Weed Management */}
+              {(crop.common_weeds || crop.weed_control_method) && (
+                <Card className="bg-white border border-gray-200">
+                  <CardHeader>
+                    <CardTitle className="flex items-center gap-2 text-gray-800">
+                      <Leaf className="h-5 w-5 text-red-500" />
+                      Weed Management
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent className="space-y-2 text-sm text-gray-600">
+                    <p><span className="font-medium">Common Weeds:</span> {crop.common_weeds || 'Not specified'}</p>
+                    <p><span className="font-medium">Control Methods:</span> {crop.weed_control_method || 'Not specified'}</p>
+                    <p><span className="font-medium">Critical Period:</span> {crop.critical_period_weed || 'Not specified'}</p>
+                  </CardContent>
+                </Card>
+              )}
             </div>
           </TabsContent>
 
           {/* Management Tab */}
           <TabsContent value="management" className="space-y-6">
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+              {/* Fertilizer Management */}
               {crop.fertilizer_requirement && crop.fertilizer_requirement.length > 0 && (
                 <Card className="bg-white border border-gray-200">
                   <CardHeader>
@@ -518,23 +672,55 @@ const SimpleCropProfile: React.FC<SimpleCropProfileProps> = ({ cropName, onBack 
                 </Card>
               )}
 
-              {crop.pest_list && crop.pest_list.length > 0 && (
+              {/* Advanced Fertilizer Details */}
+              {(crop.npk_n || crop.npk_p || crop.npk_k || crop.micronutrient_needs) && (
                 <Card className="bg-white border border-gray-200">
                   <CardHeader>
                     <CardTitle className="flex items-center gap-2 text-gray-800">
-                      <Bug className="h-5 w-5 text-red-500" />
-                      Pest Management
+                      <Shield className="h-5 w-5 text-green-500" />
+                      NPK & Micronutrients
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent className="space-y-2 text-sm text-gray-600">
+                    <p><span className="font-medium">Nitrogen (N):</span> {crop.npk_n || 'Not specified'}</p>
+                    <p><span className="font-medium">Phosphorus (P):</span> {crop.npk_p || 'Not specified'}</p>
+                    <p><span className="font-medium">Potassium (K):</span> {crop.npk_k || 'Not specified'}</p>
+                    <p><span className="font-medium">Micronutrients:</span> {crop.micronutrient_needs || 'Not specified'}</p>
+                  </CardContent>
+                </Card>
+              )}
+
+              {/* Irrigation Schedule */}
+              {crop.irrigation_schedule && crop.irrigation_schedule.length > 0 && (
+                <Card className="bg-white border border-gray-200">
+                  <CardHeader>
+                    <CardTitle className="flex items-center gap-2 text-gray-800">
+                      <Droplets className="h-5 w-5 text-blue-500" />
+                      Irrigation Schedule
                     </CardTitle>
                   </CardHeader>
                   <CardContent>
-                    <div className="space-y-2">
-                      {crop.pest_list.map((pest, index) => (
-                        <div key={index} className="flex items-center gap-2">
-                          <div className="w-2 h-2 bg-red-500 rounded-full"></div>
-                          <span className="text-sm text-gray-600">{pest}</span>
-                        </div>
+                    <ul className="list-disc list-inside space-y-2 text-sm text-gray-600">
+                      {crop.irrigation_schedule.map((schedule, index) => (
+                        <li key={index}>{schedule}</li>
                       ))}
-                    </div>
+                    </ul>
+                  </CardContent>
+                </Card>
+              )}
+
+              {/* Water Quality & Requirements */}
+              {(crop.water_quality || crop.water_requirement) && (
+                <Card className="bg-white border border-gray-200">
+                  <CardHeader>
+                    <CardTitle className="flex items-center gap-2 text-gray-800">
+                      <Droplets className="h-5 w-5 text-cyan-500" />
+                      Water Management
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent className="space-y-2 text-sm text-gray-600">
+                    <p><span className="font-medium">Water Requirement:</span> {crop.water_requirement || 'Not specified'}</p>
+                    <p><span className="font-medium">Water Quality:</span> {crop.water_quality || 'Not specified'}</p>
                   </CardContent>
                 </Card>
               )}
@@ -544,31 +730,42 @@ const SimpleCropProfile: React.FC<SimpleCropProfileProps> = ({ cropName, onBack 
           {/* Nutrition Tab */}
           <TabsContent value="nutrition" className="space-y-6">
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+              {/* Basic Nutritional Info */}
               <Card className="bg-white border border-gray-200">
                 <CardHeader>
                   <CardTitle className="flex items-center gap-2 text-gray-800">
                     <Apple className="h-5 w-5 text-green-500" />
-                    Nutritional Information
+                    Basic Nutrition
                   </CardTitle>
                 </CardHeader>
                 <CardContent>
-                  <p className="text-sm text-gray-600">
-                    {crop.nutritional_info || 'Nutritional information not available'}
-                  </p>
+                  {crop.nutritional_info ? (
+                    <p className="text-sm text-gray-600">{crop.nutritional_info}</p>
+                  ) : (
+                    <div className="space-y-2 text-sm text-gray-600">
+                      <p><span className="font-medium">Calories:</span> {crop.calories || 'Not specified'}</p>
+                      <p><span className="font-medium">Protein:</span> {crop.protein || 'Not specified'}</p>
+                      <p><span className="font-medium">Carbohydrates:</span> {crop.carbohydrates || 'Not specified'}</p>
+                      <p><span className="font-medium">Fat:</span> {crop.fat || 'Not specified'}</p>
+                      <p><span className="font-medium">Fiber:</span> {crop.fiber || 'Not specified'}</p>
+                    </div>
+                  )}
                 </CardContent>
               </Card>
 
+              {/* Detailed Nutritional Components */}
               <Card className="bg-white border border-gray-200">
                 <CardHeader>
                   <CardTitle className="flex items-center gap-2 text-gray-800">
                     <Info className="h-5 w-5 text-purple-500" />
-                    Health Benefits
+                    Nutritional Components
                   </CardTitle>
                 </CardHeader>
-                <CardContent>
-                  <p className="text-sm text-gray-600">
-                    Detailed health benefits information will be available soon
-                  </p>
+                <CardContent className="space-y-2 text-sm text-gray-600">
+                  <p><span className="font-medium">Vitamins:</span> {crop.vitamins || 'Not specified'}</p>
+                  <p><span className="font-medium">Minerals:</span> {crop.minerals || 'Not specified'}</p>
+                  <p><span className="font-medium">Bioactive Compounds:</span> {crop.bioactive_compounds || 'Not specified'}</p>
+                  <p><span className="font-medium">Health Benefits:</span> {crop.health_benefits || 'Not specified'}</p>
                 </CardContent>
               </Card>
             </div>
@@ -603,6 +800,245 @@ const SimpleCropProfile: React.FC<SimpleCropProfileProps> = ({ cropName, onBack 
                   <p><span className="font-medium">Sustainability:</span> {crop.sustainability_practices ? crop.sustainability_practices.join(', ') : 'Not specified'}</p>
                 </CardContent>
               </Card>
+            </div>
+          </TabsContent>
+
+          {/* Pests & Diseases Tab */}
+          <TabsContent value="pests-diseases" className="space-y-6">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+              {/* Detailed Pest Information */}
+              {crop.pest_name && (
+                <Card className="bg-white border border-gray-200">
+                  <CardHeader>
+                    <CardTitle className="flex items-center gap-2 text-gray-800">
+                      <Bug className="h-5 w-5 text-red-500" />
+                      Pest Details
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent className="space-y-3 text-sm text-gray-600">
+                    <div>
+                      <span className="font-medium">Pest Name:</span> {crop.pest_name}
+                    </div>
+                    {crop.pest_symptoms && (
+                      <div>
+                        <span className="font-medium">Symptoms:</span> {crop.pest_symptoms}
+                      </div>
+                    )}
+                    {crop.pest_life_cycle && (
+                      <div>
+                        <span className="font-medium">Life Cycle:</span> {crop.pest_life_cycle}
+                      </div>
+                    )}
+                    {crop.pest_etl && (
+                      <div>
+                        <span className="font-medium">ETL (Economic Threshold Level):</span> {crop.pest_etl}
+                      </div>
+                    )}
+                    {crop.pest_management && (
+                      <div>
+                        <span className="font-medium">Management:</span> {crop.pest_management}
+                      </div>
+                    )}
+                    {crop.pest_biocontrol && (
+                      <div>
+                        <span className="font-medium">Biological Control:</span> {crop.pest_biocontrol}
+                      </div>
+                    )}
+                  </CardContent>
+                </Card>
+              )}
+
+              {/* Detailed Disease Information */}
+              {crop.disease_name && (
+                <Card className="bg-white border border-gray-200">
+                  <CardHeader>
+                    <CardTitle className="flex items-center gap-2 text-gray-800">
+                      <Shield className="h-5 w-5 text-orange-500" />
+                      Disease Details
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent className="space-y-3 text-sm text-gray-600">
+                    <div>
+                      <span className="font-medium">Disease Name:</span> {crop.disease_name}
+                    </div>
+                    {crop.disease_causal_agent && (
+                      <div>
+                        <span className="font-medium">Causal Agent:</span> {crop.disease_causal_agent}
+                      </div>
+                    )}
+                    {crop.disease_symptoms && (
+                      <div>
+                        <span className="font-medium">Symptoms:</span> {crop.disease_symptoms}
+                      </div>
+                    )}
+                    {crop.disease_life_cycle && (
+                      <div>
+                        <span className="font-medium">Life Cycle:</span> {crop.disease_life_cycle}
+                      </div>
+                    )}
+                    {crop.disease_management && (
+                      <div>
+                        <span className="font-medium">Management:</span> {crop.disease_management}
+                      </div>
+                    )}
+                    {crop.disease_biocontrol && (
+                      <div>
+                        <span className="font-medium">Biological Control:</span> {crop.disease_biocontrol}
+                      </div>
+                    )}
+                  </CardContent>
+                </Card>
+              )}
+
+              {/* Fallback for basic pest/disease lists */}
+              {!crop.pest_name && crop.pest_list && crop.pest_list.length > 0 && (
+                <Card className="bg-white border border-gray-200">
+                  <CardHeader>
+                    <CardTitle className="flex items-center gap-2 text-gray-800">
+                      <Bug className="h-5 w-5 text-red-500" />
+                      Common Pests
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="space-y-2">
+                      {crop.pest_list.map((pest, index) => (
+                        <div key={index} className="flex items-center gap-2">
+                          <div className="w-2 h-2 bg-red-500 rounded-full"></div>
+                          <span className="text-sm text-gray-600">{pest}</span>
+                        </div>
+                      ))}
+                    </div>
+                  </CardContent>
+                </Card>
+              )}
+
+              {!crop.disease_name && crop.disease_list && crop.disease_list.length > 0 && (
+                <Card className="bg-white border border-gray-200">
+                  <CardHeader>
+                    <CardTitle className="flex items-center gap-2 text-gray-800">
+                      <Shield className="h-5 w-5 text-orange-500" />
+                      Common Diseases
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="space-y-2">
+                      {crop.disease_list.map((disease, index) => (
+                        <div key={index} className="flex items-center gap-2">
+                          <div className="w-2 h-2 bg-orange-500 rounded-full"></div>
+                          <span className="text-sm text-gray-600">{disease}</span>
+                        </div>
+                      ))}
+                    </div>
+                  </CardContent>
+                </Card>
+              )}
+            </div>
+          </TabsContent>
+
+          {/* Nematodes Tab */}
+          <TabsContent value="nematodes" className="space-y-6">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+              {crop.nematode_name ? (
+                <Card className="bg-white border border-gray-200">
+                  <CardHeader>
+                    <CardTitle className="flex items-center gap-2 text-gray-800">
+                      <Shield className="h-5 w-5 text-purple-500" />
+                      Nematode Details
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent className="space-y-3 text-sm text-gray-600">
+                    <div>
+                      <span className="font-medium">Nematode Name:</span> {crop.nematode_name}
+                    </div>
+                    {crop.nematode_symptoms && (
+                      <div>
+                        <span className="font-medium">Symptoms:</span> {crop.nematode_symptoms}
+                      </div>
+                    )}
+                    {crop.nematode_life_cycle && (
+                      <div>
+                        <span className="font-medium">Life Cycle:</span> {crop.nematode_life_cycle}
+                      </div>
+                    )}
+                    {crop.nematode_etl && (
+                      <div>
+                        <span className="font-medium">ETL (Economic Threshold Level):</span> {crop.nematode_etl}
+                      </div>
+                    )}
+                    {crop.nematode_management && (
+                      <div>
+                        <span className="font-medium">Management:</span> {crop.nematode_management}
+                      </div>
+                    )}
+                    {crop.nematode_biocontrol && (
+                      <div>
+                        <span className="font-medium">Biological Control:</span> {crop.nematode_biocontrol}
+                      </div>
+                    )}
+                  </CardContent>
+                </Card>
+              ) : (
+                <Card className="text-center py-12 bg-white border border-gray-200">
+                  <CardContent>
+                    <Shield className="h-12 w-12 text-gray-400 mx-auto mb-4" />
+                    <h3 className="text-lg font-semibold mb-2 text-gray-800">No nematode data available</h3>
+                    <p className="text-gray-600 max-w-prose mx-auto">
+                      Detailed nematode information has not been added for this crop yet
+                    </p>
+                  </CardContent>
+                </Card>
+              )}
+            </div>
+          </TabsContent>
+
+          {/* Disorders Tab */}
+          <TabsContent value="disorders" className="space-y-6">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+              {crop.disorder_name ? (
+                <Card className="bg-white border border-gray-200">
+                  <CardHeader>
+                    <CardTitle className="flex items-center gap-2 text-gray-800">
+                      <AlertTriangle className="h-5 w-5 text-amber-500" />
+                      Disorder Details
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent className="space-y-3 text-sm text-gray-600">
+                    <div>
+                      <span className="font-medium">Disorder Name:</span> {crop.disorder_name}
+                    </div>
+                    {crop.disorder_cause && (
+                      <div>
+                        <span className="font-medium">Cause:</span> {crop.disorder_cause}
+                      </div>
+                    )}
+                    {crop.disorder_symptoms && (
+                      <div>
+                        <span className="font-medium">Symptoms:</span> {crop.disorder_symptoms}
+                      </div>
+                    )}
+                    {crop.disorder_impact && (
+                      <div>
+                        <span className="font-medium">Impact:</span> {crop.disorder_impact}
+                      </div>
+                    )}
+                    {crop.disorder_control && (
+                      <div>
+                        <span className="font-medium">Control Measures:</span> {crop.disorder_control}
+                      </div>
+                    )}
+                  </CardContent>
+                </Card>
+              ) : (
+                <Card className="text-center py-12 bg-white border border-gray-200">
+                  <CardContent>
+                    <AlertTriangle className="h-12 w-12 text-gray-400 mx-auto mb-4" />
+                    <h3 className="text-lg font-semibold mb-2 text-gray-800">No disorder data available</h3>
+                    <p className="text-gray-600 max-w-prose mx-auto">
+                      Detailed disorder information has not been added for this crop yet
+                    </p>
+                  </CardContent>
+                </Card>
+              )}
             </div>
           </TabsContent>
         </Tabs>
