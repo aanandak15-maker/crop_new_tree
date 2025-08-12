@@ -1588,46 +1588,179 @@ const SimpleCropProfile: React.FC<SimpleCropProfileProps> = ({ cropName, onBack 
           </TabsContent>
 
           {/* Nutrition Tab */}
-          <TabsContent value="nutrition" className="space-y-6">
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-              {/* Basic Nutritional Info */}
-              <Card className="bg-white border border-gray-200">
-                <CardHeader>
-                  <CardTitle className="flex items-center gap-2 text-gray-800">
-                    <Apple className="h-5 w-5 text-green-500" />
-                    Basic Nutrition
-                  </CardTitle>
-                </CardHeader>
-                <CardContent>
-                  {crop.nutritional_info ? (
-                    <p className="text-sm text-gray-600">{crop.nutritional_info}</p>
-                  ) : (
-                    <div className="space-y-2 text-sm text-gray-600">
-                      <p><span className="font-medium">Calories:</span> {crop.calories || 'Not specified'}</p>
-                      <p><span className="font-medium">Protein:</span> {crop.protein || 'Not specified'}</p>
-                      <p><span className="font-medium">Carbohydrates:</span> {crop.carbohydrates || 'Not specified'}</p>
-                      <p><span className="font-medium">Fat:</span> {crop.fat || 'Not specified'}</p>
-                      <p><span className="font-medium">Fiber:</span> {crop.fiber || 'Not specified'}</p>
+          <TabsContent value="nutrition" className="space-y-8">
+            {/* Hero Section */}
+            <div className="relative overflow-hidden rounded-xl bg-gradient-to-br from-green-50 to-emerald-50 border border-green-200 p-8">
+              <div className="absolute top-0 right-0 w-32 h-32 bg-green-100 rounded-full -translate-y-16 translate-x-16 opacity-50"></div>
+              <div className="absolute bottom-0 left-0 w-24 h-24 bg-emerald-100 rounded-full translate-y-12 -translate-x-12 opacity-50"></div>
+              <div className="relative z-10">
+                <div className="flex items-center gap-4 mb-4">
+                  <div className="w-16 h-16 bg-green-400 rounded-full flex items-center justify-center">
+                    <Apple className="h-8 w-8 text-white" />
+                  </div>
+                  <div>
+                    <h1 className="text-3xl font-bold text-gray-800">Nutritional Profile</h1>
+                    <p className="text-gray-600">Comprehensive nutritional information and health benefits</p>
+                  </div>
+                </div>
+                <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mt-6">
+                  <div className="bg-white rounded-lg p-4 border border-green-100">
+                    <div className="flex items-center gap-2 mb-2">
+                      <div className="w-8 h-8 bg-red-100 rounded-lg flex items-center justify-center">
+                        <Activity className="h-4 w-4 text-red-600" />
+                      </div>
+                      <span className="font-semibold text-gray-800">Calories</span>
                     </div>
-                  )}
-                </CardContent>
-              </Card>
+                    <p className="text-2xl font-bold text-red-600">{crop.calories || 'N/A'}</p>
+                  </div>
+                  <div className="bg-white rounded-lg p-4 border border-green-100">
+                    <div className="flex items-center gap-2 mb-2">
+                      <div className="w-8 h-8 bg-blue-100 rounded-lg flex items-center justify-center">
+                        <Activity className="h-4 w-4 text-blue-600" />
+                      </div>
+                      <span className="font-semibold text-gray-800">Protein</span>
+                    </div>
+                    <p className="text-2xl font-bold text-blue-600">{crop.protein || 'N/A'}</p>
+                  </div>
+                  <div className="bg-white rounded-lg p-4 border border-green-100">
+                    <div className="flex items-center gap-2 mb-2">
+                      <div className="w-8 h-8 bg-yellow-100 rounded-lg flex items-center justify-center">
+                        <Activity className="h-4 w-4 text-yellow-600" />
+                      </div>
+                      <span className="font-semibold text-gray-800">Carbs</span>
+                    </div>
+                    <p className="text-2xl font-bold text-yellow-600">{crop.carbohydrates || 'N/A'}</p>
+                  </div>
+                  <div className="bg-white rounded-lg p-4 border border-green-100">
+                    <div className="flex items-center gap-2 mb-2">
+                      <div className="w-8 h-8 bg-purple-100 rounded-lg flex items-center justify-center">
+                        <Activity className="h-4 w-4 text-purple-600" />
+                      </div>
+                      <span className="font-semibold text-gray-800">Fiber</span>
+                    </div>
+                    <p className="text-2xl font-bold text-purple-600">{crop.fiber || 'N/A'}</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+              {/* Basic Nutritional Info */}
+              <div className="bg-gradient-to-br from-green-50 to-emerald-50 border border-green-200 rounded-xl p-6 hover:shadow-lg transition-all duration-300">
+                <div className="flex items-center gap-3 mb-6">
+                  <div className="w-12 h-12 bg-green-400 rounded-lg flex items-center justify-center">
+                    <Apple className="h-6 w-6 text-white" />
+                  </div>
+                  <div>
+                    <h3 className="text-xl font-bold text-gray-800">Basic Nutrition</h3>
+                    <p className="text-sm text-gray-600">Macronutrient composition</p>
+                  </div>
+                </div>
+                {crop.nutritional_info ? (
+                  <div className="bg-white rounded-lg p-4 border border-green-100">
+                    <p className="text-sm text-gray-700 leading-relaxed">{crop.nutritional_info}</p>
+                  </div>
+                ) : (
+                  <div className="space-y-4">
+                    <div className="bg-white rounded-lg p-4 border border-green-100">
+                      <div className="flex items-center gap-3 mb-2">
+                        <div className="w-8 h-8 bg-red-100 rounded-lg flex items-center justify-center">
+                          <Activity className="h-4 w-4 text-red-600" />
+                        </div>
+                        <span className="font-semibold text-gray-800">Calories</span>
+                      </div>
+                      <p className="text-gray-700 ml-11">{crop.calories || 'Not specified'}</p>
+                    </div>
+                    <div className="bg-white rounded-lg p-4 border border-green-100">
+                      <div className="flex items-center gap-3 mb-2">
+                        <div className="w-8 h-8 bg-blue-100 rounded-lg flex items-center justify-center">
+                          <Activity className="h-4 w-4 text-blue-600" />
+                        </div>
+                        <span className="font-semibold text-gray-800">Protein</span>
+                      </div>
+                      <p className="text-gray-700 ml-11">{crop.protein || 'Not specified'}</p>
+                    </div>
+                    <div className="bg-white rounded-lg p-4 border border-green-100">
+                      <div className="flex items-center gap-3 mb-2">
+                        <div className="w-8 h-8 bg-yellow-100 rounded-lg flex items-center justify-center">
+                          <Activity className="h-4 w-4 text-yellow-600" />
+                        </div>
+                        <span className="font-semibold text-gray-800">Carbohydrates</span>
+                      </div>
+                      <p className="text-gray-700 ml-11">{crop.carbohydrates || 'Not specified'}</p>
+                    </div>
+                    <div className="bg-white rounded-lg p-4 border border-green-100">
+                      <div className="flex items-center gap-3 mb-2">
+                        <div className="w-8 h-8 bg-orange-100 rounded-lg flex items-center justify-center">
+                          <Activity className="h-4 w-4 text-orange-600" />
+                        </div>
+                        <span className="font-semibold text-gray-800">Fat</span>
+                      </div>
+                      <p className="text-gray-700 ml-11">{crop.fat || 'Not specified'}</p>
+                    </div>
+                    <div className="bg-white rounded-lg p-4 border border-green-100">
+                      <div className="flex items-center gap-3 mb-2">
+                        <div className="w-8 h-8 bg-purple-100 rounded-lg flex items-center justify-center">
+                          <Activity className="h-4 w-4 text-purple-600" />
+                        </div>
+                        <span className="font-semibold text-gray-800">Fiber</span>
+                      </div>
+                      <p className="text-gray-700 ml-11">{crop.fiber || 'Not specified'}</p>
+                    </div>
+                  </div>
+                )}
+              </div>
 
               {/* Detailed Nutritional Components */}
-              <Card className="bg-white border border-gray-200">
-                <CardHeader>
-                  <CardTitle className="flex items-center gap-2 text-gray-800">
-                    <Info className="h-5 w-5 text-purple-500" />
-                    Nutritional Components
-                  </CardTitle>
-                </CardHeader>
-                <CardContent className="space-y-2 text-sm text-gray-600">
-                  <p><span className="font-medium">Vitamins:</span> {crop.vitamins || 'Not specified'}</p>
-                  <p><span className="font-medium">Minerals:</span> {crop.minerals || 'Not specified'}</p>
-                  <p><span className="font-medium">Bioactive Compounds:</span> {crop.bioactive_compounds || 'Not specified'}</p>
-                  <p><span className="font-medium">Health Benefits:</span> {crop.health_benefits || 'Not specified'}</p>
-                </CardContent>
-              </Card>
+              <div className="bg-gradient-to-br from-purple-50 to-indigo-50 border border-purple-200 rounded-xl p-6 hover:shadow-lg transition-all duration-300">
+                <div className="flex items-center gap-3 mb-6">
+                  <div className="w-12 h-12 bg-purple-400 rounded-lg flex items-center justify-center">
+                    <Info className="h-6 w-6 text-white" />
+                  </div>
+                  <div>
+                    <h3 className="text-xl font-bold text-gray-800">Nutritional Components</h3>
+                    <p className="text-sm text-gray-600">Vitamins, minerals, and health benefits</p>
+                  </div>
+                </div>
+                <div className="space-y-4">
+                  <div className="bg-white rounded-lg p-4 border border-purple-100">
+                    <div className="flex items-center gap-3 mb-2">
+                      <div className="w-8 h-8 bg-yellow-100 rounded-lg flex items-center justify-center">
+                        <Star className="h-4 w-4 text-yellow-600" />
+                      </div>
+                      <span className="font-semibold text-gray-800">Vitamins</span>
+                    </div>
+                    <p className="text-gray-700 ml-11">{crop.vitamins || 'Not specified'}</p>
+                  </div>
+                  <div className="bg-white rounded-lg p-4 border border-purple-100">
+                    <div className="flex items-center gap-3 mb-2">
+                      <div className="w-8 h-8 bg-blue-100 rounded-lg flex items-center justify-center">
+                        <Activity className="h-4 w-4 text-blue-600" />
+                      </div>
+                      <span className="font-semibold text-gray-800">Minerals</span>
+                    </div>
+                    <p className="text-gray-700 ml-11">{crop.minerals || 'Not specified'}</p>
+                  </div>
+                  <div className="bg-white rounded-lg p-4 border border-purple-100">
+                    <div className="flex items-center gap-3 mb-2">
+                      <div className="w-8 h-8 bg-green-100 rounded-lg flex items-center justify-center">
+                        <Leaf className="h-4 w-4 text-green-600" />
+                      </div>
+                      <span className="font-semibold text-gray-800">Bioactive Compounds</span>
+                    </div>
+                    <p className="text-gray-700 ml-11">{crop.bioactive_compounds || 'Not specified'}</p>
+                  </div>
+                  <div className="bg-white rounded-lg p-4 border border-purple-100">
+                    <div className="flex items-center gap-3 mb-2">
+                      <div className="w-8 h-8 bg-red-100 rounded-lg flex items-center justify-center">
+                        <Shield className="h-4 w-4 text-red-600" />
+                      </div>
+                      <span className="font-semibold text-gray-800">Health Benefits</span>
+                    </div>
+                    <p className="text-gray-700 ml-11">{crop.health_benefits || 'Not specified'}</p>
+                  </div>
+                </div>
+              </div>
             </div>
           </TabsContent>
 
