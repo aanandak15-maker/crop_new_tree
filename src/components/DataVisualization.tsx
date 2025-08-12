@@ -1,286 +1,343 @@
 import React from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { 
-  BarChart, 
-  Bar, 
-  XAxis, 
-  YAxis, 
-  CartesianGrid, 
-  Tooltip, 
-  ResponsiveContainer,
-  PieChart,
-  Pie,
-  Cell,
-  RadarChart,
-  PolarGrid,
-  PolarAngleAxis,
-  PolarRadiusAxis,
-  Radar,
-  LineChart,
-  Line,
-  Area,
-  AreaChart
-} from 'recharts';
+import { Progress } from '@/components/ui/progress';
 import { 
   TrendingUp, 
+  TrendingDown, 
+  Minus, 
   Thermometer, 
-  Droplet, 
+  Droplets, 
   Sun, 
   Leaf, 
-  Target,
-  BarChart3,
-  PieChart as PieChartIcon,
-  Activity
+  Shield,
+  Bug,
+  AlertTriangle,
+  CheckCircle,
+  XCircle,
+  Info
 } from 'lucide-react';
 
 interface DataVisualizationProps {
-  cropData: any;
-  type: 'yield' | 'nutrition' | 'climate' | 'comparison';
-  className?: string;
+  crop: any;
 }
 
-const DataVisualization: React.FC<DataVisualizationProps> = ({ 
-  cropData, 
-  type, 
-  className = '' 
-}) => {
-  // Generate yield trend data
-  const generateYieldData = (crop: any) => {
-    if (!crop.average_yield && !crop.yield) return [];
-    
-    const baseYield = parseFloat(crop.average_yield?.replace(/[^\d.-]/g, '') || crop.yield?.replace(/[^\d.-]/g, '') || '0');
-    
-    return [
-      { month: 'Jan', yield: baseYield * 0.8, target: baseYield },
-      { month: 'Feb', yield: baseYield * 0.85, target: baseYield },
-      { month: 'Mar', yield: baseYield * 0.9, target: baseYield },
-      { month: 'Apr', yield: baseYield * 0.95, target: baseYield },
-      { month: 'May', yield: baseYield, target: baseYield },
-      { month: 'Jun', yield: baseYield * 1.05, target: baseYield },
-      { month: 'Jul', yield: baseYield * 1.1, target: baseYield },
-      { month: 'Aug', yield: baseYield * 1.15, target: baseYield },
-      { month: 'Sep', yield: baseYield * 1.2, target: baseYield },
-      { month: 'Oct', yield: baseYield * 1.1, target: baseYield },
-      { month: 'Nov', yield: baseYield * 0.95, target: baseYield },
-      { month: 'Dec', yield: baseYield * 0.9, target: baseYield }
-    ];
-  };
-
-  // Generate nutritional composition data
-  const generateNutritionData = (crop: any) => {
-    const nutritionData = [];
-    
-    if (crop.calories) {
-      nutritionData.push({ name: 'Calories', value: parseFloat(crop.calories.replace(/[^\d.-]/g, '')) || 0, color: '#ef4444' });
-    }
-    if (crop.protein) {
-      nutritionData.push({ name: 'Protein', value: parseFloat(crop.protein.replace(/[^\d.-]/g, '')) || 0, color: '#3b82f6' });
-    }
-    if (crop.carbohydrates) {
-      nutritionData.push({ name: 'Carbs', value: parseFloat(crop.carbohydrates.replace(/[^\d.-]/g, '')) || 0, color: '#10b981' });
-    }
-    if (crop.fat) {
-      nutritionData.push({ name: 'Fat', value: parseFloat(crop.fat.replace(/[^\d.-]/g, '')) || 0, color: '#f59e0b' });
-    }
-    if (crop.fiber) {
-      nutritionData.push({ name: 'Fiber', value: parseFloat(crop.fiber.replace(/[^\d.-]/g, '')) || 0, color: '#8b5cf6' });
-    }
-    
-    return nutritionData.length > 0 ? nutritionData : [
-      { name: 'Sample Data', value: 100, color: '#6b7280' }
-    ];
-  };
-
-  // Generate climate suitability radar data
-  const generateClimateData = (crop: any) => {
-    const climateData = [
-      { subject: 'Temperature', A: 80, B: 70, fullMark: 100 },
-      { subject: 'Humidity', A: 75, B: 65, fullMark: 100 },
-      { subject: 'Rainfall', A: 85, B: 75, fullMark: 100 },
-      { subject: 'Sunlight', A: 90, B: 80, fullMark: 100 },
-      { subject: 'Soil pH', A: 70, B: 60, fullMark: 100 },
-      { subject: 'Altitude', A: 65, B: 55, fullMark: 100 }
-    ];
-
-    // Adjust based on actual crop data if available
-    if (crop.optimum_temp) {
-      const temp = parseFloat(crop.optimum_temp.replace(/[^\d.-]/g, ''));
-      if (!isNaN(temp)) {
-        climateData[0].A = Math.min(100, Math.max(0, 100 - Math.abs(temp - 25) * 2));
+const DataVisualization: React.FC<DataVisualizationProps> = ({ crop }) => {
+  // Helper function to get trend icon
+  const getTrendIcon = (value: string | number) => {
+    if (typeof value === 'string') {
+      if (value.toLowerCase().includes('high') || value.toLowerCase().includes('good')) {
+        return <TrendingUp className="h-4 w-4 text-green-500" />;
+      } else if (value.toLowerCase().includes('low') || value.toLowerCase().includes('poor')) {
+        return <TrendingDown className="h-4 w-4 text-red-500" />;
       }
     }
-
-    return climateData;
+    return <Minus className="h-4 w-4 text-gray-500" />;
   };
 
-  // Generate comparison data for multiple crops
-  const generateComparisonData = (crops: any[]) => {
-    if (!Array.isArray(crops) || crops.length === 0) return [];
-    
-    return crops.map(crop => ({
-      name: crop.name || 'Unknown',
-      yield: parseFloat(crop.average_yield?.replace(/[^\d.-]/g, '') || crop.yield?.replace(/[^\d.-]/g, '') || '0'),
-      duration: parseFloat(crop.growth_duration?.replace(/[^\d.-]/g, '') || '0'),
-      temp: parseFloat(crop.optimum_temp?.replace(/[^\d.-]/g, '') || '0'),
-      water: crop.water_requirement === 'high' ? 3 : crop.water_requirement === 'medium' ? 2 : 1
-    }));
-  };
-
-  const renderYieldChart = () => {
-    const data = generateYieldData(cropData);
-    
-    return (
-      <ResponsiveContainer width="100%" height={300}>
-        <AreaChart data={data}>
-          <CartesianGrid strokeDasharray="3 3" />
-          <XAxis dataKey="month" />
-          <YAxis />
-          <Tooltip 
-            formatter={(value: any, name: string) => [
-              `${value.toFixed(1)} tons/ha`, 
-              name === 'yield' ? 'Actual Yield' : 'Target Yield'
-            ]}
-          />
-          <Area 
-            type="monotone" 
-            dataKey="yield" 
-            stackId="1" 
-            stroke="#10b981" 
-            fill="#10b981" 
-            fillOpacity={0.6}
-          />
-          <Line 
-            type="monotone" 
-            dataKey="target" 
-            stroke="#f59e0b" 
-            strokeWidth={2} 
-            strokeDasharray="5 5"
-          />
-        </AreaChart>
-      </ResponsiveContainer>
-    );
-  };
-
-  const renderNutritionChart = () => {
-    const data = generateNutritionData(cropData);
-    
-    return (
-      <ResponsiveContainer width="100%" height={300}>
-        <PieChart>
-          <Pie
-            data={data}
-            cx="50%"
-            cy="50%"
-            labelLine={false}
-            label={({ name, percent }) => `${name} ${(percent * 100).toFixed(0)}%`}
-            outerRadius={80}
-            fill="#8884d8"
-            dataKey="value"
-          >
-            {data.map((entry, index) => (
-              <Cell key={`cell-${index}`} fill={entry.color} />
-            ))}
-          </Pie>
-          <Tooltip formatter={(value: any) => [`${value} g/100g`, 'Amount']} />
-        </PieChart>
-      </ResponsiveContainer>
-    );
-  };
-
-  const renderClimateChart = () => {
-    const data = generateClimateData(cropData);
-    
-    return (
-      <ResponsiveContainer width="100%" height={300}>
-        <RadarChart data={data}>
-          <PolarGrid />
-          <PolarAngleAxis dataKey="subject" />
-          <PolarRadiusAxis angle={30} domain={[0, 100]} />
-          <Radar
-            name="Current Conditions"
-            dataKey="A"
-            stroke="#10b981"
-            fill="#10b981"
-            fillOpacity={0.3}
-          />
-          <Radar
-            name="Optimal Range"
-            dataKey="B"
-            stroke="#f59e0b"
-            fill="#f59e0b"
-            fillOpacity={0.1}
-          />
-          <Tooltip />
-        </RadarChart>
-      </ResponsiveContainer>
-    );
-  };
-
-  const renderComparisonChart = () => {
-    const data = generateComparisonData(Array.isArray(cropData) ? cropData : [cropData]);
-    
-    return (
-      <ResponsiveContainer width="100%" height={300}>
-        <BarChart data={data}>
-          <CartesianGrid strokeDasharray="3 3" />
-          <XAxis dataKey="name" />
-          <YAxis />
-          <Tooltip />
-          <Bar dataKey="yield" fill="#10b981" name="Yield (tons/ha)" />
-          <Bar dataKey="duration" fill="#3b82f6" name="Duration (days)" />
-        </BarChart>
-      </ResponsiveContainer>
-    );
-  };
-
-  const getChartTitle = () => {
-    switch (type) {
-      case 'yield': return 'Yield Trends & Targets';
-      case 'nutrition': return 'Nutritional Composition';
-      case 'climate': return 'Climate Suitability';
-      case 'comparison': return 'Crop Comparison';
-      default: return 'Data Visualization';
+  // Helper function to get status color
+  const getStatusColor = (value: string) => {
+    if (value.toLowerCase().includes('high') || value.toLowerCase().includes('good')) {
+      return 'bg-green-100 text-green-800 border-green-200';
+    } else if (value.toLowerCase().includes('medium') || value.toLowerCase().includes('moderate')) {
+      return 'bg-yellow-100 text-yellow-800 border-yellow-200';
+    } else if (value.toLowerCase().includes('low') || value.toLowerCase().includes('poor')) {
+      return 'bg-red-100 text-red-800 border-red-200';
     }
+    return 'bg-gray-100 text-gray-800 border-gray-200';
   };
 
-  const getChartIcon = () => {
-    switch (type) {
-      case 'yield': return <TrendingUp className="h-5 w-5" />;
-      case 'nutrition': return <Leaf className="h-5 w-5" />;
-      case 'climate': return <Thermometer className="h-5 w-5" />;
-      case 'comparison': return <BarChart3 className="h-5 w-5" />;
-      default: return <Activity className="h-5 w-5" />;
-    }
-  };
-
-  const renderChart = () => {
-    switch (type) {
-      case 'yield': return renderYieldChart();
-      case 'nutrition': return renderNutritionChart();
-      case 'climate': return renderClimateChart();
-      case 'comparison': return renderComparisonChart();
-      default: return <div>Select a chart type</div>;
-    }
+  // Helper function to calculate progress percentage
+  const calculateProgress = (value: string) => {
+    if (value.toLowerCase().includes('high')) return 80;
+    if (value.toLowerCase().includes('medium')) return 50;
+    if (value.toLowerCase().includes('low')) return 20;
+    return 0;
   };
 
   return (
-    <Card className={`w-full ${className}`}>
-      <CardHeader className="pb-3">
-        <div className="flex items-center justify-between">
-          <CardTitle className="flex items-center gap-2 text-lg">
-            {getChartIcon()}
-            {getChartTitle()}
+    <div className="space-y-6">
+      {/* Climate Suitability Radar */}
+      <Card className="bg-white border border-gray-200">
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2 text-gray-800">
+            <Thermometer className="h-5 w-5 text-blue-500" />
+            Climate Suitability
           </CardTitle>
-          <Badge variant="secondary" className="text-xs">
-            {type.toUpperCase()}
-          </Badge>
-        </div>
-      </CardHeader>
-      <CardContent>
-        {renderChart()}
-      </CardContent>
-    </Card>
+        </CardHeader>
+        <CardContent>
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+            <div className="text-center">
+              <div className="flex items-center justify-center mb-2">
+                <Thermometer className="h-6 w-6 text-orange-500" />
+              </div>
+              <p className="text-sm font-medium text-gray-800">Temperature</p>
+              <Badge variant="outline" className={`mt-1 ${getStatusColor(crop.optimum_temp || 'Not specified')}`}>
+                {crop.optimum_temp || 'Not specified'}
+              </Badge>
+            </div>
+            <div className="text-center">
+              <div className="flex items-center justify-center mb-2">
+                <Droplets className="h-6 w-6 text-blue-500" />
+              </div>
+              <p className="text-sm font-medium text-gray-800">Water</p>
+              <Badge variant="outline" className={`mt-1 ${getStatusColor(crop.water_requirement || 'Not specified')}`}>
+                {crop.water_requirement || 'Not specified'}
+              </Badge>
+            </div>
+            <div className="text-center">
+              <div className="flex items-center justify-center mb-2">
+                <Sun className="h-6 w-6 text-yellow-500" />
+              </div>
+              <p className="text-sm font-medium text-gray-800">Light</p>
+              <Badge variant="outline" className={`mt-1 ${getStatusColor(crop.light_requirement || 'Not specified')}`}>
+                {crop.light_requirement || 'Not specified'}
+              </Badge>
+            </div>
+            <div className="text-center">
+              <div className="flex items-center justify-center mb-2">
+                <Leaf className="h-6 w-6 text-green-500" />
+              </div>
+              <p className="text-sm font-medium text-gray-800">Soil</p>
+              <Badge variant="outline" className={`mt-1 ${getStatusColor(crop.soil_texture || 'Not specified')}`}>
+                {crop.soil_texture || 'Not specified'}
+              </Badge>
+            </div>
+          </div>
+        </CardContent>
+      </Card>
+
+      {/* Nutritional Composition Chart */}
+      {(crop.calories || crop.protein || crop.carbohydrates || crop.fat) && (
+        <Card className="bg-white border border-gray-200">
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2 text-gray-800">
+              <Info className="h-5 w-5 text-green-500" />
+              Nutritional Composition
+            </CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            {crop.calories && (
+              <div>
+                <div className="flex justify-between items-center mb-2">
+                  <span className="text-sm font-medium text-gray-700">Calories</span>
+                  <span className="text-sm text-gray-600">{crop.calories}</span>
+                </div>
+                <Progress value={calculateProgress(crop.calories)} className="h-2" />
+              </div>
+            )}
+            {crop.protein && (
+              <div>
+                <div className="flex justify-between items-center mb-2">
+                  <span className="text-sm font-medium text-gray-700">Protein</span>
+                  <span className="text-sm text-gray-600">{crop.protein}</span>
+                </div>
+                <Progress value={calculateProgress(crop.protein)} className="h-2" />
+              </div>
+            )}
+            {crop.carbohydrates && (
+              <div>
+                <div className="flex justify-between items-center mb-2">
+                  <span className="text-sm font-medium text-gray-700">Carbohydrates</span>
+                  <span className="text-sm text-gray-600">{crop.carbohydrates}</span>
+                </div>
+                <Progress value={calculateProgress(crop.carbohydrates)} className="h-2" />
+              </div>
+            )}
+            {crop.fat && (
+              <div>
+                <div className="flex justify-between items-center mb-2">
+                  <span className="text-sm font-medium text-gray-700">Fat</span>
+                  <span className="text-sm text-gray-600">{crop.fat}</span>
+                </div>
+                <Progress value={calculateProgress(crop.fat)} className="h-2" />
+              </div>
+            )}
+          </CardContent>
+        </Card>
+      )}
+
+      {/* Pest & Disease Risk Matrix */}
+      {(crop.pest_name || crop.disease_name || crop.nematode_name) && (
+        <Card className="bg-white border border-gray-200">
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2 text-gray-800">
+              <Shield className="h-5 w-5 text-red-500" />
+              Risk Assessment Matrix
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              {crop.pest_name && (
+                <div className="text-center p-4 border border-gray-200 rounded-lg">
+                  <Bug className="h-8 w-8 text-red-500 mx-auto mb-2" />
+                  <p className="text-sm font-medium text-gray-800 mb-1">Pest Risk</p>
+                  <Badge variant="outline" className={`${getStatusColor(crop.pest_etl || 'Medium')}`}>
+                    {crop.pest_etl || 'Medium'}
+                  </Badge>
+                  <p className="text-xs text-gray-600 mt-2">{crop.pest_name}</p>
+                </div>
+              )}
+              {crop.disease_name && (
+                <div className="text-center p-4 border border-gray-200 rounded-lg">
+                  <AlertTriangle className="h-8 w-8 text-orange-500 mx-auto mb-2" />
+                  <p className="text-sm font-medium text-gray-800 mb-1">Disease Risk</p>
+                  <Badge variant="outline" className={`${getStatusColor(crop.disease_life_cycle || 'Medium')}`}>
+                    {crop.disease_life_cycle || 'Medium'}
+                  </Badge>
+                  <p className="text-xs text-gray-600 mt-2">{crop.disease_name}</p>
+                </div>
+              )}
+              {crop.nematode_name && (
+                <div className="text-center p-4 border border-gray-200 rounded-lg">
+                  <Shield className="h-8 w-8 text-purple-500 mx-auto mb-2" />
+                  <p className="text-sm font-medium text-gray-800 mb-1">Nematode Risk</p>
+                  <Badge variant="outline" className={`${getStatusColor(crop.nematode_etl || 'Medium')}`}>
+                    {crop.nematode_etl || 'Medium'}
+                  </Badge>
+                  <p className="text-xs text-gray-600 mt-2">{crop.nematode_name}</p>
+                </div>
+              )}
+            </div>
+          </CardContent>
+        </Card>
+      )}
+
+      {/* Growth Timeline */}
+      {(crop.sowing_time || crop.harvest_time || crop.growth_duration) && (
+        <Card className="bg-white border border-gray-200">
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2 text-gray-800">
+              <TrendingUp className="h-5 w-5 text-green-500" />
+              Growth Timeline
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="space-y-4">
+              <div className="flex items-center gap-4">
+                <div className="flex-shrink-0 w-8 h-8 bg-green-100 rounded-full flex items-center justify-center">
+                  <span className="text-sm font-medium text-green-600">1</span>
+                </div>
+                <div className="flex-1">
+                  <p className="text-sm font-medium text-gray-800">Sowing</p>
+                  <p className="text-sm text-gray-600">{crop.sowing_time || 'Not specified'}</p>
+                </div>
+              </div>
+              <div className="flex items-center gap-4">
+                <div className="flex-shrink-0 w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center">
+                  <span className="text-sm font-medium text-blue-600">2</span>
+                </div>
+                <div className="flex-1">
+                  <p className="text-sm font-medium text-gray-800">Growth Duration</p>
+                  <p className="text-sm text-gray-600">{crop.growth_duration || 'Not specified'}</p>
+                </div>
+              </div>
+              <div className="flex items-center gap-4">
+                <div className="flex-shrink-0 w-8 h-8 bg-yellow-100 rounded-full flex items-center justify-center">
+                  <span className="text-sm font-medium text-yellow-600">3</span>
+                </div>
+                <div className="flex-1">
+                  <p className="text-sm font-medium text-gray-800">Harvest</p>
+                  <p className="text-sm text-gray-600">{crop.harvest_time || 'Not specified'}</p>
+                </div>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+      )}
+
+      {/* Market Performance Indicators */}
+      {(crop.average_yield || crop.market_price || crop.cost_of_cultivation) && (
+        <Card className="bg-white border border-gray-200">
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2 text-gray-800">
+              <TrendingUp className="h-5 w-5 text-blue-500" />
+              Market Performance
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              {crop.average_yield && (
+                <div className="text-center">
+                  <div className="flex items-center justify-center mb-2">
+                    {getTrendIcon(crop.average_yield)}
+                  </div>
+                  <p className="text-sm font-medium text-gray-800">Average Yield</p>
+                  <p className="text-lg font-bold text-green-600">{crop.average_yield}</p>
+                </div>
+              )}
+              {crop.market_price && (
+                <div className="text-center">
+                  <div className="flex items-center justify-center mb-2">
+                    {getTrendIcon(crop.market_price)}
+                  </div>
+                  <p className="text-sm font-medium text-gray-800">Market Price</p>
+                  <p className="text-lg font-bold text-blue-600">{crop.market_price}</p>
+                </div>
+              )}
+              {crop.cost_of_cultivation && (
+                <div className="text-center">
+                  <div className="flex items-center justify-center mb-2">
+                    {getTrendIcon(crop.cost_of_cultivation)}
+                  </div>
+                  <p className="text-sm font-medium text-gray-800">Cost of Cultivation</p>
+                  <p className="text-lg font-bold text-orange-600">{crop.cost_of_cultivation}</p>
+                </div>
+              )}
+            </div>
+          </CardContent>
+        </Card>
+      )}
+
+      {/* Sustainability Score */}
+      {(crop.sustainability_potential || crop.climate_resilience || crop.carbon_footprint) && (
+        <Card className="bg-white border border-gray-200">
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2 text-gray-800">
+              <Leaf className="h-5 w-5 text-green-500" />
+              Sustainability Metrics
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="space-y-4">
+              {crop.sustainability_potential && (
+                <div>
+                  <div className="flex justify-between items-center mb-2">
+                    <span className="text-sm font-medium text-gray-700">Sustainability Potential</span>
+                    <Badge variant="outline" className={getStatusColor(crop.sustainability_potential)}>
+                      {crop.sustainability_potential}
+                    </Badge>
+                  </div>
+                  <Progress value={calculateProgress(crop.sustainability_potential)} className="h-2" />
+                </div>
+              )}
+              {crop.climate_resilience && (
+                <div>
+                  <div className="flex justify-between items-center mb-2">
+                    <span className="text-sm font-medium text-gray-700">Climate Resilience</span>
+                    <Badge variant="outline" className={getStatusColor(crop.climate_resilience)}>
+                      {crop.climate_resilience}
+                    </Badge>
+                  </div>
+                  <Progress value={calculateProgress(crop.climate_resilience)} className="h-2" />
+                </div>
+              )}
+              {crop.carbon_footprint && (
+                <div>
+                  <div className="flex justify-between items-center mb-2">
+                    <span className="text-sm font-medium text-gray-700">Carbon Footprint</span>
+                    <Badge variant="outline" className={getStatusColor(crop.carbon_footprint)}>
+                      {crop.carbon_footprint}
+                    </Badge>
+                  </div>
+                  <Progress value={calculateProgress(crop.carbon_footprint)} className="h-2" />
+                </div>
+              )}
+            </div>
+          </CardContent>
+        </Card>
+      )}
+    </div>
   );
 };
 
