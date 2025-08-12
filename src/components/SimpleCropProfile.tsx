@@ -2540,104 +2540,304 @@ const SimpleCropProfile: React.FC<SimpleCropProfileProps> = ({ cropName, onBack 
           </TabsContent>
 
           {/* Morphology Tab */}
-          <TabsContent value="morphology" className="space-y-6">
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-              <Card className="bg-white border border-gray-200">
-                  <CardHeader>
-                  <CardTitle className="flex items-center gap-2 text-gray-800">
-                    <Leaf className="h-5 w-5 text-green-500" />
-                    Plant Morphology
-                    </CardTitle>
-                  </CardHeader>
-                <CardContent className="space-y-3 text-sm text-gray-600">
+          <TabsContent value="morphology" className="space-y-8">
+            {/* Hero Section */}
+            <div className="relative overflow-hidden rounded-xl bg-gradient-to-br from-green-50 to-emerald-50 border border-green-200 p-8">
+              <div className="absolute top-0 right-0 w-32 h-32 bg-green-100 rounded-full -translate-y-16 translate-x-16 opacity-50"></div>
+              <div className="absolute bottom-0 left-0 w-24 h-24 bg-emerald-100 rounded-full translate-y-12 -translate-x-12 opacity-50"></div>
+              <div className="relative z-10">
+                <div className="flex items-center gap-4 mb-4">
+                  <div className="w-16 h-16 bg-green-400 rounded-full flex items-center justify-center">
+                    <Leaf className="h-8 w-8 text-white" />
+                  </div>
+                  <div>
+                    <h1 className="text-3xl font-bold text-gray-800">Plant Morphology</h1>
+                    <p className="text-gray-600">Physical structure and characteristics</p>
+                  </div>
+                </div>
+                <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mt-6">
+                  <div className="bg-white rounded-lg p-4 border border-green-100">
+                    <div className="flex items-center gap-2 mb-2">
+                      <div className="w-8 h-8 bg-green-100 rounded-lg flex items-center justify-center">
+                        <Leaf className="h-4 w-4 text-green-600" />
+                      </div>
+                      <span className="font-semibold text-gray-800">Root System</span>
+                    </div>
+                    <p className="text-2xl font-bold text-green-600">{crop.root_system ? 'Set' : 'N/A'}</p>
+                  </div>
+                  <div className="bg-white rounded-lg p-4 border border-green-100">
+                    <div className="flex items-center gap-2 mb-2">
+                      <div className="w-8 h-8 bg-blue-100 rounded-lg flex items-center justify-center">
+                        <Leaf className="h-4 w-4 text-blue-600" />
+                      </div>
+                      <span className="font-semibold text-gray-800">Leaves</span>
+                    </div>
+                    <p className="text-2xl font-bold text-blue-600">{crop.leaf ? 'Set' : 'N/A'}</p>
+                  </div>
+                  <div className="bg-white rounded-lg p-4 border border-green-100">
+                    <div className="flex items-center gap-2 mb-2">
+                      <div className="w-8 h-8 bg-yellow-100 rounded-lg flex items-center justify-center">
+                        <Activity className="h-4 w-4 text-yellow-600" />
+                      </div>
+                      <span className="font-semibold text-gray-800">Flowers</span>
+                    </div>
+                    <p className="text-2xl font-bold text-yellow-600">{crop.flowering_season ? 'Set' : 'N/A'}</p>
+                  </div>
+                  <div className="bg-white rounded-lg p-4 border border-green-100">
+                    <div className="flex items-center gap-2 mb-2">
+                      <div className="w-8 h-8 bg-purple-100 rounded-lg flex items-center justify-center">
+                        <Activity className="h-4 w-4 text-purple-600" />
+                      </div>
+                      <span className="font-semibold text-gray-800">Fruits</span>
+                    </div>
+                    <p className="text-2xl font-bold text-purple-600">{crop.fruit_type ? 'Set' : 'N/A'}</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+              <div className="bg-gradient-to-br from-green-50 to-emerald-50 border border-green-200 rounded-xl p-6 hover:shadow-lg transition-all duration-300">
+                <div className="flex items-center gap-3 mb-6">
+                  <div className="w-12 h-12 bg-green-400 rounded-lg flex items-center justify-center">
+                    <Leaf className="h-6 w-6 text-white" />
+                  </div>
+                  <div>
+                    <h3 className="text-xl font-bold text-gray-800">Plant Morphology</h3>
+                    <p className="text-sm text-gray-600">Physical structure and characteristics</p>
+                  </div>
+                </div>
+                <div className="space-y-4">
                   {crop.root_system && (
-                    <div>
-                      <span className="font-medium">Root System:</span> {crop.root_system}
+                    <div className="bg-white rounded-lg p-4 border border-green-100">
+                      <div className="flex items-center gap-3 mb-2">
+                        <div className="w-8 h-8 bg-green-100 rounded-lg flex items-center justify-center">
+                          <Leaf className="h-4 w-4 text-green-600" />
+                        </div>
+                        <span className="font-semibold text-gray-800">Root System</span>
+                      </div>
+                      <p className="text-gray-700 ml-11">{crop.root_system}</p>
                     </div>
                   )}
                   {crop.leaf && (
-                    <div>
-                      <span className="font-medium">Leaf Characteristics:</span> {crop.leaf}
+                    <div className="bg-white rounded-lg p-4 border border-green-100">
+                      <div className="flex items-center gap-3 mb-2">
+                        <div className="w-8 h-8 bg-blue-100 rounded-lg flex items-center justify-center">
+                          <Leaf className="h-4 w-4 text-blue-600" />
+                        </div>
+                        <span className="font-semibold text-gray-800">Leaf Characteristics</span>
+                      </div>
+                      <p className="text-gray-700 ml-11">{crop.leaf}</p>
                     </div>
                   )}
                   {crop.flowering_season && (
-                    <div>
-                      <span className="font-medium">Flowering Season:</span> {crop.flowering_season}
+                    <div className="bg-white rounded-lg p-4 border border-green-100">
+                      <div className="flex items-center gap-3 mb-2">
+                        <div className="w-8 h-8 bg-yellow-100 rounded-lg flex items-center justify-center">
+                          <Activity className="h-4 w-4 text-yellow-600" />
+                        </div>
+                        <span className="font-semibold text-gray-800">Flowering Season</span>
+                      </div>
+                      <p className="text-gray-700 ml-11">{crop.flowering_season}</p>
                     </div>
                   )}
                   {crop.inflorescence_type && (
-                    <div>
-                      <span className="font-medium">Inflorescence Type:</span> {crop.inflorescence_type}
+                    <div className="bg-white rounded-lg p-4 border border-green-100">
+                      <div className="flex items-center gap-3 mb-2">
+                        <div className="w-8 h-8 bg-orange-100 rounded-lg flex items-center justify-center">
+                          <Activity className="h-4 w-4 text-orange-600" />
+                        </div>
+                        <span className="font-semibold text-gray-800">Inflorescence Type</span>
+                      </div>
+                      <p className="text-gray-700 ml-11">{crop.inflorescence_type}</p>
                     </div>
                   )}
                   {crop.fruit_type && (
-                    <div>
-                      <span className="font-medium">Fruit Type:</span> {crop.fruit_type}
+                    <div className="bg-white rounded-lg p-4 border border-green-100">
+                      <div className="flex items-center gap-3 mb-2">
+                        <div className="w-8 h-8 bg-purple-100 rounded-lg flex items-center justify-center">
+                          <Activity className="h-4 w-4 text-purple-600" />
+                        </div>
+                        <span className="font-semibold text-gray-800">Fruit Type</span>
+                      </div>
+                      <p className="text-gray-700 ml-11">{crop.fruit_type}</p>
                     </div>
                   )}
                   {crop.fruit_development && (
-                    <div>
-                      <span className="font-medium">Fruit Development:</span> {crop.fruit_development}
+                    <div className="bg-white rounded-lg p-4 border border-green-100">
+                      <div className="flex items-center gap-3 mb-2">
+                        <div className="w-8 h-8 bg-pink-100 rounded-lg flex items-center justify-center">
+                          <Activity className="h-4 w-4 text-pink-600" />
+                        </div>
+                        <span className="font-semibold text-gray-800">Fruit Development</span>
+                      </div>
+                      <p className="text-gray-700 ml-11">{crop.fruit_development}</p>
                     </div>
                   )}
                   {crop.unique_morphology && (
-                    <div>
-                      <span className="font-medium">Unique Features:</span> {crop.unique_morphology}
+                    <div className="bg-white rounded-lg p-4 border border-green-100">
+                      <div className="flex items-center gap-3 mb-2">
+                        <div className="w-8 h-8 bg-indigo-100 rounded-lg flex items-center justify-center">
+                          <Star className="h-4 w-4 text-indigo-600" />
+                        </div>
+                        <span className="font-semibold text-gray-800">Unique Features</span>
+                      </div>
+                      <p className="text-gray-700 ml-11">{crop.unique_morphology}</p>
                     </div>
                   )}
                   {crop.edible_part && (
-                    <div>
-                      <span className="font-medium">Edible Part:</span> {crop.edible_part}
+                    <div className="bg-white rounded-lg p-4 border border-green-100">
+                      <div className="flex items-center gap-3 mb-2">
+                        <div className="w-8 h-8 bg-emerald-100 rounded-lg flex items-center justify-center">
+                          <Apple className="h-4 w-4 text-emerald-600" />
+                        </div>
+                        <span className="font-semibold text-gray-800">Edible Part</span>
+                      </div>
+                      <p className="text-gray-700 ml-11">{crop.edible_part}</p>
                     </div>
                   )}
-                  </CardContent>
-                </Card>
+                </div>
+              </div>
             </div>
           </TabsContent>
 
           {/* Genetics Tab */}
-          <TabsContent value="genetics" className="space-y-6">
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-              <Card className="bg-white border border-gray-200">
-                  <CardHeader>
-                  <CardTitle className="flex items-center gap-2 text-gray-800">
-                    <Sprout className="h-5 w-5 text-green-500" />
-                    Genetic Information
-                    </CardTitle>
-                  </CardHeader>
-                <CardContent className="space-y-3 text-sm text-gray-600">
+          <TabsContent value="genetics" className="space-y-8">
+            {/* Hero Section */}
+            <div className="relative overflow-hidden rounded-xl bg-gradient-to-br from-blue-50 to-indigo-50 border border-blue-200 p-8">
+              <div className="absolute top-0 right-0 w-32 h-32 bg-blue-100 rounded-full -translate-y-16 translate-x-16 opacity-50"></div>
+              <div className="absolute bottom-0 left-0 w-24 h-24 bg-indigo-100 rounded-full translate-y-12 -translate-x-12 opacity-50"></div>
+              <div className="relative z-10">
+                <div className="flex items-center gap-4 mb-4">
+                  <div className="w-16 h-16 bg-blue-400 rounded-full flex items-center justify-center">
+                    <Sprout className="h-8 w-8 text-white" />
+                  </div>
+                  <div>
+                    <h1 className="text-3xl font-bold text-gray-800">Genetic Information</h1>
+                    <p className="text-gray-600">Breeding, biotechnology, and research advances</p>
+                  </div>
+                </div>
+                <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mt-6">
+                  <div className="bg-white rounded-lg p-4 border border-blue-100">
+                    <div className="flex items-center gap-2 mb-2">
+                      <div className="w-8 h-8 bg-blue-100 rounded-lg flex items-center justify-center">
+                        <Activity className="h-4 w-4 text-blue-600" />
+                      </div>
+                      <span className="font-semibold text-gray-800">Chromosomes</span>
+                    </div>
+                    <p className="text-2xl font-bold text-blue-600">{crop.chromosome_number ? 'Set' : 'N/A'}</p>
+                  </div>
+                  <div className="bg-white rounded-lg p-4 border border-blue-100">
+                    <div className="flex items-center gap-2 mb-2">
+                      <div className="w-8 h-8 bg-green-100 rounded-lg flex items-center justify-center">
+                        <Sprout className="h-4 w-4 text-green-600" />
+                      </div>
+                      <span className="font-semibold text-gray-800">Breeding</span>
+                    </div>
+                    <p className="text-2xl font-bold text-green-600">{crop.breeding_methods ? 'Set' : 'N/A'}</p>
+                  </div>
+                  <div className="bg-white rounded-lg p-4 border border-blue-100">
+                    <div className="flex items-center gap-2 mb-2">
+                      <div className="w-8 h-8 bg-purple-100 rounded-lg flex items-center justify-center">
+                        <Star className="h-4 w-4 text-purple-600" />
+                      </div>
+                      <span className="font-semibold text-gray-800">Biotech</span>
+                    </div>
+                    <p className="text-2xl font-bold text-purple-600">{crop.biotech_advances ? 'Set' : 'N/A'}</p>
+                  </div>
+                  <div className="bg-white rounded-lg p-4 border border-blue-100">
+                    <div className="flex items-center gap-2 mb-2">
+                      <div className="w-8 h-8 bg-yellow-100 rounded-lg flex items-center justify-center">
+                        <Activity className="h-4 w-4 text-yellow-600" />
+                      </div>
+                      <span className="font-semibold text-gray-800">Patents</span>
+                    </div>
+                    <p className="text-2xl font-bold text-yellow-600">{crop.patents ? 'Set' : 'N/A'}</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+              <div className="bg-gradient-to-br from-blue-50 to-indigo-50 border border-blue-200 rounded-xl p-6 hover:shadow-lg transition-all duration-300">
+                <div className="flex items-center gap-3 mb-6">
+                  <div className="w-12 h-12 bg-blue-400 rounded-lg flex items-center justify-center">
+                    <Sprout className="h-6 w-6 text-white" />
+                  </div>
+                  <div>
+                    <h3 className="text-xl font-bold text-gray-800">Genetic Information</h3>
+                    <p className="text-sm text-gray-600">Breeding, biotechnology, and research advances</p>
+                  </div>
+                </div>
+                <div className="space-y-4">
                   {crop.chromosome_number && (
-                    <div>
-                      <span className="font-medium">Chromosome Number:</span> {crop.chromosome_number}
+                    <div className="bg-white rounded-lg p-4 border border-blue-100">
+                      <div className="flex items-center gap-3 mb-2">
+                        <div className="w-8 h-8 bg-blue-100 rounded-lg flex items-center justify-center">
+                          <Activity className="h-4 w-4 text-blue-600" />
+                        </div>
+                        <span className="font-semibold text-gray-800">Chromosome Number</span>
+                      </div>
+                      <p className="text-gray-700 ml-11">{crop.chromosome_number}</p>
                     </div>
                   )}
                   {crop.breeding_methods && (
-                    <div>
-                      <span className="font-medium">Breeding Methods:</span> {crop.breeding_methods}
+                    <div className="bg-white rounded-lg p-4 border border-blue-100">
+                      <div className="flex items-center gap-3 mb-2">
+                        <div className="w-8 h-8 bg-green-100 rounded-lg flex items-center justify-center">
+                          <Sprout className="h-4 w-4 text-green-600" />
+                        </div>
+                        <span className="font-semibold text-gray-800">Breeding Methods</span>
+                      </div>
+                      <p className="text-gray-700 ml-11">{crop.breeding_methods}</p>
                     </div>
                   )}
                   {crop.biotech_advances && (
-                    <div>
-                      <span className="font-medium">Biotechnological Advances:</span> {crop.biotech_advances}
+                    <div className="bg-white rounded-lg p-4 border border-blue-100">
+                      <div className="flex items-center gap-3 mb-2">
+                        <div className="w-8 h-8 bg-purple-100 rounded-lg flex items-center justify-center">
+                          <Star className="h-4 w-4 text-purple-600" />
+                        </div>
+                        <span className="font-semibold text-gray-800">Biotechnological Advances</span>
+                      </div>
+                      <p className="text-gray-700 ml-11">{crop.biotech_advances}</p>
                     </div>
                   )}
                   {crop.hybrid_varieties && (
-                    <div>
-                      <span className="font-medium">Hybrid Varieties:</span> {crop.hybrid_varieties}
+                    <div className="bg-white rounded-lg p-4 border border-blue-100">
+                      <div className="flex items-center gap-3 mb-2">
+                        <div className="w-8 h-8 bg-orange-100 rounded-lg flex items-center justify-center">
+                          <Activity className="h-4 w-4 text-orange-600" />
+                        </div>
+                        <span className="font-semibold text-gray-800">Hybrid Varieties</span>
+                      </div>
+                      <p className="text-gray-700 ml-11">{crop.hybrid_varieties}</p>
                     </div>
                   )}
                   {crop.patents && (
-                    <div>
-                      <span className="font-medium">Patents/GI Tags:</span> {crop.patents}
+                    <div className="bg-white rounded-lg p-4 border border-blue-100">
+                      <div className="flex items-center gap-3 mb-2">
+                        <div className="w-8 h-8 bg-yellow-100 rounded-lg flex items-center justify-center">
+                          <Activity className="h-4 w-4 text-yellow-600" />
+                        </div>
+                        <span className="font-semibold text-gray-800">Patents/GI Tags</span>
+                      </div>
+                      <p className="text-gray-700 ml-11">{crop.patents}</p>
                     </div>
                   )}
                   {crop.research_institutes && (
-                    <div>
-                      <span className="font-medium">Research Institutes:</span> {crop.research_institutes}
+                    <div className="bg-white rounded-lg p-4 border border-blue-100">
+                      <div className="flex items-center gap-3 mb-2">
+                        <div className="w-8 h-8 bg-indigo-100 rounded-lg flex items-center justify-center">
+                          <Activity className="h-4 w-4 text-indigo-600" />
+                        </div>
+                        <span className="font-semibold text-gray-800">Research Institutes</span>
+                      </div>
+                      <p className="text-gray-700 ml-11">{crop.research_institutes}</p>
                     </div>
                   )}
-                  </CardContent>
-                </Card>
+                </div>
+              </div>
             </div>
           </TabsContent>
 
