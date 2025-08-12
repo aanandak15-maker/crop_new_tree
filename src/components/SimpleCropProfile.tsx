@@ -1135,14 +1135,14 @@ const SimpleCropProfile: React.FC<SimpleCropProfileProps> = ({ cropName, onBack 
                        )}
                      </div>
 
-                                           {/* Description */}
-                      {variety.description && (
-                        <div className="bg-gray-50 rounded-lg p-4 border border-gray-100">
-                          <p className="text-sm text-gray-700 leading-relaxed">
-                            {variety.description}
-                          </p>
-                        </div>
-                      )}
+                     {/* Description */}
+                     {variety.description && (
+                       <div className="bg-gray-50 rounded-lg p-4 border border-gray-100">
+                         <p className="text-sm text-gray-700 leading-relaxed">
+                           {variety.description}
+                         </p>
+                       </div>
+                     )}
                     </div>
                 ))}
               </div>
@@ -1165,77 +1165,231 @@ const SimpleCropProfile: React.FC<SimpleCropProfileProps> = ({ cropName, onBack 
           </TabsContent>
 
           {/* Cultivation Tab */}
-          <TabsContent value="cultivation" className="space-y-6">
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          <TabsContent value="cultivation" className="space-y-8">
+            {/* Hero Section */}
+            <div className="relative overflow-hidden rounded-xl bg-gradient-to-br from-blue-50 to-indigo-50 border border-blue-200 p-8">
+              <div className="absolute top-0 right-0 w-32 h-32 bg-blue-100 rounded-full -translate-y-16 translate-x-16 opacity-50"></div>
+              <div className="absolute bottom-0 left-0 w-24 h-24 bg-indigo-100 rounded-full translate-y-12 -translate-x-12 opacity-50"></div>
+              <div className="relative z-10">
+                <div className="flex items-center gap-4 mb-4">
+                  <div className="w-16 h-16 bg-blue-400 rounded-full flex items-center justify-center">
+                    <Sprout className="h-8 w-8 text-white" />
+                  </div>
+                  <div>
+                    <h1 className="text-3xl font-bold text-gray-800">Cultivation Guide</h1>
+                    <p className="text-gray-600">Complete growing practices and management techniques</p>
+                  </div>
+                </div>
+                <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mt-6">
+                  <div className="bg-white rounded-lg p-4 border border-blue-100">
+                    <div className="flex items-center gap-2 mb-2">
+                      <div className="w-8 h-8 bg-green-100 rounded-lg flex items-center justify-center">
+                        <Sprout className="h-4 w-4 text-green-600" />
+                      </div>
+                      <span className="font-semibold text-gray-800">Land Prep</span>
+                    </div>
+                    <p className="text-2xl font-bold text-green-600">{crop.land_preparation?.length || 0} Steps</p>
+                  </div>
+                  <div className="bg-white rounded-lg p-4 border border-blue-100">
+                    <div className="flex items-center gap-2 mb-2">
+                      <div className="w-8 h-8 bg-blue-100 rounded-lg flex items-center justify-center">
+                        <Clock className="h-4 w-4 text-blue-600" />
+                      </div>
+                      <span className="font-semibold text-gray-800">Sowing</span>
+                    </div>
+                    <p className="text-2xl font-bold text-blue-600">{crop.sowing_time ? 'Ready' : 'Pending'}</p>
+                  </div>
+                  <div className="bg-white rounded-lg p-4 border border-blue-100">
+                    <div className="flex items-center gap-2 mb-2">
+                      <div className="w-8 h-8 bg-orange-100 rounded-lg flex items-center justify-center">
+                        <Thermometer className="h-4 w-4 text-orange-600" />
+                      </div>
+                      <span className="font-semibold text-gray-800">Climate</span>
+                    </div>
+                    <p className="text-2xl font-bold text-orange-600">{crop.optimum_temp ? 'Set' : 'Pending'}</p>
+                  </div>
+                  <div className="bg-white rounded-lg p-4 border border-blue-100">
+                    <div className="flex items-center gap-2 mb-2">
+                      <div className="w-8 h-8 bg-red-100 rounded-lg flex items-center justify-center">
+                        <Leaf className="h-4 w-4 text-red-600" />
+                      </div>
+                      <span className="font-semibold text-gray-800">Weed Control</span>
+                    </div>
+                    <p className="text-2xl font-bold text-red-600">{crop.weed_control_method ? 'Ready' : 'Pending'}</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
               {/* Land Preparation */}
               {crop.land_preparation && crop.land_preparation.length > 0 && (
-                <Card className="bg-white border border-gray-200">
-                  <CardHeader>
-                    <CardTitle className="flex items-center gap-2 text-gray-800">
-                      <Sprout className="h-5 w-5 text-green-500" />
-                      Land Preparation
-                    </CardTitle>
-                  </CardHeader>
-                  <CardContent>
-                    <ul className="list-disc list-inside space-y-2 text-sm text-gray-600">
-                      {crop.land_preparation.map((step, index) => (
-                        <li key={index}>{step}</li>
-                      ))}
-                    </ul>
-                  </CardContent>
-                </Card>
+                <div className="bg-gradient-to-br from-green-50 to-emerald-50 border border-green-200 rounded-xl p-6 hover:shadow-lg transition-all duration-300">
+                  <div className="flex items-center gap-3 mb-6">
+                    <div className="w-12 h-12 bg-green-400 rounded-lg flex items-center justify-center">
+                      <Sprout className="h-6 w-6 text-white" />
+                    </div>
+                    <div>
+                      <h3 className="text-xl font-bold text-gray-800">Land Preparation</h3>
+                      <p className="text-sm text-gray-600">Essential steps for optimal soil conditions</p>
+                    </div>
+                  </div>
+                  <div className="space-y-3">
+                    {crop.land_preparation.map((step, index) => (
+                      <div key={index} className="bg-white rounded-lg p-4 border border-green-100">
+                        <div className="flex items-start gap-3">
+                          <div className="w-6 h-6 bg-green-100 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5">
+                            <span className="text-sm font-bold text-green-600">{index + 1}</span>
+                          </div>
+                          <p className="text-sm text-gray-700 leading-relaxed">{step}</p>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
               )}
 
               {/* Sowing Information */}
               {crop.sowing_time && (
-                <Card className="bg-white border border-gray-200">
-                  <CardHeader>
-                    <CardTitle className="flex items-center gap-2 text-gray-800">
-                      <Clock className="h-5 w-5 text-blue-500" />
-                      Sowing Information
-                    </CardTitle>
-                  </CardHeader>
-                  <CardContent className="space-y-2 text-sm text-gray-600">
-                    <p><span className="font-medium">Sowing Time:</span> {crop.sowing_time}</p>
-                    <p><span className="font-medium">Seed Rate:</span> {crop.seed_rate || 'Not specified'}</p>
-                    <p><span className="font-medium">Row Spacing:</span> {crop.row_spacing || 'Not specified'}</p>
-                  </CardContent>
-                </Card>
+                <div className="bg-gradient-to-br from-blue-50 to-cyan-50 border border-blue-200 rounded-xl p-6 hover:shadow-lg transition-all duration-300">
+                  <div className="flex items-center gap-3 mb-6">
+                    <div className="w-12 h-12 bg-blue-400 rounded-lg flex items-center justify-center">
+                      <Clock className="h-6 w-6 text-white" />
+                    </div>
+                    <div>
+                      <h3 className="text-xl font-bold text-gray-800">Sowing Information</h3>
+                      <p className="text-sm text-gray-600">Timing and spacing guidelines</p>
+                    </div>
+                  </div>
+                  <div className="space-y-4">
+                    <div className="bg-white rounded-lg p-4 border border-blue-100">
+                      <div className="flex items-center gap-3 mb-2">
+                        <div className="w-8 h-8 bg-blue-100 rounded-lg flex items-center justify-center">
+                          <Clock className="h-4 w-4 text-blue-600" />
+                        </div>
+                        <span className="font-semibold text-gray-800">Sowing Time</span>
+                      </div>
+                      <p className="text-gray-700 ml-11">{crop.sowing_time}</p>
+                    </div>
+                    <div className="bg-white rounded-lg p-4 border border-blue-100">
+                      <div className="flex items-center gap-3 mb-2">
+                        <div className="w-8 h-8 bg-green-100 rounded-lg flex items-center justify-center">
+                          <Sprout className="h-4 w-4 text-green-600" />
+                        </div>
+                        <span className="font-semibold text-gray-800">Seed Rate</span>
+                      </div>
+                      <p className="text-gray-700 ml-11">{crop.seed_rate || 'Not specified'}</p>
+                    </div>
+                    <div className="bg-white rounded-lg p-4 border border-blue-100">
+                      <div className="flex items-center gap-3 mb-2">
+                        <div className="w-8 h-8 bg-purple-100 rounded-lg flex items-center justify-center">
+                          <Activity className="h-4 w-4 text-purple-600" />
+                        </div>
+                        <span className="font-semibold text-gray-800">Row Spacing</span>
+                      </div>
+                      <p className="text-gray-700 ml-11">{crop.row_spacing || 'Not specified'}</p>
+                    </div>
+                  </div>
+                </div>
               )}
 
               {/* Climate & Soil Requirements */}
               {(crop.optimum_temp || crop.tolerable_temp || crop.altitude || crop.soil_texture) && (
-                <Card className="bg-white border border-gray-200">
-                  <CardHeader>
-                    <CardTitle className="flex items-center gap-2 text-gray-800">
-                      <Thermometer className="h-5 w-5 text-orange-500" />
-                      Climate & Soil
-                    </CardTitle>
-                  </CardHeader>
-                  <CardContent className="space-y-2 text-sm text-gray-600">
-                    <p><span className="font-medium">Optimum Temperature:</span> {crop.optimum_temp || 'Not specified'}</p>
-                    <p><span className="font-medium">Tolerable Temperature:</span> {crop.tolerable_temp || 'Not specified'}</p>
-                    <p><span className="font-medium">Altitude:</span> {crop.altitude || 'Not specified'}</p>
-                    <p><span className="font-medium">Soil Texture:</span> {crop.soil_texture || 'Not specified'}</p>
-                  </CardContent>
-                </Card>
+                <div className="bg-gradient-to-br from-orange-50 to-amber-50 border border-orange-200 rounded-xl p-6 hover:shadow-lg transition-all duration-300">
+                  <div className="flex items-center gap-3 mb-6">
+                    <div className="w-12 h-12 bg-orange-400 rounded-lg flex items-center justify-center">
+                      <Thermometer className="h-6 w-6 text-white" />
+                    </div>
+                    <div>
+                      <h3 className="text-xl font-bold text-gray-800">Climate & Soil</h3>
+                      <p className="text-sm text-gray-600">Environmental requirements</p>
+                    </div>
+                  </div>
+                  <div className="space-y-4">
+                    <div className="bg-white rounded-lg p-4 border border-orange-100">
+                      <div className="flex items-center gap-3 mb-2">
+                        <div className="w-8 h-8 bg-red-100 rounded-lg flex items-center justify-center">
+                          <Thermometer className="h-4 w-4 text-red-500" />
+                        </div>
+                        <span className="font-semibold text-gray-800">Optimum Temperature</span>
+                      </div>
+                      <p className="text-gray-700 ml-11">{crop.optimum_temp || 'Not specified'}</p>
+                    </div>
+                    <div className="bg-white rounded-lg p-4 border border-orange-100">
+                      <div className="flex items-center gap-3 mb-2">
+                        <div className="w-8 h-8 bg-orange-100 rounded-lg flex items-center justify-center">
+                          <Thermometer className="h-4 w-4 text-orange-600" />
+                        </div>
+                        <span className="font-semibold text-gray-800">Tolerable Temperature</span>
+                      </div>
+                      <p className="text-gray-700 ml-11">{crop.tolerable_temp || 'Not specified'}</p>
+                    </div>
+                    <div className="bg-white rounded-lg p-4 border border-orange-100">
+                      <div className="flex items-center gap-3 mb-2">
+                        <div className="w-8 h-8 bg-blue-100 rounded-lg flex items-center justify-center">
+                          <TrendingUp className="h-4 w-4 text-blue-600" />
+                        </div>
+                        <span className="font-semibold text-gray-800">Altitude</span>
+                      </div>
+                      <p className="text-gray-700 ml-11">{crop.altitude || 'Not specified'}</p>
+                    </div>
+                    <div className="bg-white rounded-lg p-4 border border-orange-100">
+                      <div className="flex items-center gap-3 mb-2">
+                        <div className="w-8 h-8 bg-amber-100 rounded-lg flex items-center justify-center">
+                          <Leaf className="h-4 w-4 text-amber-600" />
+                        </div>
+                        <span className="font-semibold text-gray-800">Soil Texture</span>
+                      </div>
+                      <p className="text-gray-700 ml-11">{crop.soil_texture || 'Not specified'}</p>
+                    </div>
+                  </div>
+                </div>
               )}
 
               {/* Weed Management */}
               {(crop.common_weeds || crop.weed_control_method) && (
-                <Card className="bg-white border border-gray-200">
-                  <CardHeader>
-                    <CardTitle className="flex items-center gap-2 text-gray-800">
-                      <Leaf className="h-5 w-5 text-red-500" />
-                      Weed Management
-                    </CardTitle>
-                  </CardHeader>
-                  <CardContent className="space-y-2 text-sm text-gray-600">
-                    <p><span className="font-medium">Common Weeds:</span> {crop.common_weeds || 'Not specified'}</p>
-                    <p><span className="font-medium">Control Methods:</span> {crop.weed_control_method || 'Not specified'}</p>
-                    <p><span className="font-medium">Critical Period:</span> {crop.critical_period_weed || 'Not specified'}</p>
-                  </CardContent>
-                </Card>
+                <div className="bg-gradient-to-br from-red-50 to-pink-50 border border-red-200 rounded-xl p-6 hover:shadow-lg transition-all duration-300">
+                  <div className="flex items-center gap-3 mb-6">
+                    <div className="w-12 h-12 bg-red-400 rounded-lg flex items-center justify-center">
+                      <Leaf className="h-6 w-6 text-white" />
+                    </div>
+                    <div>
+                      <h3 className="text-xl font-bold text-gray-800">Weed Management</h3>
+                      <p className="text-sm text-gray-600">Control strategies and methods</p>
+                    </div>
+                  </div>
+                  <div className="space-y-4">
+                    <div className="bg-white rounded-lg p-4 border border-red-100">
+                      <div className="flex items-center gap-3 mb-2">
+                        <div className="w-8 h-8 bg-red-100 rounded-lg flex items-center justify-center">
+                          <Leaf className="h-4 w-4 text-red-600" />
+                        </div>
+                        <span className="font-semibold text-gray-800">Common Weeds</span>
+                      </div>
+                      <p className="text-gray-700 ml-11">{crop.common_weeds || 'Not specified'}</p>
+                    </div>
+                    <div className="bg-white rounded-lg p-4 border border-red-100">
+                      <div className="flex items-center gap-3 mb-2">
+                        <div className="w-8 h-8 bg-pink-100 rounded-lg flex items-center justify-center">
+                          <Shield className="h-4 w-4 text-pink-600" />
+                        </div>
+                        <span className="font-semibold text-gray-800">Control Methods</span>
+                      </div>
+                      <p className="text-gray-700 ml-11">{crop.weed_control_method || 'Not specified'}</p>
+                    </div>
+                    {crop.critical_period_weed && (
+                      <div className="bg-white rounded-lg p-4 border border-red-100">
+                        <div className="flex items-center gap-3 mb-2">
+                          <div className="w-8 h-8 bg-orange-100 rounded-lg flex items-center justify-center">
+                            <Clock className="h-4 w-4 text-orange-600" />
+                          </div>
+                          <span className="font-semibold text-gray-800">Critical Period</span>
+                        </div>
+                        <p className="text-gray-700 ml-11">{crop.critical_period_weed}</p>
+                      </div>
+                    )}
+                  </div>
+                </div>
               )}
             </div>
           </TabsContent>
