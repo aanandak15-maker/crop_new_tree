@@ -2249,128 +2249,292 @@ const SimpleCropProfile: React.FC<SimpleCropProfileProps> = ({ cropName, onBack 
           </TabsContent>
 
           {/* Nematodes Tab */}
-          <TabsContent value="nematodes" className="space-y-6">
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          <TabsContent value="nematodes" className="space-y-8">
+            {/* Hero Section */}
+            <div className="relative overflow-hidden rounded-xl bg-gradient-to-br from-purple-50 to-indigo-50 border border-purple-200 p-8">
+              <div className="absolute top-0 right-0 w-32 h-32 bg-purple-100 rounded-full -translate-y-16 translate-x-16 opacity-50"></div>
+              <div className="absolute bottom-0 left-0 w-24 h-24 bg-indigo-100 rounded-full translate-y-12 -translate-x-12 opacity-50"></div>
+              <div className="relative z-10">
+                <div className="flex items-center gap-4 mb-4">
+                  <div className="w-16 h-16 bg-purple-400 rounded-full flex items-center justify-center">
+                    <Shield className="h-8 w-8 text-white" />
+                  </div>
+                  <div>
+                    <h1 className="text-3xl font-bold text-gray-800">Nematodes</h1>
+                    <p className="text-gray-600">Microscopic soil pests and their management</p>
+                  </div>
+                </div>
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-6">
+                  <div className="bg-white rounded-lg p-4 border border-purple-100">
+                    <div className="flex items-center gap-2 mb-2">
+                      <div className="w-8 h-8 bg-purple-100 rounded-lg flex items-center justify-center">
+                        <Shield className="h-4 w-4 text-purple-600" />
+                      </div>
+                      <span className="font-semibold text-gray-800">Main Nematode</span>
+                    </div>
+                    <p className="text-2xl font-bold text-purple-600">{crop.nematode_name ? 'Present' : 'None'}</p>
+                  </div>
+                  <div className="bg-white rounded-lg p-4 border border-purple-100">
+                    <div className="flex items-center gap-2 mb-2">
+                      <div className="w-8 h-8 bg-red-100 rounded-lg flex items-center justify-center">
+                        <Activity className="h-4 w-4 text-red-600" />
+                      </div>
+                      <span className="font-semibold text-gray-800">Symptoms</span>
+                    </div>
+                    <p className="text-2xl font-bold text-red-600">{crop.nematode_symptoms ? 'Yes' : 'No'}</p>
+                  </div>
+                  <div className="bg-white rounded-lg p-4 border border-purple-100">
+                    <div className="flex items-center gap-2 mb-2">
+                      <div className="w-8 h-8 bg-green-100 rounded-lg flex items-center justify-center">
+                        <Shield className="h-4 w-4 text-green-600" />
+                      </div>
+                      <span className="font-semibold text-gray-800">Management</span>
+                    </div>
+                    <p className="text-2xl font-bold text-green-600">{crop.nematode_management ? 'Available' : 'Pending'}</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
               {crop.nematode_name ? (
-                <Card className="bg-white border border-gray-200">
-                  <CardHeader>
-                    <CardTitle className="flex items-center gap-2 text-gray-800">
-                      <Shield className="h-5 w-5 text-purple-500" />
-                      Nematode Details
-                    </CardTitle>
-                  </CardHeader>
-                  <CardContent className="space-y-4 text-sm text-gray-600">
+                <div className="bg-gradient-to-br from-purple-50 to-indigo-50 border border-purple-200 rounded-xl p-6 hover:shadow-lg transition-all duration-300">
+                  <div className="flex items-center gap-3 mb-6">
+                    <div className="w-12 h-12 bg-purple-400 rounded-lg flex items-center justify-center">
+                      <Shield className="h-6 w-6 text-white" />
+                    </div>
+                    <div>
+                      <h3 className="text-xl font-bold text-gray-800">Nematode Details</h3>
+                      <p className="text-sm text-gray-600">Microscopic soil pest information</p>
+                    </div>
+                  </div>
+                  <div className="space-y-4">
                     {/* Nematode Image */}
                     {crop.nematode_image && (
                       <div className="mb-4">
                         <img 
                           src={crop.nematode_image} 
                           alt={`${crop.nematode_name} nematode`}
-                          className="w-full h-48 object-cover rounded-lg border border-gray-200"
+                          className="w-full h-48 object-cover rounded-lg border border-purple-200"
                         />
                       </div>
                     )}
-                    <div>
-                      <span className="font-medium">Nematode Name:</span> {crop.nematode_name}
+                    <div className="bg-white rounded-lg p-4 border border-purple-100">
+                      <div className="flex items-center gap-3 mb-2">
+                        <div className="w-8 h-8 bg-purple-100 rounded-lg flex items-center justify-center">
+                          <Shield className="h-4 w-4 text-purple-600" />
+                        </div>
+                        <span className="font-semibold text-gray-800">Nematode Name</span>
+                      </div>
+                      <p className="text-gray-700 ml-11">{crop.nematode_name}</p>
                     </div>
                     {crop.nematode_symptoms && (
-                      <div>
-                        <span className="font-medium">Symptoms:</span> {crop.nematode_symptoms}
+                      <div className="bg-white rounded-lg p-4 border border-purple-100">
+                        <div className="flex items-center gap-3 mb-2">
+                          <div className="w-8 h-8 bg-red-100 rounded-lg flex items-center justify-center">
+                            <Activity className="h-4 w-4 text-red-600" />
+                          </div>
+                          <span className="font-semibold text-gray-800">Symptoms</span>
+                        </div>
+                        <p className="text-gray-700 ml-11">{crop.nematode_symptoms}</p>
                       </div>
                     )}
                     {crop.nematode_life_cycle && (
-                      <div>
-                        <span className="font-medium">Life Cycle:</span> {crop.nematode_life_cycle}
+                      <div className="bg-white rounded-lg p-4 border border-purple-100">
+                        <div className="flex items-center gap-3 mb-2">
+                          <div className="w-8 h-8 bg-blue-100 rounded-lg flex items-center justify-center">
+                            <Activity className="h-4 w-4 text-blue-600" />
+                          </div>
+                          <span className="font-semibold text-gray-800">Life Cycle</span>
+                        </div>
+                        <p className="text-gray-700 ml-11">{crop.nematode_life_cycle}</p>
                       </div>
                     )}
                     {crop.nematode_etl && (
-                      <div>
-                        <span className="font-medium">ETL (Economic Threshold Level):</span> {crop.nematode_etl}
+                      <div className="bg-white rounded-lg p-4 border border-purple-100">
+                        <div className="flex items-center gap-3 mb-2">
+                          <div className="w-8 h-8 bg-yellow-100 rounded-lg flex items-center justify-center">
+                            <Activity className="h-4 w-4 text-yellow-600" />
+                          </div>
+                          <span className="font-semibold text-gray-800">ETL (Economic Threshold Level)</span>
+                        </div>
+                        <p className="text-gray-700 ml-11">{crop.nematode_etl}</p>
                       </div>
                     )}
                     {crop.nematode_management && (
-                      <div>
-                        <span className="font-medium">Management:</span> {crop.nematode_management}
+                      <div className="bg-white rounded-lg p-4 border border-purple-100">
+                        <div className="flex items-center gap-3 mb-2">
+                          <div className="w-8 h-8 bg-green-100 rounded-lg flex items-center justify-center">
+                            <Shield className="h-4 w-4 text-green-600" />
+                          </div>
+                          <span className="font-semibold text-gray-800">Management</span>
+                        </div>
+                        <p className="text-gray-700 ml-11">{crop.nematode_management}</p>
                       </div>
                     )}
                     {crop.nematode_biocontrol && (
-                      <div>
-                        <span className="font-medium">Biological Control:</span> {crop.nematode_biocontrol}
+                      <div className="bg-white rounded-lg p-4 border border-purple-100">
+                        <div className="flex items-center gap-3 mb-2">
+                          <div className="w-8 h-8 bg-emerald-100 rounded-lg flex items-center justify-center">
+                            <Leaf className="h-4 w-4 text-emerald-600" />
+                          </div>
+                          <span className="font-semibold text-gray-800">Biological Control</span>
+                        </div>
+                        <p className="text-gray-700 ml-11">{crop.nematode_biocontrol}</p>
                       </div>
                     )}
-                  </CardContent>
-                </Card>
+                  </div>
+                </div>
               ) : (
-                <Card className="text-center py-12 bg-white border border-gray-200">
-                <CardContent>
-                    <Shield className="h-12 w-12 text-gray-400 mx-auto mb-4" />
-                    <h3 className="text-lg font-semibold mb-2 text-gray-800">No nematode data available</h3>
-                    <p className="text-gray-600 max-w-prose mx-auto">
-                      Detailed nematode information has not been added for this crop yet
+                <div className="bg-gradient-to-br from-gray-50 to-slate-50 border border-gray-200 rounded-xl p-12 text-center hover:shadow-lg transition-all duration-300">
+                  <div className="w-16 h-16 bg-gray-400 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <Shield className="h-8 w-8 text-white" />
+                  </div>
+                  <h3 className="text-xl font-bold text-gray-800 mb-2">No Nematode Data Available</h3>
+                  <p className="text-gray-600 max-w-prose mx-auto">
+                    Detailed nematode information has not been added for this crop yet
                   </p>
-                </CardContent>
-              </Card>
-            )}
+                </div>
+              )}
             </div>
           </TabsContent>
 
           {/* Disorders Tab */}
-          <TabsContent value="disorders" className="space-y-6">
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          <TabsContent value="disorders" className="space-y-8">
+            {/* Hero Section */}
+            <div className="relative overflow-hidden rounded-xl bg-gradient-to-br from-amber-50 to-yellow-50 border border-amber-200 p-8">
+              <div className="absolute top-0 right-0 w-32 h-32 bg-amber-100 rounded-full -translate-y-16 translate-x-16 opacity-50"></div>
+              <div className="absolute bottom-0 left-0 w-24 h-24 bg-yellow-100 rounded-full translate-y-12 -translate-x-12 opacity-50"></div>
+              <div className="relative z-10">
+                <div className="flex items-center gap-4 mb-4">
+                  <div className="w-16 h-16 bg-amber-400 rounded-full flex items-center justify-center">
+                    <AlertTriangle className="h-8 w-8 text-white" />
+                  </div>
+                  <div>
+                    <h1 className="text-3xl font-bold text-gray-800">Disorders</h1>
+                    <p className="text-gray-600">Physiological and environmental disorders</p>
+                  </div>
+                </div>
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-6">
+                  <div className="bg-white rounded-lg p-4 border border-amber-100">
+                    <div className="flex items-center gap-2 mb-2">
+                      <div className="w-8 h-8 bg-amber-100 rounded-lg flex items-center justify-center">
+                        <AlertTriangle className="h-4 w-4 text-amber-600" />
+                      </div>
+                      <span className="font-semibold text-gray-800">Main Disorder</span>
+                    </div>
+                    <p className="text-2xl font-bold text-amber-600">{crop.disorder_name ? 'Present' : 'None'}</p>
+                  </div>
+                  <div className="bg-white rounded-lg p-4 border border-amber-100">
+                    <div className="flex items-center gap-2 mb-2">
+                      <div className="w-8 h-8 bg-red-100 rounded-lg flex items-center justify-center">
+                        <Activity className="h-4 w-4 text-red-600" />
+                      </div>
+                      <span className="font-semibold text-gray-800">Symptoms</span>
+                    </div>
+                    <p className="text-2xl font-bold text-red-600">{crop.disorder_symptoms ? 'Yes' : 'No'}</p>
+                  </div>
+                  <div className="bg-white rounded-lg p-4 border border-amber-100">
+                    <div className="flex items-center gap-2 mb-2">
+                      <div className="w-8 h-8 bg-blue-100 rounded-lg flex items-center justify-center">
+                        <Activity className="h-4 w-4 text-blue-600" />
+                      </div>
+                      <span className="font-semibold text-gray-800">Impact</span>
+                    </div>
+                    <p className="text-2xl font-bold text-blue-600">{crop.disorder_impact ? 'Assessed' : 'Pending'}</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
               {crop.disorder_name ? (
-                <Card className="bg-white border border-gray-200">
-                  <CardHeader>
-                    <CardTitle className="flex items-center gap-2 text-gray-800">
-                      <AlertTriangle className="h-5 w-5 text-amber-500" />
-                      Disorder Details
-                    </CardTitle>
-                  </CardHeader>
-                  <CardContent className="space-y-4 text-sm text-gray-600">
+                <div className="bg-gradient-to-br from-amber-50 to-yellow-50 border border-amber-200 rounded-xl p-6 hover:shadow-lg transition-all duration-300">
+                  <div className="flex items-center gap-3 mb-6">
+                    <div className="w-12 h-12 bg-amber-400 rounded-lg flex items-center justify-center">
+                      <AlertTriangle className="h-6 w-6 text-white" />
+                    </div>
+                    <div>
+                      <h3 className="text-xl font-bold text-gray-800">Disorder Details</h3>
+                      <p className="text-sm text-gray-600">Physiological disorder information</p>
+                    </div>
+                  </div>
+                  <div className="space-y-4">
                     {/* Disorder Image */}
                     {crop.disorder_image && (
                       <div className="mb-4">
                         <img 
                           src={crop.disorder_image} 
                           alt={`${crop.disorder_name} disorder`}
-                          className="w-full h-48 object-cover rounded-lg border border-gray-200"
+                          className="w-full h-48 object-cover rounded-lg border border-amber-200"
                         />
                       </div>
                     )}
-                    <div>
-                      <span className="font-medium">Disorder Name:</span> {crop.disorder_name}
+                    <div className="bg-white rounded-lg p-4 border border-amber-100">
+                      <div className="flex items-center gap-3 mb-2">
+                        <div className="w-8 h-8 bg-amber-100 rounded-lg flex items-center justify-center">
+                          <AlertTriangle className="h-4 w-4 text-amber-600" />
+                        </div>
+                        <span className="font-semibold text-gray-800">Disorder Name</span>
+                      </div>
+                      <p className="text-gray-700 ml-11">{crop.disorder_name}</p>
                     </div>
                     {crop.disorder_cause && (
-                      <div>
-                        <span className="font-medium">Cause:</span> {crop.disorder_cause}
+                      <div className="bg-white rounded-lg p-4 border border-amber-100">
+                        <div className="flex items-center gap-3 mb-2">
+                          <div className="w-8 h-8 bg-red-100 rounded-lg flex items-center justify-center">
+                            <Activity className="h-4 w-4 text-red-600" />
+                          </div>
+                          <span className="font-semibold text-gray-800">Cause</span>
+                        </div>
+                        <p className="text-gray-700 ml-11">{crop.disorder_cause}</p>
                       </div>
                     )}
                     {crop.disorder_symptoms && (
-                      <div>
-                        <span className="font-medium">Symptoms:</span> {crop.disorder_symptoms}
+                      <div className="bg-white rounded-lg p-4 border border-amber-100">
+                        <div className="flex items-center gap-3 mb-2">
+                          <div className="w-8 h-8 bg-yellow-100 rounded-lg flex items-center justify-center">
+                            <Activity className="h-4 w-4 text-yellow-600" />
+                          </div>
+                          <span className="font-semibold text-gray-800">Symptoms</span>
+                        </div>
+                        <p className="text-gray-700 ml-11">{crop.disorder_symptoms}</p>
                       </div>
                     )}
                     {crop.disorder_impact && (
-                      <div>
-                        <span className="font-medium">Impact:</span> {crop.disorder_impact}
+                      <div className="bg-white rounded-lg p-4 border border-amber-100">
+                        <div className="flex items-center gap-3 mb-2">
+                          <div className="w-8 h-8 bg-blue-100 rounded-lg flex items-center justify-center">
+                            <Activity className="h-4 w-4 text-blue-600" />
+                          </div>
+                          <span className="font-semibold text-gray-800">Impact</span>
+                        </div>
+                        <p className="text-gray-700 ml-11">{crop.disorder_impact}</p>
                       </div>
                     )}
                     {crop.disorder_control && (
-                      <div>
-                        <span className="font-medium">Control Measures:</span> {crop.disorder_control}
+                      <div className="bg-white rounded-lg p-4 border border-amber-100">
+                        <div className="flex items-center gap-3 mb-2">
+                          <div className="w-8 h-8 bg-green-100 rounded-lg flex items-center justify-center">
+                            <Shield className="h-4 w-4 text-green-600" />
+                          </div>
+                          <span className="font-semibold text-gray-800">Control Measures</span>
+                        </div>
+                        <p className="text-gray-700 ml-11">{crop.disorder_control}</p>
                       </div>
                     )}
-                  </CardContent>
-                </Card>
+                  </div>
+                </div>
               ) : (
-                <Card className="text-center py-12 bg-white border border-gray-200">
-                  <CardContent>
-                    <AlertTriangle className="h-12 w-12 text-gray-400 mx-auto mb-4" />
-                    <h3 className="text-lg font-semibold mb-2 text-gray-800">No disorder data available</h3>
-                    <p className="text-gray-600 max-w-prose mx-auto">
-                      Detailed disorder information has not been added for this crop yet
-                    </p>
-                  </CardContent>
-                </Card>
+                <div className="bg-gradient-to-br from-gray-50 to-slate-50 border border-gray-200 rounded-xl p-12 text-center hover:shadow-lg transition-all duration-300">
+                  <div className="w-16 h-16 bg-gray-400 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <AlertTriangle className="h-8 w-8 text-white" />
+                  </div>
+                  <h3 className="text-xl font-bold text-gray-800 mb-2">No Disorder Data Available</h3>
+                  <p className="text-gray-600 max-w-prose mx-auto">
+                    Detailed disorder information has not been added for this crop yet
+                  </p>
+                </div>
               )}
             </div>
           </TabsContent>
