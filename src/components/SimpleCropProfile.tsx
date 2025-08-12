@@ -1175,7 +1175,7 @@ const SimpleCropProfile: React.FC<SimpleCropProfileProps> = ({ cropName, onBack 
                   <div className="w-16 h-16 bg-blue-400 rounded-full flex items-center justify-center">
                     <Sprout className="h-8 w-8 text-white" />
                   </div>
-                <div>
+                  <div>
                     <h1 className="text-3xl font-bold text-gray-800">Cultivation Guide</h1>
                     <p className="text-gray-600">Complete growing practices and management techniques</p>
                   </div>
@@ -1228,8 +1228,8 @@ const SimpleCropProfile: React.FC<SimpleCropProfileProps> = ({ cropName, onBack 
                   <div className="flex items-center gap-3 mb-6">
                     <div className="w-12 h-12 bg-green-400 rounded-lg flex items-center justify-center">
                       <Sprout className="h-6 w-6 text-white" />
-                </div>
-                <div>
+                    </div>
+                    <div>
                       <h3 className="text-xl font-bold text-gray-800">Land Preparation</h3>
                       <p className="text-sm text-gray-600">Essential steps for optimal soil conditions</p>
                     </div>
