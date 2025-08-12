@@ -157,6 +157,33 @@ interface CropData {
   swot_opportunities?: string;
   swot_threats?: string;
   
+  // Morphology fields
+  root_system?: string;
+  leaf?: string;
+  flowering_season?: string;
+  inflorescence_type?: string;
+  fruit_type?: string;
+  fruit_development?: string;
+  unique_morphology?: string;
+  edible_part?: string;
+  
+  // Genetics fields
+  chromosome_number?: string;
+  breeding_methods?: string;
+  biotech_advances?: string;
+  hybrid_varieties?: string;
+  patents?: string;
+  research_institutes?: string;
+  
+  // Reproductive biology fields
+  pollination?: string;
+  propagation_type?: string;
+  planting_material?: string;
+  germination_percent?: string;
+  rootstock_compatibility?: string;
+  nursery_practices?: string;
+  training_system?: string;
+  
   varieties?: CropVariety[];
 }
 
@@ -404,6 +431,38 @@ const SimpleCropProfile: React.FC<SimpleCropProfileProps> = ({ cropName, onBack 
               <TabsTrigger value="disorders" className="flex items-center gap-2 px-4 py-2 data-[state=active]:bg-yellow-400 data-[state=active]:text-gray-800">
                 <AlertTriangle className="h-4 w-4" />
                 <span className="hidden sm:inline">Disorders</span>
+              </TabsTrigger>
+              <TabsTrigger value="morphology" className="flex items-center gap-2 px-4 py-2 data-[state=active]:bg-yellow-400 data-[state=active]:text-gray-800">
+                <Leaf className="h-4 w-4" />
+                <span className="hidden sm:inline">Morphology</span>
+              </TabsTrigger>
+              <TabsTrigger value="genetics" className="flex items-center gap-2 px-4 py-2 data-[state=active]:bg-yellow-400 data-[state=active]:text-gray-800">
+                <Sprout className="h-4 w-4" />
+                <span className="hidden sm:inline">Genetics</span>
+              </TabsTrigger>
+              <TabsTrigger value="reproduction" className="flex items-center gap-2 px-4 py-2 data-[state=active]:bg-yellow-400 data-[state=active]:text-gray-800">
+                <Apple className="h-4 w-4" />
+                <span className="hidden sm:inline">Reproduction</span>
+              </TabsTrigger>
+              <TabsTrigger value="harvest" className="flex items-center gap-2 px-4 py-2 data-[state=active]:bg-yellow-400 data-[state=active]:text-gray-800">
+                <Clock className="h-4 w-4" />
+                <span className="hidden sm:inline">Harvest</span>
+              </TabsTrigger>
+              <TabsTrigger value="government" className="flex items-center gap-2 px-4 py-2 data-[state=active]:bg-yellow-400 data-[state=active]:text-gray-800">
+                <Shield className="h-4 w-4" />
+                <span className="hidden sm:inline">Government</span>
+              </TabsTrigger>
+              <TabsTrigger value="technology" className="flex items-center gap-2 px-4 py-2 data-[state=active]:bg-yellow-400 data-[state=active]:text-gray-800">
+                <TrendingUp className="h-4 w-4" />
+                <span className="hidden sm:inline">Technology</span>
+              </TabsTrigger>
+              <TabsTrigger value="cultural" className="flex items-center gap-2 px-4 py-2 data-[state=active]:bg-yellow-400 data-[state=active]:text-gray-800">
+                <Info className="h-4 w-4" />
+                <span className="hidden sm:inline">Cultural</span>
+              </TabsTrigger>
+              <TabsTrigger value="insights" className="flex items-center gap-2 px-4 py-2 data-[state=active]:bg-yellow-400 data-[state=active]:text-gray-800">
+                <Wheat className="h-4 w-4" />
+                <span className="hidden sm:inline">Insights</span>
               </TabsTrigger>
             </TabsList>
           </div>
@@ -1039,6 +1098,369 @@ const SimpleCropProfile: React.FC<SimpleCropProfileProps> = ({ cropName, onBack 
                   </CardContent>
                 </Card>
               )}
+            </div>
+          </TabsContent>
+
+          {/* Morphology Tab */}
+          <TabsContent value="morphology" className="space-y-6">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+              <Card className="bg-white border border-gray-200">
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2 text-gray-800">
+                    <Leaf className="h-5 w-5 text-green-500" />
+                    Plant Morphology
+                  </CardTitle>
+                </CardHeader>
+                <CardContent className="space-y-3 text-sm text-gray-600">
+                  {crop.root_system && (
+                    <div>
+                      <span className="font-medium">Root System:</span> {crop.root_system}
+                    </div>
+                  )}
+                  {crop.leaf && (
+                    <div>
+                      <span className="font-medium">Leaf Characteristics:</span> {crop.leaf}
+                    </div>
+                  )}
+                  {crop.flowering_season && (
+                    <div>
+                      <span className="font-medium">Flowering Season:</span> {crop.flowering_season}
+                    </div>
+                  )}
+                  {crop.inflorescence_type && (
+                    <div>
+                      <span className="font-medium">Inflorescence Type:</span> {crop.inflorescence_type}
+                    </div>
+                  )}
+                  {crop.fruit_type && (
+                    <div>
+                      <span className="font-medium">Fruit Type:</span> {crop.fruit_type}
+                    </div>
+                  )}
+                  {crop.fruit_development && (
+                    <div>
+                      <span className="font-medium">Fruit Development:</span> {crop.fruit_development}
+                    </div>
+                  )}
+                  {crop.unique_morphology && (
+                    <div>
+                      <span className="font-medium">Unique Features:</span> {crop.unique_morphology}
+                    </div>
+                  )}
+                  {crop.edible_part && (
+                    <div>
+                      <span className="font-medium">Edible Part:</span> {crop.edible_part}
+                    </div>
+                  )}
+                </CardContent>
+              </Card>
+            </div>
+          </TabsContent>
+
+          {/* Genetics Tab */}
+          <TabsContent value="genetics" className="space-y-6">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+              <Card className="bg-white border border-gray-200">
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2 text-gray-800">
+                    <Sprout className="h-5 w-5 text-green-500" />
+                    Genetic Information
+                  </CardTitle>
+                </CardHeader>
+                <CardContent className="space-y-3 text-sm text-gray-600">
+                  {crop.chromosome_number && (
+                    <div>
+                      <span className="font-medium">Chromosome Number:</span> {crop.chromosome_number}
+                    </div>
+                  )}
+                  {crop.breeding_methods && (
+                    <div>
+                      <span className="font-medium">Breeding Methods:</span> {crop.breeding_methods}
+                    </div>
+                  )}
+                  {crop.biotech_advances && (
+                    <div>
+                      <span className="font-medium">Biotechnological Advances:</span> {crop.biotech_advances}
+                    </div>
+                  )}
+                  {crop.hybrid_varieties && (
+                    <div>
+                      <span className="font-medium">Hybrid Varieties:</span> {crop.hybrid_varieties}
+                    </div>
+                  )}
+                  {crop.patents && (
+                    <div>
+                      <span className="font-medium">Patents/GI Tags:</span> {crop.patents}
+                    </div>
+                  )}
+                  {crop.research_institutes && (
+                    <div>
+                      <span className="font-medium">Research Institutes:</span> {crop.research_institutes}
+                    </div>
+                  )}
+                </CardContent>
+              </Card>
+            </div>
+          </TabsContent>
+
+          {/* Reproduction Tab */}
+          <TabsContent value="reproduction" className="space-y-6">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+              <Card className="bg-white border border-gray-200">
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2 text-gray-800">
+                    <Apple className="h-5 w-5 text-red-500" />
+                    Reproductive Biology
+                  </CardTitle>
+                </CardHeader>
+                <CardContent className="space-y-3 text-sm text-gray-600">
+                  {crop.pollination && (
+                    <div>
+                      <span className="font-medium">Pollination:</span> {crop.pollination}
+                    </div>
+                  )}
+                  {crop.propagation_type && (
+                    <div>
+                      <span className="font-medium">Propagation Type:</span> {crop.propagation_type}
+                    </div>
+                  )}
+                  {crop.planting_material && (
+                    <div>
+                      <span className="font-medium">Planting Material:</span> {crop.planting_material}
+                    </div>
+                  )}
+                  {crop.germination_percent && (
+                    <div>
+                      <span className="font-medium">Germination %:</span> {crop.germination_percent}
+                    </div>
+                  )}
+                  {crop.rootstock_compatibility && (
+                    <div>
+                      <span className="font-medium">Rootstock Compatibility:</span> {crop.rootstock_compatibility}
+                    </div>
+                  )}
+                  {crop.nursery_practices && (
+                    <div>
+                      <span className="font-medium">Nursery Practices:</span> {crop.nursery_practices}
+                    </div>
+                  )}
+                  {crop.training_system && (
+                    <div>
+                      <span className="font-medium">Training System:</span> {crop.training_system}
+                    </div>
+                  )}
+                </CardContent>
+              </Card>
+            </div>
+          </TabsContent>
+
+          {/* Harvest Tab */}
+          <TabsContent value="harvest" className="space-y-6">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+              <Card className="bg-white border border-gray-200">
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2 text-gray-800">
+                    <Clock className="h-5 w-5 text-orange-500" />
+                    Harvest & Post-Harvest
+                  </CardTitle>
+                </CardHeader>
+                <CardContent className="space-y-3 text-sm text-gray-600">
+                  {crop.harvest_time && (
+                    <div>
+                      <span className="font-medium">Harvest Time:</span> {crop.harvest_time}
+                    </div>
+                  )}
+                  {crop.maturity_indicators && (
+                    <div>
+                      <span className="font-medium">Maturity Indicators:</span> {crop.maturity_indicators}
+                    </div>
+                  )}
+                  {crop.harvesting_tools && (
+                    <div>
+                      <span className="font-medium">Harvesting Tools:</span> {crop.harvesting_tools}
+                    </div>
+                  )}
+                  {crop.post_harvest_losses && (
+                    <div>
+                      <span className="font-medium">Post-Harvest Losses:</span> {crop.post_harvest_losses}
+                    </div>
+                  )}
+                  {crop.storage_conditions && (
+                    <div>
+                      <span className="font-medium">Storage Conditions:</span> {crop.storage_conditions}
+                    </div>
+                  )}
+                  {crop.shelf_life && (
+                    <div>
+                      <span className="font-medium">Shelf Life:</span> {crop.shelf_life}
+                    </div>
+                  )}
+                  {crop.processed_products && (
+                    <div>
+                      <span className="font-medium">Processed Products:</span> {crop.processed_products}
+                    </div>
+                  )}
+                  {crop.packaging_types && (
+                    <div>
+                      <span className="font-medium">Packaging Types:</span> {crop.packaging_types}
+                    </div>
+                  )}
+                  {crop.cold_chain && (
+                    <div>
+                      <span className="font-medium">Cold Chain Requirements:</span> {crop.cold_chain}
+                    </div>
+                  )}
+                  {crop.ripening_characteristics && (
+                    <div>
+                      <span className="font-medium">Ripening Characteristics:</span> {crop.ripening_characteristics}
+                    </div>
+                  )}
+                  {crop.pre_cooling && (
+                    <div>
+                      <span className="font-medium">Pre-Cooling Requirements:</span> {crop.pre_cooling}
+                    </div>
+                  )}
+                </CardContent>
+              </Card>
+            </div>
+          </TabsContent>
+
+          {/* Government Tab */}
+          <TabsContent value="government" className="space-y-6">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+              <Card className="bg-white border border-gray-200">
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2 text-gray-800">
+                    <Shield className="h-5 w-5 text-blue-500" />
+                    Government Support & Policy
+                  </CardTitle>
+                </CardHeader>
+                <CardContent className="space-y-3 text-sm text-gray-600">
+                  {crop.subsidies && (
+                    <div>
+                      <span className="font-medium">Available Subsidies:</span> {crop.subsidies}
+                    </div>
+                  )}
+                  {crop.schemes && (
+                    <div>
+                      <span className="font-medium">Applicable Schemes:</span> {crop.schemes}
+                    </div>
+                  )}
+                  {crop.support_agencies && (
+                    <div>
+                      <span className="font-medium">Support Agencies:</span> {crop.support_agencies}
+                    </div>
+                  )}
+                  {crop.certifications && (
+                    <div>
+                      <span className="font-medium">Required Certifications:</span> {crop.certifications}
+                    </div>
+                  )}
+                </CardContent>
+              </Card>
+            </div>
+          </TabsContent>
+
+          {/* Technology Tab */}
+          <TabsContent value="technology" className="space-y-6">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+              <Card className="bg-white border border-gray-200">
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2 text-gray-800">
+                    <TrendingUp className="h-5 w-5 text-purple-500" />
+                    Technology & Innovation
+                  </CardTitle>
+                </CardHeader>
+                <CardContent className="space-y-3 text-sm text-gray-600">
+                  {crop.ai_ml_iot && (
+                    <div>
+                      <span className="font-medium">AI/ML/IoT Use Cases:</span> {crop.ai_ml_iot}
+                    </div>
+                  )}
+                  {crop.smart_farming && (
+                    <div>
+                      <span className="font-medium">Smart Farming Scope:</span> {crop.smart_farming}
+                    </div>
+                  )}
+                </CardContent>
+              </Card>
+            </div>
+          </TabsContent>
+
+          {/* Cultural Tab */}
+          <TabsContent value="cultural" className="space-y-6">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+              <Card className="bg-white border border-gray-200">
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2 text-gray-800">
+                    <Info className="h-5 w-5 text-indigo-500" />
+                    Cultural & Traditional Relevance
+                  </CardTitle>
+                </CardHeader>
+                <CardContent className="space-y-3 text-sm text-gray-600">
+                  {crop.religious_use && (
+                    <div>
+                      <span className="font-medium">Religious/Cultural Use:</span> {crop.religious_use}
+                    </div>
+                  )}
+                  {crop.traditional_uses && (
+                    <div>
+                      <span className="font-medium">Traditional Uses:</span> {crop.traditional_uses}
+                    </div>
+                  )}
+                  {crop.gi_status && (
+                    <div>
+                      <span className="font-medium">GI Status:</span> {crop.gi_status}
+                    </div>
+                  )}
+                  {crop.fun_fact && (
+                    <div>
+                      <span className="font-medium">Fun Fact/Trivia:</span> {crop.fun_fact}
+                    </div>
+                  )}
+                </CardContent>
+              </Card>
+            </div>
+          </TabsContent>
+
+          {/* Insights Tab */}
+          <TabsContent value="insights" className="space-y-6">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+              <Card className="bg-white border border-gray-200">
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2 text-gray-800">
+                    <Wheat className="h-5 w-5 text-yellow-500" />
+                    Insights & Analysis
+                  </CardTitle>
+                </CardHeader>
+                <CardContent className="space-y-3 text-sm text-gray-600">
+                  {crop.key_takeaways && (
+                    <div>
+                      <span className="font-medium">Key Takeaways:</span> {crop.key_takeaways}
+                    </div>
+                  )}
+                  {crop.swot_strengths && (
+                    <div>
+                      <span className="font-medium">Strengths:</span> {crop.swot_strengths}
+                    </div>
+                  )}
+                  {crop.swot_weaknesses && (
+                    <div>
+                      <span className="font-medium">Weaknesses:</span> {crop.swot_weaknesses}
+                    </div>
+                  )}
+                  {crop.swot_opportunities && (
+                    <div>
+                      <span className="font-medium">Opportunities:</span> {crop.swot_opportunities}
+                    </div>
+                  )}
+                  {crop.swot_threats && (
+                    <div>
+                      <span className="font-medium">Threats:</span> {crop.swot_threats}
+                    </div>
+                  )}
+                </CardContent>
+              </Card>
             </div>
           </TabsContent>
         </Tabs>
