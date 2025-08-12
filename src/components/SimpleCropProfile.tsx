@@ -95,6 +95,15 @@ interface CropData {
   pest_management?: string;
   pest_biocontrol?: string;
   pest_image?: string;
+  additional_pests?: Array<{
+    name: string;
+    symptoms: string;
+    lifeCycle: string;
+    etl: string;
+    management: string;
+    biocontrol: string;
+    image: string;
+  }>;
   
   // Detailed disease management
   disease_name?: string;
@@ -104,6 +113,15 @@ interface CropData {
   disease_management?: string;
   disease_biocontrol?: string;
   disease_image?: string;
+  additional_diseases?: Array<{
+    name: string;
+    causalAgent: string;
+    symptoms: string;
+    lifeCycle: string;
+    management: string;
+    biocontrol: string;
+    image: string;
+  }>;
   
   // Disorder management
   disorder_name?: string;
@@ -317,6 +335,7 @@ const SimpleCropProfile: React.FC<SimpleCropProfileProps> = ({ cropName, onBack 
             pest_management: staticCrop.pestDetails?.management || null,
             pest_biocontrol: staticCrop.pestDetails?.biocontrol || null,
             pest_image: staticCrop.pestDetails?.image || null,
+            additional_pests: staticCrop.additionalPests || null,
             
             // Detailed disease management
             disease_name: staticCrop.diseaseDetails?.name || null,
@@ -326,6 +345,7 @@ const SimpleCropProfile: React.FC<SimpleCropProfileProps> = ({ cropName, onBack 
             disease_management: staticCrop.diseaseDetails?.management || null,
             disease_biocontrol: staticCrop.diseaseDetails?.biocontrol || null,
             disease_image: staticCrop.diseaseDetails?.image || null,
+            additional_diseases: staticCrop.additionalDiseases || null,
             
             // Disorder management
             disorder_name: staticCrop.disorders?.name || null,
@@ -1098,6 +1118,7 @@ const SimpleCropProfile: React.FC<SimpleCropProfileProps> = ({ cropName, onBack 
 
           {/* Pests & Diseases Tab */}
           <TabsContent value="pests-diseases" className="space-y-6">
+            {/* Main Pest and Disease */}
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
               {/* Detailed Pest Information */}
               {crop.pest_name && (
@@ -1246,6 +1267,102 @@ const SimpleCropProfile: React.FC<SimpleCropProfileProps> = ({ cropName, onBack 
                 </Card>
               )}
             </div>
+
+            {/* Additional Pests and Diseases */}
+            {(crop.additional_pests && crop.additional_pests.length > 0) || (crop.additional_diseases && crop.additional_diseases.length > 0) ? (
+              <div className="space-y-6">
+                <div className="text-center">
+                  <h3 className="text-lg font-semibold text-gray-800 mb-2">Additional Pests & Diseases</h3>
+                  <p className="text-gray-600">Comprehensive list of other common pests and diseases affecting this crop</p>
+                </div>
+
+                {/* Additional Pests */}
+                {crop.additional_pests && crop.additional_pests.length > 0 && (
+                  <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                    {crop.additional_pests.map((pest, index) => (
+                      <Card key={index} className="bg-white border border-gray-200">
+                        <CardHeader>
+                          <CardTitle className="flex items-center gap-2 text-gray-800">
+                            <Bug className="h-5 w-5 text-red-500" />
+                            {pest.name}
+                          </CardTitle>
+                        </CardHeader>
+                        <CardContent className="space-y-4 text-sm text-gray-600">
+                          {/* Pest Image */}
+                          {pest.image && (
+                            <div className="mb-4">
+                              <img 
+                                src={pest.image} 
+                                alt={`${pest.name} pest`}
+                                className="w-full h-48 object-cover rounded-lg border border-gray-200"
+                              />
+                            </div>
+                          )}
+                          <div>
+                            <span className="font-medium">Symptoms:</span> {pest.symptoms}
+                          </div>
+                          <div>
+                            <span className="font-medium">Life Cycle:</span> {pest.lifeCycle}
+                          </div>
+                          <div>
+                            <span className="font-medium">ETL:</span> {pest.etl}
+                          </div>
+                          <div>
+                            <span className="font-medium">Management:</span> {pest.management}
+                          </div>
+                          <div>
+                            <span className="font-medium">Biological Control:</span> {pest.biocontrol}
+                          </div>
+                        </CardContent>
+                      </Card>
+                    ))}
+                  </div>
+                )}
+
+                {/* Additional Diseases */}
+                {crop.additional_diseases && crop.additional_diseases.length > 0 && (
+                  <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mt-6">
+                    {crop.additional_diseases.map((disease, index) => (
+                      <Card key={index} className="bg-white border border-gray-200">
+                        <CardHeader>
+                          <CardTitle className="flex items-center gap-2 text-gray-800">
+                            <Shield className="h-5 w-5 text-orange-500" />
+                            {disease.name}
+                          </CardTitle>
+                        </CardHeader>
+                        <CardContent className="space-y-4 text-sm text-gray-600">
+                          {/* Disease Image */}
+                          {disease.image && (
+                            <div className="mb-4">
+                              <img 
+                                src={disease.image} 
+                                alt={`${disease.name} disease`}
+                                className="w-full h-48 object-cover rounded-lg border border-gray-200"
+                              />
+                            </div>
+                          )}
+                          <div>
+                            <span className="font-medium">Causal Agent:</span> {disease.causalAgent}
+                          </div>
+                          <div>
+                            <span className="font-medium">Symptoms:</span> {disease.symptoms}
+                          </div>
+                          <div>
+                            <span className="font-medium">Life Cycle:</span> {disease.lifeCycle}
+                          </div>
+                          <div>
+                            <span className="font-medium">Management:</span> {disease.management}
+                          </div>
+                          <div>
+                            <span className="font-medium">Biological Control:</span> {disease.biocontrol}
+                          </div>
+                        </CardContent>
+                      </Card>
+                    ))}
+                  </div>
+                )}
+              </div>
+            ) : null}
           </TabsContent>
 
           {/* Nematodes Tab */}

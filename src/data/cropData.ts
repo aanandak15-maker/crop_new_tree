@@ -107,6 +107,15 @@ export interface CropData {
     biocontrol?: string;
     image?: string;
   };
+  additionalPests?: Array<{
+    name: string;
+    symptoms: string;
+    lifeCycle: string;
+    etl: string;
+    management: string;
+    biocontrol: string;
+    image: string;
+  }>;
   diseases: string[];
   diseaseDetails?: {
     name?: string;
@@ -117,6 +126,15 @@ export interface CropData {
     biocontrol?: string;
     image?: string;
   };
+  additionalDiseases?: Array<{
+    name: string;
+    causalAgent: string;
+    symptoms: string;
+    lifeCycle: string;
+    management: string;
+    biocontrol: string;
+    image: string;
+  }>;
   disorders?: {
     name?: string;
     cause?: string;
@@ -525,6 +543,44 @@ export const cropDatabase: CropData[] = [
       biocontrol: "Ladybird beetles, lacewings, parasitic wasps, fungal pathogens",
       image: "https://images.unsplash.com/photo-1578662996442-48f60103fc96?w=400&h=300&fit=crop"
     },
+    additionalPests: [
+      {
+        name: "Termites (Odontotermes obesus)",
+        symptoms: "Hollow stems, wilting plants, soil tunnels, plant collapse",
+        lifeCycle: "Egg → Nymph → Worker/Soldier/Reproductive (2-3 months)",
+        etl: "2-3 termite mounds per hectare",
+        management: "Chlorpyriphos 20 EC @ 2.5 l/ha, Fipronil 0.3 GR @ 12.5 kg/ha",
+        biocontrol: "Nematodes (Steinernema carpocapsae), fungi (Metarhizium anisopliae)",
+        image: "https://images.unsplash.com/photo-1578662996442-48f60103fc96?w=400&h=300&fit=crop"
+      },
+      {
+        name: "Cutworms (Agrotis ipsilon)",
+        symptoms: "Cut seedlings at ground level, irregular holes in leaves, wilting plants",
+        lifeCycle: "Egg → Larva → Pupa → Adult (35-45 days), 2-3 generations/year",
+        etl: "2-3 larvae per square meter",
+        management: "Chlorpyriphos 20 EC @ 2.5 l/ha, Quinalphos 25 EC @ 2 l/ha",
+        biocontrol: "Bacillus thuringiensis, parasitic wasps, ground beetles",
+        image: "https://images.unsplash.com/photo-1578662996442-48f60103fc96?w=400&h=300&fit=crop"
+      },
+      {
+        name: "Armyworms (Mythimna separata)",
+        symptoms: "Skeletonized leaves, defoliation, grain damage, webbing",
+        lifeCycle: "Egg → Larva → Pupa → Adult (25-35 days), multiple generations",
+        etl: "5-10 larvae per square meter",
+        management: "Spinosad 45 SC @ 0.3 ml/l, Emamectin benzoate 5 SG @ 0.2 g/l",
+        biocontrol: "Nuclear polyhedrosis virus, parasitic wasps, predatory bugs",
+        image: "https://images.unsplash.com/photo-1578662996442-48f60103fc96?w=400&h=300&fit=crop"
+      },
+      {
+        name: "Shoot Fly (Atherigona naqvii)",
+        symptoms: "Dead hearts, stunted growth, tiller damage, reduced yield",
+        lifeCycle: "Egg → Larva → Pupa → Adult (15-20 days), 3-4 generations",
+        etl: "10-15% dead hearts",
+        management: "Carbofuran 3G @ 25 kg/ha, Phorate 10G @ 10 kg/ha",
+        biocontrol: "Parasitic wasps, predatory bugs, fungal pathogens",
+        image: "https://images.unsplash.com/photo-1578662996442-48f60103fc96?w=400&h=300&fit=crop"
+      }
+    ],
     diseaseDetails: {
       name: "Yellow Rust (Puccinia striiformis)",
       causalAgent: "Fungus - Puccinia striiformis f. sp. tritici",
@@ -534,6 +590,44 @@ export const cropDatabase: CropData[] = [
       biocontrol: "Bacillus subtilis, Pseudomonas fluorescens, Trichoderma spp.",
       image: "https://images.unsplash.com/photo-1578662996442-48f60103fc96?w=400&h=300&fit=crop"
     },
+    additionalDiseases: [
+      {
+        name: "Brown Rust (Puccinia triticina)",
+        causalAgent: "Fungus - Puccinia triticina",
+        symptoms: "Brown to dark brown pustules on leaves, circular spots, powdery spores",
+        lifeCycle: "Uredospores → Germination → Infection → New pustules (8-12 days)",
+        management: "Tebuconazole 25 EC @ 0.1%, Hexaconazole 5 EC @ 0.1%",
+        biocontrol: "Bacillus subtilis, Pseudomonas fluorescens, Trichoderma harzianum",
+        image: "https://images.unsplash.com/photo-1578662996442-48f60103fc96?w=400&h=300&fit=crop"
+      },
+      {
+        name: "Powdery Mildew (Blumeria graminis)",
+        causalAgent: "Fungus - Blumeria graminis f. sp. tritici",
+        symptoms: "White powdery patches on leaves, stems, and heads, reduced photosynthesis",
+        lifeCycle: "Conidia → Germination → Infection → New conidia (5-7 days)",
+        management: "Sulphur 80 WP @ 0.3%, Dinocap 48 EC @ 0.1%",
+        biocontrol: "Ampelomyces quisqualis, Bacillus subtilis, Trichoderma spp.",
+        image: "https://images.unsplash.com/photo-1578662996442-48f60103fc96?w=400&h=300&fit=crop"
+      },
+      {
+        name: "Loose Smut (Ustilago tritici)",
+        causalAgent: "Fungus - Ustilago tritici",
+        symptoms: "Black powdery masses replacing grains, infected heads appear earlier",
+        lifeCycle: "Teliospores → Germination → Infection → Systemic growth",
+        management: "Seed treatment with Carbendazim 2g/kg, Vitavax 2g/kg",
+        biocontrol: "Pseudomonas fluorescens, Trichoderma viride, Bacillus subtilis",
+        image: "https://images.unsplash.com/photo-1578662996442-48f60103fc96?w=400&h=300&fit=crop"
+      },
+      {
+        name: "Karnal Bunt (Tilletia indica)",
+        causalAgent: "Fungus - Tilletia indica",
+        symptoms: "Partial grain infection, fishy odor, black powdery spores in grains",
+        lifeCycle: "Teliospores → Germination → Infection → Grain colonization",
+        management: "Seed treatment with Carbendazim 2g/kg, Propiconazole 25 EC @ 0.1%",
+        biocontrol: "Pseudomonas fluorescens, Trichoderma harzianum, Bacillus subtilis",
+        image: "https://images.unsplash.com/photo-1578662996442-48f60103fc96?w=400&h=300&fit=crop"
+      }
+    ],
     disorders: {
       name: "Lodging (Stem Breakage)",
       cause: "Heavy rainfall, strong winds, excessive nitrogen, weak stems",
