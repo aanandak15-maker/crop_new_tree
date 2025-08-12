@@ -1765,34 +1765,152 @@ const SimpleCropProfile: React.FC<SimpleCropProfileProps> = ({ cropName, onBack 
           </TabsContent>
 
           {/* Market Tab */}
-          <TabsContent value="market" className="space-y-6">
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-              <Card className="bg-white border border-gray-200">
-                <CardHeader>
-                  <CardTitle className="flex items-center gap-2 text-gray-800">
-                    <TrendingUp className="h-5 w-5 text-green-500" />
-                    Economics & Market
-                  </CardTitle>
-                </CardHeader>
-                <CardContent className="space-y-2 text-sm text-gray-600">
-                  <p><span className="font-medium">Average Yield:</span> {crop.average_yield || 'Not specified'}</p>
-                  <p><span className="font-medium">Market Price:</span> {crop.market_price || 'Not specified'}</p>
-                  <p><span className="font-medium">Cost of Cultivation:</span> {crop.cost_of_cultivation || 'Not specified'}</p>
-                </CardContent>
-              </Card>
+          <TabsContent value="market" className="space-y-8">
+            {/* Hero Section */}
+            <div className="relative overflow-hidden rounded-xl bg-gradient-to-br from-yellow-50 to-orange-50 border border-yellow-200 p-8">
+              <div className="absolute top-0 right-0 w-32 h-32 bg-yellow-100 rounded-full -translate-y-16 translate-x-16 opacity-50"></div>
+              <div className="absolute bottom-0 left-0 w-24 h-24 bg-orange-100 rounded-full translate-y-12 -translate-x-12 opacity-50"></div>
+              <div className="relative z-10">
+                <div className="flex items-center gap-4 mb-4">
+                  <div className="w-16 h-16 bg-yellow-400 rounded-full flex items-center justify-center">
+                    <TrendingUp className="h-8 w-8 text-white" />
+                  </div>
+                  <div>
+                    <h1 className="text-3xl font-bold text-gray-800">Market & Economics</h1>
+                    <p className="text-gray-600">Commercial viability and market trends analysis</p>
+                  </div>
+                </div>
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-6">
+                  <div className="bg-white rounded-lg p-4 border border-yellow-100">
+                    <div className="flex items-center gap-2 mb-2">
+                      <div className="w-8 h-8 bg-green-100 rounded-lg flex items-center justify-center">
+                        <TrendingUp className="h-4 w-4 text-green-600" />
+                      </div>
+                      <span className="font-semibold text-gray-800">Yield</span>
+                    </div>
+                    <p className="text-2xl font-bold text-green-600">{crop.average_yield || 'N/A'}</p>
+                  </div>
+                  <div className="bg-white rounded-lg p-4 border border-yellow-100">
+                    <div className="flex items-center gap-2 mb-2">
+                      <div className="w-8 h-8 bg-blue-100 rounded-lg flex items-center justify-center">
+                        <TrendingUp className="h-4 w-4 text-blue-600" />
+                      </div>
+                      <span className="font-semibold text-gray-800">Price</span>
+                    </div>
+                    <p className="text-2xl font-bold text-blue-600">{crop.market_price || 'N/A'}</p>
+                  </div>
+                  <div className="bg-white rounded-lg p-4 border border-yellow-100">
+                    <div className="flex items-center gap-2 mb-2">
+                      <div className="w-8 h-8 bg-purple-100 rounded-lg flex items-center justify-center">
+                        <Activity className="h-4 w-4 text-purple-600" />
+                      </div>
+                      <span className="font-semibold text-gray-800">Cost</span>
+                    </div>
+                    <p className="text-2xl font-bold text-purple-600">{crop.cost_of_cultivation || 'N/A'}</p>
+                  </div>
+                </div>
+              </div>
+            </div>
 
-              <Card className="bg-white border border-gray-200">
-                <CardHeader>
-                  <CardTitle className="flex items-center gap-2 text-gray-800">
-                    <TrendingUp className="h-5 w-5 text-yellow-500" />
-                    Market Trends
-                  </CardTitle>
-                </CardHeader>
-                <CardContent className="space-y-2 text-sm text-gray-600">
-                  <p><span className="font-medium">Innovations:</span> {crop.innovations ? crop.innovations.join(', ') : 'Not specified'}</p>
-                  <p><span className="font-medium">Sustainability:</span> {crop.sustainability_practices ? crop.sustainability_practices.join(', ') : 'Not specified'}</p>
-                </CardContent>
-              </Card>
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+              {/* Economics & Market */}
+              <div className="bg-gradient-to-br from-green-50 to-emerald-50 border border-green-200 rounded-xl p-6 hover:shadow-lg transition-all duration-300">
+                <div className="flex items-center gap-3 mb-6">
+                  <div className="w-12 h-12 bg-green-400 rounded-lg flex items-center justify-center">
+                    <TrendingUp className="h-6 w-6 text-white" />
+                  </div>
+                  <div>
+                    <h3 className="text-xl font-bold text-gray-800">Economics & Market</h3>
+                    <p className="text-sm text-gray-600">Financial performance indicators</p>
+                  </div>
+                </div>
+                <div className="space-y-4">
+                  <div className="bg-white rounded-lg p-4 border border-green-100">
+                    <div className="flex items-center gap-3 mb-2">
+                      <div className="w-8 h-8 bg-green-100 rounded-lg flex items-center justify-center">
+                        <TrendingUp className="h-4 w-4 text-green-600" />
+                      </div>
+                      <span className="font-semibold text-gray-800">Average Yield</span>
+                    </div>
+                    <p className="text-gray-700 ml-11">{crop.average_yield || 'Not specified'}</p>
+                  </div>
+                  <div className="bg-white rounded-lg p-4 border border-green-100">
+                    <div className="flex items-center gap-3 mb-2">
+                      <div className="w-8 h-8 bg-blue-100 rounded-lg flex items-center justify-center">
+                        <TrendingUp className="h-4 w-4 text-blue-600" />
+                      </div>
+                      <span className="font-semibold text-gray-800">Market Price</span>
+                    </div>
+                    <p className="text-gray-700 ml-11">{crop.market_price || 'Not specified'}</p>
+                  </div>
+                  <div className="bg-white rounded-lg p-4 border border-green-100">
+                    <div className="flex items-center gap-3 mb-2">
+                      <div className="w-8 h-8 bg-purple-100 rounded-lg flex items-center justify-center">
+                        <Activity className="h-4 w-4 text-purple-600" />
+                      </div>
+                      <span className="font-semibold text-gray-800">Cost of Cultivation</span>
+                    </div>
+                    <p className="text-gray-700 ml-11">{crop.cost_of_cultivation || 'Not specified'}</p>
+                  </div>
+                </div>
+              </div>
+
+              {/* Market Trends */}
+              <div className="bg-gradient-to-br from-yellow-50 to-orange-50 border border-yellow-200 rounded-xl p-6 hover:shadow-lg transition-all duration-300">
+                <div className="flex items-center gap-3 mb-6">
+                  <div className="w-12 h-12 bg-yellow-400 rounded-lg flex items-center justify-center">
+                    <TrendingUp className="h-6 w-6 text-white" />
+                  </div>
+                  <div>
+                    <h3 className="text-xl font-bold text-gray-800">Market Trends</h3>
+                    <p className="text-sm text-gray-600">Innovation and sustainability practices</p>
+                  </div>
+                </div>
+                <div className="space-y-4">
+                  <div className="bg-white rounded-lg p-4 border border-yellow-100">
+                    <div className="flex items-center gap-3 mb-2">
+                      <div className="w-8 h-8 bg-blue-100 rounded-lg flex items-center justify-center">
+                        <Star className="h-4 w-4 text-blue-600" />
+                      </div>
+                      <span className="font-semibold text-gray-800">Innovations</span>
+                    </div>
+                    <div className="ml-11">
+                      {crop.innovations && crop.innovations.length > 0 ? (
+                        <div className="flex flex-wrap gap-1">
+                          {crop.innovations.map((innovation, index) => (
+                            <Badge key={index} className="bg-blue-100 text-blue-800 border-blue-200 text-xs">
+                              {innovation}
+                            </Badge>
+                          ))}
+                        </div>
+                      ) : (
+                        <p className="text-gray-700">Not specified</p>
+                      )}
+                    </div>
+                  </div>
+                  <div className="bg-white rounded-lg p-4 border border-yellow-100">
+                    <div className="flex items-center gap-3 mb-2">
+                      <div className="w-8 h-8 bg-green-100 rounded-lg flex items-center justify-center">
+                        <Leaf className="h-4 w-4 text-green-600" />
+                      </div>
+                      <span className="font-semibold text-gray-800">Sustainability</span>
+                    </div>
+                    <div className="ml-11">
+                      {crop.sustainability_practices && crop.sustainability_practices.length > 0 ? (
+                        <div className="flex flex-wrap gap-1">
+                          {crop.sustainability_practices.map((practice, index) => (
+                            <Badge key={index} className="bg-green-100 text-green-800 border-green-200 text-xs">
+                              {practice}
+                            </Badge>
+                          ))}
+                        </div>
+                      ) : (
+                        <p className="text-gray-700">Not specified</p>
+                      )}
+                    </div>
+                  </div>
+                </div>
+              </div>
             </div>
           </TabsContent>
 
