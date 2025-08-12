@@ -20,6 +20,11 @@ interface CropVariety {
   special_features: string[] | null;
   grain_quality: string | null;
   description: string | null;
+  zone?: string;
+  premium_market?: boolean;
+  late_sowing_suitable?: boolean;
+  irrigation_responsive?: boolean;
+  certified_seed_available?: boolean;
 }
 
 interface CropData {
@@ -30,6 +35,11 @@ interface CropData {
   season: string[] | null;
   description: string | null;
   origin?: string;
+  field_name?: string;
+  climate_zone?: string;
+  growth_habit?: string;
+  life_span?: string;
+  plant_type?: string;
   climate_type: string[] | null;
   temperature_range: string | null;
   rainfall_requirement: string | null;
@@ -184,6 +194,13 @@ interface CropData {
   nursery_practices?: string;
   training_system?: string;
   
+  // Variety-specific fields
+  variety_name?: string;
+  yield?: string;
+  variety_features?: string;
+  variety_suitability?: string;
+  market_demand?: string;
+  
   varieties?: CropVariety[];
 }
 
@@ -231,6 +248,11 @@ const SimpleCropProfile: React.FC<SimpleCropProfileProps> = ({ cropName, onBack 
             season: staticCrop.season || null,
             description: staticCrop.description || null,
             origin: staticCrop.origin,
+            field_name: staticCrop.morphology?.growthHabit || null,
+            climate_zone: staticCrop.climate?.zone || null,
+            growth_habit: staticCrop.morphology?.growthHabit || null,
+            life_span: staticCrop.morphology?.lifeSpan || null,
+            plant_type: staticCrop.morphology?.plantType || null,
             climate_type: staticCrop.climate?.zone ? [staticCrop.climate.zone] : null,
             temperature_range: staticCrop.climate?.temperature || null,
             rainfall_requirement: staticCrop.climate?.rainfall || null,
@@ -390,6 +412,13 @@ const SimpleCropProfile: React.FC<SimpleCropProfileProps> = ({ cropName, onBack 
             nursery_practices: staticCrop.reproduction?.nurseryPractices || null,
             training_system: staticCrop.reproduction?.trainingSystem || null,
             
+            // Variety-specific fields
+            variety_name: staticCrop.varieties?.[0]?.name || null,
+            yield: staticCrop.varieties?.[0]?.yield || null,
+            variety_features: staticCrop.varieties?.[0]?.characteristics ? staticCrop.varieties[0].characteristics.join(', ') : null,
+            variety_suitability: staticCrop.varieties?.[0]?.zone || null,
+            market_demand: staticCrop.economics?.marketDemand || null,
+            
             varieties: (staticCrop.varieties || []).map(v => ({
               id: v.id,
               name: v.name,
@@ -400,6 +429,11 @@ const SimpleCropProfile: React.FC<SimpleCropProfileProps> = ({ cropName, onBack 
               special_features: v.characteristics || null,
               grain_quality: v.grainQuality || null,
               description: null,
+              zone: v.zone || null,
+              premium_market: v.premiumMarket || false,
+              late_sowing_suitable: v.lateSowingSuitable || false,
+              irrigation_responsive: v.irrigationResponsive || false,
+              certified_seed_available: v.certifiedSeedAvailable || false,
             })),
           };
 
@@ -640,8 +674,13 @@ const SimpleCropProfile: React.FC<SimpleCropProfileProps> = ({ cropName, onBack 
                   <div className="space-y-2 text-sm text-gray-600">
                     <p><span className="font-medium">Family:</span> {crop.family || 'Not specified'}</p>
                     <p><span className="font-medium">Scientific Name:</span> {crop.scientific_name || 'Not specified'}</p>
+                    <p><span className="font-medium">Field Name:</span> {crop.field_name || 'Not specified'}</p>
                     <p><span className="font-medium">Season:</span> {crop.season ? crop.season.join(', ') : 'Not specified'}</p>
                     <p><span className="font-medium">Origin:</span> {crop.origin || 'Not specified'}</p>
+                    <p><span className="font-medium">Climate Zone:</span> {crop.climate_zone || 'Not specified'}</p>
+                    <p><span className="font-medium">Growth Habit:</span> {crop.growth_habit || 'Not specified'}</p>
+                    <p><span className="font-medium">Life Span:</span> {crop.life_span || 'Not specified'}</p>
+                    <p><span className="font-medium">Plant Type:</span> {crop.plant_type || 'Not specified'}</p>
                   </div>
                 </div>
                 <div>
@@ -727,6 +766,14 @@ const SimpleCropProfile: React.FC<SimpleCropProfileProps> = ({ cropName, onBack 
                           <span className="font-medium text-gray-800">Duration:</span>
                           <span className="ml-2 text-gray-600">{variety.duration || 'Not specified'}</span>
                         </div>
+                        <div>
+                          <span className="font-medium text-gray-800">Zone:</span>
+                          <span className="ml-2 text-gray-600">{variety.zone || 'Not specified'}</span>
+                        </div>
+                        <div>
+                          <span className="font-medium text-gray-800">Quality:</span>
+                          <span className="ml-2 text-gray-600">{variety.grain_quality || 'Not specified'}</span>
+                        </div>
                       </div>
                       
                       <div>
@@ -741,6 +788,53 @@ const SimpleCropProfile: React.FC<SimpleCropProfileProps> = ({ cropName, onBack 
                             </Badge>
                           )}
                         </div>
+                      </div>
+
+                      {variety.special_features && variety.special_features.length > 0 && (
+                        <div>
+                          <span className="font-medium text-sm text-gray-800">Special Features:</span>
+                          <div className="flex flex-wrap gap-1 mt-1">
+                            {variety.special_features.slice(0, 4).map((feature, idx) => (
+                              <Badge key={idx} variant="outline" className="text-xs border-green-300 text-green-700">{feature}</Badge>
+                            ))}
+                            {variety.special_features.length > 4 && (
+                              <Badge variant="outline" className="text-xs border-green-300 text-green-700">
+                                +{variety.special_features.length - 4} more
+                              </Badge>
+                            )}
+                          </div>
+                        </div>
+                      )}
+
+                      {variety.disease_resistance && variety.disease_resistance.length > 0 && (
+                        <div>
+                          <span className="font-medium text-sm text-gray-800">Disease Resistance:</span>
+                          <div className="flex flex-wrap gap-1 mt-1">
+                            {variety.disease_resistance.slice(0, 3).map((disease, idx) => (
+                              <Badge key={idx} variant="outline" className="text-xs border-red-300 text-red-700">{disease}</Badge>
+                            ))}
+                            {variety.disease_resistance.length > 3 && (
+                              <Badge variant="outline" className="text-xs border-red-300 text-red-700">
+                                +{variety.disease_resistance.length - 3} more
+                              </Badge>
+                            )}
+                          </div>
+                        </div>
+                      )}
+
+                      <div className="flex flex-wrap gap-2 text-xs">
+                        {variety.premium_market && (
+                          <Badge variant="outline" className="border-yellow-300 text-yellow-700">Premium Market</Badge>
+                        )}
+                        {variety.late_sowing_suitable && (
+                          <Badge variant="outline" className="border-blue-300 text-blue-700">Late Sowing</Badge>
+                        )}
+                        {variety.irrigation_responsive && (
+                          <Badge variant="outline" className="border-purple-300 text-purple-700">Irrigation Responsive</Badge>
+                        )}
+                        {variety.certified_seed_available && (
+                          <Badge variant="outline" className="border-green-300 text-green-700">Certified Seed</Badge>
+                        )}
                       </div>
 
                       {variety.description && (
