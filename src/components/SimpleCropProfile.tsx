@@ -595,9 +595,21 @@ const SimpleCropProfile: React.FC<SimpleCropProfileProps> = ({ cropName, onBack 
                 <Info className="h-4 w-4" />
                 <span className="hidden sm:inline">Overview</span>
               </TabsTrigger>
+              <TabsTrigger value="morphology" className="flex items-center gap-2 px-4 py-2 data-[state=active]:bg-yellow-400 data-[state=active]:text-gray-800">
+                <Leaf className="h-4 w-4" />
+                <span className="hidden sm:inline">Morphology</span>
+              </TabsTrigger>
+              <TabsTrigger value="genetics" className="flex items-center gap-2 px-4 py-2 data-[state=active]:bg-yellow-400 data-[state=active]:text-gray-800">
+                <Sprout className="h-4 w-4" />
+                <span className="hidden sm:inline">Genetics</span>
+              </TabsTrigger>
               <TabsTrigger value="varieties" className="flex items-center gap-2 px-4 py-2 data-[state=active]:bg-yellow-400 data-[state=active]:text-gray-800">
                 <Sprout className="h-4 w-4" />
                 <span className="hidden sm:inline">Varieties</span>
+              </TabsTrigger>
+              <TabsTrigger value="reproduction" className="flex items-center gap-2 px-4 py-2 data-[state=active]:bg-yellow-400 data-[state=active]:text-gray-800">
+                <Apple className="h-4 w-4" />
+                <span className="hidden sm:inline">Reproduction</span>
               </TabsTrigger>
               <TabsTrigger value="cultivation" className="flex items-center gap-2 px-4 py-2 data-[state=active]:bg-yellow-400 data-[state=active]:text-gray-800">
                 <Leaf className="h-4 w-4" />
@@ -610,6 +622,10 @@ const SimpleCropProfile: React.FC<SimpleCropProfileProps> = ({ cropName, onBack 
               <TabsTrigger value="nutrition" className="flex items-center gap-2 px-4 py-2 data-[state=active]:bg-yellow-400 data-[state=active]:text-gray-800">
                 <Apple className="h-4 w-4" />
                 <span className="hidden sm:inline">Nutrition</span>
+              </TabsTrigger>
+              <TabsTrigger value="government" className="flex items-center gap-2 px-4 py-2 data-[state=active]:bg-yellow-400 data-[state=active]:text-gray-800">
+                <Shield className="h-4 w-4" />
+                <span className="hidden sm:inline">Government</span>
               </TabsTrigger>
               <TabsTrigger value="market" className="flex items-center gap-2 px-4 py-2 data-[state=active]:bg-yellow-400 data-[state=active]:text-gray-800">
                 <TrendingUp className="h-4 w-4" />
@@ -627,25 +643,9 @@ const SimpleCropProfile: React.FC<SimpleCropProfileProps> = ({ cropName, onBack 
                 <AlertTriangle className="h-4 w-4" />
                 <span className="hidden sm:inline">Disorders</span>
               </TabsTrigger>
-              <TabsTrigger value="morphology" className="flex items-center gap-2 px-4 py-2 data-[state=active]:bg-yellow-400 data-[state=active]:text-gray-800">
-                <Leaf className="h-4 w-4" />
-                <span className="hidden sm:inline">Morphology</span>
-              </TabsTrigger>
-              <TabsTrigger value="genetics" className="flex items-center gap-2 px-4 py-2 data-[state=active]:bg-yellow-400 data-[state=active]:text-gray-800">
-                <Sprout className="h-4 w-4" />
-                <span className="hidden sm:inline">Genetics</span>
-              </TabsTrigger>
-              <TabsTrigger value="reproduction" className="flex items-center gap-2 px-4 py-2 data-[state=active]:bg-yellow-400 data-[state=active]:text-gray-800">
-                <Apple className="h-4 w-4" />
-                <span className="hidden sm:inline">Reproduction</span>
-              </TabsTrigger>
               <TabsTrigger value="harvest" className="flex items-center gap-2 px-4 py-2 data-[state=active]:bg-yellow-400 data-[state=active]:text-gray-800">
                 <Clock className="h-4 w-4" />
                 <span className="hidden sm:inline">Harvest</span>
-              </TabsTrigger>
-              <TabsTrigger value="government" className="flex items-center gap-2 px-4 py-2 data-[state=active]:bg-yellow-400 data-[state=active]:text-gray-800">
-                <Shield className="h-4 w-4" />
-                <span className="hidden sm:inline">Government</span>
               </TabsTrigger>
               <TabsTrigger value="technology" className="flex items-center gap-2 px-4 py-2 data-[state=active]:bg-yellow-400 data-[state=active]:text-gray-800">
                 <TrendingUp className="h-4 w-4" />
