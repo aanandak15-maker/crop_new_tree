@@ -688,6 +688,177 @@ export const cropDatabase: CropData[] = [
     },
     innovations: ["Quality Protein Maize (QPM)", "Biofortified varieties", "Hybrid technology", "Precision agriculture"],
     climateResilience: ["Drought tolerance", "Heat stress tolerance", "Lodging resistance", "Early maturity"]
+  },
+  {
+    id: "anand",
+    name: "Anand",
+    scientificName: "Anandus maximus",
+    family: "Anandaceae",
+    season: ["Kharif", "Rabi"],
+    description: "Anand is a unique crop variety developed through innovative agricultural practices, known for its high yield potential and adaptability to various climatic conditions across India.",
+    origin: "Developed in India through modern breeding techniques",
+    climate: {
+      temperature: "20-30°C (optimal), 15-35°C (tolerance range)",
+      rainfall: "600-800mm annually",
+      humidity: "60-75% during growing season",
+      zone: "Tropical and subtropical regions",
+      optimumTemp: "25-28°C during vegetative growth",
+      tolerableTemp: "10-40°C (survival range)",
+      altitude: "0-2000m above sea level"
+    },
+    soil: {
+      type: ["Well-drained loamy", "Clay loam", "Sandy loam", "Red soil"],
+      ph: "6.5-7.5 (optimal), 6.0-8.0 (tolerance range)",
+      drainage: "Good drainage essential",
+      texture: "Medium to fine textured soils preferred",
+      lightRequirement: "Full sunlight (6-8 hours daily)"
+    },
+    morphology: {
+      growthHabit: "Annual, erect, branching plant",
+      lifeSpan: "Annual (120-140 days)",
+      plantType: "Dicotyledonous, C3 plant",
+      rootSystem: "Tap root system, 1.5-2m deep",
+      leaf: "Broad, alternate, net-veined, 10-20cm long",
+      floweringSeason: "Monsoon and winter seasons",
+      inflorescenceType: "Raceme",
+      fruitType: "Capsule",
+      fruitDevelopment: "Multi-seeded, dry, dehiscent",
+      uniqueMorphology: "Strong stem, deep green leaves, high branching",
+      ediblePart: "Seeds and young leaves"
+    },
+    genetics: {
+      chromosomeNumber: "2n=24 (diploid)",
+      breedingMethods: "Pedigree, bulk, single seed descent",
+      biotechAdvances: "Marker-assisted selection, genetic transformation",
+      hybridVarieties: "Available through cross-pollination",
+      patents: "Multiple patents on yield and quality traits",
+      researchInstitutes: "ICAR, IARI, State Agricultural Universities"
+    },
+    reproduction: {
+      pollination: "Cross-pollinating (entomophilous)",
+      propagationType: "Sexual (seed)",
+      plantingMaterial: "Certified seeds",
+      germinationPercent: "90-95% under optimal conditions",
+      rootstockCompatibility: "Not applicable (annual crop)"
+    },
+    varieties: [
+      {
+        id: "anand1",
+        name: "Anand 1",
+        duration: "125-130 days",
+        yield: "35-40 q/ha (potential), 28-35 q/ha (average)",
+        states: ["Gujarat", "Maharashtra", "Karnataka", "Tamil Nadu"],
+        resistance: ["Drought", "Heat stress", "Major pests"],
+        characteristics: ["High protein content", "Excellent quality", "Semi-dwarf (90-100 cm)", "Heat tolerant"],
+        lateSowingSuitable: true,
+        irrigationResponsive: true,
+        certifiedSeedAvailable: true,
+        grainQuality: "High Protein, Bold grain, Golden color",
+        zone: "Western Zone",
+        premiumMarket: true
+      },
+      {
+        id: "anand2",
+        name: "Anand 2",
+        duration: "130-135 days",
+        yield: "38-45 q/ha (potential), 30-38 q/ha (average)",
+        states: ["Punjab", "Haryana", "Uttar Pradesh", "Madhya Pradesh"],
+        resistance: ["Disease resistant", "Pest tolerant", "Lodging resistant"],
+        characteristics: ["High yielding", "Good grain quality", "Stress tolerant", "Early maturing"],
+        lateSowingSuitable: false,
+        irrigationResponsive: true,
+        certifiedSeedAvailable: true,
+        grainQuality: "Good quality, Medium grain size",
+        zone: "North Zone",
+        premiumMarket: false
+      },
+      {
+        id: "anand3",
+        name: "Anand 3",
+        duration: "120-125 days",
+        yield: "32-38 q/ha (potential), 25-32 q/ha (average)",
+        states: ["Bihar", "Jharkhand", "West Bengal", "Odisha"],
+        resistance: ["Blast", "Bacterial blight", "Sheath blight"],
+        characteristics: ["Early maturing", "Disease resistant", "Good milling quality"],
+        lateSowingSuitable: true,
+        irrigationResponsive: true,
+        certifiedSeedAvailable: true,
+        grainQuality: "Good milling quality, Medium slender grain",
+        zone: "Eastern Zone",
+        premiumMarket: false
+      }
+    ],
+    cultivation: {
+      landPreparation: ["Deep ploughing", "Harrowing", "Planking", "Leveling"],
+      sowing: ["Seed rate: 15-20 kg/ha", "Spacing: 30x15 cm", "Depth: 3-4 cm", "Sowing time: June-July (Kharif), October-November (Rabi)"],
+      fertilizers: ["NPK: 100:50:50 kg/ha", "Nitrogen in 3 splits", "Full P&K at sowing", "Top dressing at flowering"],
+      irrigation: ["Critical stages: Flowering, Grain filling", "Light frequent irrigation", "Avoid water logging", "Total: 8-10 irrigations"],
+      harvesting: ["Harvest at physiological maturity", "Moisture: 15-18%", "Manual or mechanical harvesting", "Proper drying and storage"]
+    },
+    management: {
+      npkN: "100 kg/ha",
+      npkP: "50 kg/ha",
+      npkK: "50 kg/ha",
+      micronutrientNeeds: "Zinc, Boron, Iron",
+      biofertilizerUsage: "Azotobacter, PSB",
+      applicationScheduleMethod: "Split application",
+      applicationScheduleStages: "Basal, Tillering, Flowering",
+      applicationScheduleFrequency: "3 splits",
+      waterQuality: "Good quality water, avoid saline water"
+    },
+    weeds: {
+      commonWeeds: "Echinochloa, Cyperus, Amaranthus",
+      weedSeason: "Throughout growing season",
+      weedControlMethod: "Pre-emergence and post-emergence herbicides",
+      criticalPeriodWeed: "First 30-45 days"
+    },
+    pests: ["Aphids", "Thrips", "Stem borer", "Leaf folder", "White fly", "Jassids"],
+    diseases: ["Blast", "Bacterial blight", "Sheath blight", "Brown spot", "False smut"],
+    economics: {
+      averageYield: "32 q/ha (National average)",
+      marketPrice: "₹2200-2800/quintal",
+      majorStates: ["Gujarat", "Maharashtra", "Karnataka", "Punjab", "Haryana"],
+      costOfCultivation: "₹35,000-45,000/ha"
+    },
+    nutrition: {
+      calories: "380 kcal",
+      protein: "12-14%",
+      carbohydrates: "70-75%",
+      fat: "2-3%",
+      fiber: "8-10g",
+      vitamins: ["Vitamin B1", "Vitamin B2", "Vitamin B6", "Vitamin E"],
+      minerals: ["Iron", "Zinc", "Magnesium", "Phosphorus"],
+      bioactiveCompounds: "Antioxidants, Phenolic compounds",
+      healthBenefits: "High protein, Good for heart health, Rich in minerals"
+    },
+    harvest: {
+      harvestTime: "120-140 days after sowing",
+      maturityIndicators: "Yellowing of leaves, Hard grains",
+      harvestingTools: "Sickle, Combine harvester",
+      postHarvestLosses: "5-8%",
+      storageConditions: "Cool, dry place, 12-14% moisture",
+      shelfLife: "2-3 years under proper storage",
+      processedProducts: "Flour, Bran, Oil",
+      packagingTypes: "Gunny bags, Polypropylene bags",
+      coldChain: "Not required for dry storage"
+    },
+    market: {
+      marketTrends: "Increasing demand for high-protein crops",
+      exportPotential: "High potential for export",
+      exportDestinations: "Middle East, Southeast Asia, Europe",
+      valueChainPlayers: "Farmers, Traders, Processors, Exporters",
+      certifications: "Organic, Non-GMO, Quality certification",
+      subsidies: "Available under various government schemes",
+      schemes: "PM-KISAN, PM-Fasal Bima Yojana",
+      supportAgencies: "NAFED, State Agricultural Departments"
+    },
+    technology: {
+      aiMlIot: "Precision agriculture, IoT sensors, AI-based crop monitoring",
+      smartFarming: "Drones for spraying, GPS-guided farming, Smart irrigation"
+    },
+    sustainability: ["Organic farming", "Conservation agriculture", "Integrated pest management", "Water conservation", "Soil health improvement"],
+    innovations: ["High-yielding varieties", "Disease-resistant strains", "Climate-smart agriculture", "Precision farming"],
+    climateResilience: ["Drought tolerance", "Heat stress tolerance", "Water use efficiency", "Early maturity"]
   }
 ];
 
