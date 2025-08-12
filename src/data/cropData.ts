@@ -105,6 +105,7 @@ export interface CropData {
     etl?: string;
     management?: string;
     biocontrol?: string;
+    image?: string;
   };
   diseases: string[];
   diseaseDetails?: {
@@ -114,6 +115,7 @@ export interface CropData {
     lifeCycle?: string;
     management?: string;
     biocontrol?: string;
+    image?: string;
   };
   disorders?: {
     name?: string;
@@ -121,6 +123,7 @@ export interface CropData {
     symptoms?: string;
     impact?: string;
     control?: string;
+    image?: string;
   };
   nematodes?: {
     name?: string;
@@ -129,6 +132,7 @@ export interface CropData {
     etl?: string;
     management?: string;
     biocontrol?: string;
+    image?: string;
   };
   economics: {
     averageYield: string;
@@ -511,6 +515,41 @@ export const cropDatabase: CropData[] = [
       swotWeaknesses: "Water intensive, climate sensitive, storage challenges, pest susceptibility",
       swotOpportunities: "Growing demand, export potential, value addition, organic farming",
       swotThreats: "Climate change, water scarcity, price volatility, pest resistance"
+    },
+    pestDetails: {
+      name: "Aphids (Rhopalosiphum maidis)",
+      symptoms: "Yellowing of leaves, stunted growth, honeydew secretion, sooty mold development",
+      lifeCycle: "Egg → Nymph → Adult (10-14 days), multiple generations per season",
+      etl: "5-10 aphids per tiller during vegetative stage",
+      management: "Imidacloprid 17.8 SL @ 0.3 ml/l, Thiamethoxam 25 WG @ 0.2 g/l",
+      biocontrol: "Ladybird beetles, lacewings, parasitic wasps, fungal pathogens",
+      image: "https://images.unsplash.com/photo-1578662996442-48f60103fc96?w=400&h=300&fit=crop"
+    },
+    diseaseDetails: {
+      name: "Yellow Rust (Puccinia striiformis)",
+      causalAgent: "Fungus - Puccinia striiformis f. sp. tritici",
+      symptoms: "Yellow-orange pustules on leaves, parallel to veins, powdery spores",
+      lifeCycle: "Uredospores → Germination → Infection → New pustules (7-10 days)",
+      management: "Triadimefon 25 WP @ 0.1%, Propiconazole 25 EC @ 0.1%",
+      biocontrol: "Bacillus subtilis, Pseudomonas fluorescens, Trichoderma spp.",
+      image: "https://images.unsplash.com/photo-1578662996442-48f60103fc96?w=400&h=300&fit=crop"
+    },
+    disorders: {
+      name: "Lodging (Stem Breakage)",
+      cause: "Heavy rainfall, strong winds, excessive nitrogen, weak stems",
+      symptoms: "Bent or broken stems, reduced grain filling, difficult harvesting",
+      impact: "20-40% yield loss, poor grain quality, increased harvesting cost",
+      control: "Balanced fertilization, growth regulators, resistant varieties, proper spacing",
+      image: "https://images.unsplash.com/photo-1578662996442-48f60103fc96?w=400&h=300&fit=crop"
+    },
+    nematodes: {
+      name: "Cereal Cyst Nematode (Heterodera avenae)",
+      symptoms: "Stunted growth, yellowing, reduced tillering, poor root development",
+      lifeCycle: "Egg → Juvenile → Adult (30-45 days), survives in soil for years",
+      etl: "2-5 cysts per 100g soil",
+      management: "Crop rotation, nematicides, resistant varieties, soil solarization",
+      biocontrol: "Paecilomyces lilacinus, Pasteuria penetrans, organic amendments",
+      image: "https://images.unsplash.com/photo-1578662996442-48f60103fc96?w=400&h=300&fit=crop"
     }
   },
   {

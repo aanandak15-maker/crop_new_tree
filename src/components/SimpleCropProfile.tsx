@@ -94,6 +94,7 @@ interface CropData {
   pest_etl?: string;
   pest_management?: string;
   pest_biocontrol?: string;
+  pest_image?: string;
   
   // Detailed disease management
   disease_name?: string;
@@ -102,6 +103,7 @@ interface CropData {
   disease_life_cycle?: string;
   disease_management?: string;
   disease_biocontrol?: string;
+  disease_image?: string;
   
   // Disorder management
   disorder_name?: string;
@@ -109,6 +111,7 @@ interface CropData {
   disorder_symptoms?: string;
   disorder_impact?: string;
   disorder_control?: string;
+  disorder_image?: string;
   
   // Nematode management
   nematode_name?: string;
@@ -117,6 +120,7 @@ interface CropData {
   nematode_etl?: string;
   nematode_management?: string;
   nematode_biocontrol?: string;
+  nematode_image?: string;
   
   // Detailed nutrition
   calories?: string;
@@ -227,7 +231,7 @@ const SimpleCropProfile: React.FC<SimpleCropProfileProps> = ({ cropName, onBack 
           `)
           .eq('name', cropName)
           .maybeSingle();
-
+        
         if (error) {
           console.error('Error fetching crop:', error);
         }
@@ -236,7 +240,7 @@ const SimpleCropProfile: React.FC<SimpleCropProfileProps> = ({ cropName, onBack 
           setCrop(data as unknown as CropData);
           return;
         }
-
+        
         // Fallback to static dataset if DB has no record
         const staticCrop = getCropByName(cropName);
         if (staticCrop) {
@@ -312,6 +316,7 @@ const SimpleCropProfile: React.FC<SimpleCropProfileProps> = ({ cropName, onBack 
             pest_etl: staticCrop.pestDetails?.etl || null,
             pest_management: staticCrop.pestDetails?.management || null,
             pest_biocontrol: staticCrop.pestDetails?.biocontrol || null,
+            pest_image: staticCrop.pestDetails?.image || null,
             
             // Detailed disease management
             disease_name: staticCrop.diseaseDetails?.name || null,
@@ -320,6 +325,7 @@ const SimpleCropProfile: React.FC<SimpleCropProfileProps> = ({ cropName, onBack 
             disease_life_cycle: staticCrop.diseaseDetails?.lifeCycle || null,
             disease_management: staticCrop.diseaseDetails?.management || null,
             disease_biocontrol: staticCrop.diseaseDetails?.biocontrol || null,
+            disease_image: staticCrop.diseaseDetails?.image || null,
             
             // Disorder management
             disorder_name: staticCrop.disorders?.name || null,
@@ -327,6 +333,7 @@ const SimpleCropProfile: React.FC<SimpleCropProfileProps> = ({ cropName, onBack 
             disorder_symptoms: staticCrop.disorders?.symptoms || null,
             disorder_impact: staticCrop.disorders?.impact || null,
             disorder_control: staticCrop.disorders?.control || null,
+            disorder_image: staticCrop.disorders?.image || null,
             
             // Nematode management
             nematode_name: staticCrop.nematodes?.name || null,
@@ -335,6 +342,7 @@ const SimpleCropProfile: React.FC<SimpleCropProfileProps> = ({ cropName, onBack 
             nematode_etl: staticCrop.nematodes?.etl || null,
             nematode_management: staticCrop.nematodes?.management || null,
             nematode_biocontrol: staticCrop.nematodes?.biocontrol || null,
+            nematode_image: staticCrop.nematodes?.image || null,
             
             // Detailed nutrition
             calories: staticCrop.nutrition?.calories || null,
@@ -1100,7 +1108,17 @@ const SimpleCropProfile: React.FC<SimpleCropProfileProps> = ({ cropName, onBack 
                       Pest Details
                     </CardTitle>
                   </CardHeader>
-                  <CardContent className="space-y-3 text-sm text-gray-600">
+                  <CardContent className="space-y-4 text-sm text-gray-600">
+                    {/* Pest Image */}
+                    {crop.pest_image && (
+                      <div className="mb-4">
+                        <img 
+                          src={crop.pest_image} 
+                          alt={`${crop.pest_name} pest`}
+                          className="w-full h-48 object-cover rounded-lg border border-gray-200"
+                        />
+                      </div>
+                    )}
                     <div>
                       <span className="font-medium">Pest Name:</span> {crop.pest_name}
                     </div>
@@ -1142,7 +1160,17 @@ const SimpleCropProfile: React.FC<SimpleCropProfileProps> = ({ cropName, onBack 
                       Disease Details
                     </CardTitle>
                   </CardHeader>
-                  <CardContent className="space-y-3 text-sm text-gray-600">
+                  <CardContent className="space-y-4 text-sm text-gray-600">
+                    {/* Disease Image */}
+                    {crop.disease_image && (
+                      <div className="mb-4">
+                        <img 
+                          src={crop.disease_image} 
+                          alt={`${crop.disease_name} disease`}
+                          className="w-full h-48 object-cover rounded-lg border border-gray-200"
+                        />
+                      </div>
+                    )}
                     <div>
                       <span className="font-medium">Disease Name:</span> {crop.disease_name}
                     </div>
@@ -1231,7 +1259,17 @@ const SimpleCropProfile: React.FC<SimpleCropProfileProps> = ({ cropName, onBack 
                       Nematode Details
                     </CardTitle>
                   </CardHeader>
-                  <CardContent className="space-y-3 text-sm text-gray-600">
+                  <CardContent className="space-y-4 text-sm text-gray-600">
+                    {/* Nematode Image */}
+                    {crop.nematode_image && (
+                      <div className="mb-4">
+                        <img 
+                          src={crop.nematode_image} 
+                          alt={`${crop.nematode_name} nematode`}
+                          className="w-full h-48 object-cover rounded-lg border border-gray-200"
+                        />
+                      </div>
+                    )}
                     <div>
                       <span className="font-medium">Nematode Name:</span> {crop.nematode_name}
                     </div>
@@ -1287,7 +1325,17 @@ const SimpleCropProfile: React.FC<SimpleCropProfileProps> = ({ cropName, onBack 
                       Disorder Details
                     </CardTitle>
                   </CardHeader>
-                  <CardContent className="space-y-3 text-sm text-gray-600">
+                  <CardContent className="space-y-4 text-sm text-gray-600">
+                    {/* Disorder Image */}
+                    {crop.disorder_image && (
+                      <div className="mb-4">
+                        <img 
+                          src={crop.disorder_image} 
+                          alt={`${crop.disorder_name} disorder`}
+                          className="w-full h-48 object-cover rounded-lg border border-gray-200"
+                        />
+                      </div>
+                    )}
                     <div>
                       <span className="font-medium">Disorder Name:</span> {crop.disorder_name}
                     </div>
