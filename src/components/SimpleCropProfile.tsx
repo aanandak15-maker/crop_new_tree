@@ -1395,78 +1395,194 @@ const SimpleCropProfile: React.FC<SimpleCropProfileProps> = ({ cropName, onBack 
           </TabsContent>
 
           {/* Management Tab */}
-          <TabsContent value="management" className="space-y-6">
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          <TabsContent value="management" className="space-y-8">
+            {/* Hero Section */}
+            <div className="relative overflow-hidden rounded-xl bg-gradient-to-br from-purple-50 to-indigo-50 border border-purple-200 p-8">
+              <div className="absolute top-0 right-0 w-32 h-32 bg-purple-100 rounded-full -translate-y-16 translate-x-16 opacity-50"></div>
+              <div className="absolute bottom-0 left-0 w-24 h-24 bg-indigo-100 rounded-full translate-y-12 -translate-x-12 opacity-50"></div>
+              <div className="relative z-10">
+                <div className="flex items-center gap-4 mb-4">
+                  <div className="w-16 h-16 bg-purple-400 rounded-full flex items-center justify-center">
+                    <Shield className="h-8 w-8 text-white" />
+                  </div>
+                  <div>
+                    <h1 className="text-3xl font-bold text-gray-800">Crop Management</h1>
+                    <p className="text-gray-600">Fertilizer, irrigation, and water management strategies</p>
+                  </div>
+                </div>
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-6">
+                  <div className="bg-white rounded-lg p-4 border border-purple-100">
+                    <div className="flex items-center gap-2 mb-2">
+                      <div className="w-8 h-8 bg-green-100 rounded-lg flex items-center justify-center">
+                        <Shield className="h-4 w-4 text-green-600" />
+                      </div>
+                      <span className="font-semibold text-gray-800">Fertilizers</span>
+                    </div>
+                    <p className="text-2xl font-bold text-green-600">{crop.fertilizer_requirement?.length || 0} Types</p>
+                  </div>
+                  <div className="bg-white rounded-lg p-4 border border-purple-100">
+                    <div className="flex items-center gap-2 mb-2">
+                      <div className="w-8 h-8 bg-blue-100 rounded-lg flex items-center justify-center">
+                        <Droplets className="h-4 w-4 text-blue-600" />
+                      </div>
+                      <span className="font-semibold text-gray-800">Irrigation</span>
+                    </div>
+                    <p className="text-2xl font-bold text-blue-600">{crop.irrigation_schedule?.length || 0} Stages</p>
+                  </div>
+                  <div className="bg-white rounded-lg p-4 border border-purple-100">
+                    <div className="flex items-center gap-2 mb-2">
+                      <div className="w-8 h-8 bg-cyan-100 rounded-lg flex items-center justify-center">
+                        <Droplets className="h-4 w-4 text-cyan-600" />
+                      </div>
+                      <span className="font-semibold text-gray-800">Water Quality</span>
+                    </div>
+                    <p className="text-2xl font-bold text-cyan-600">{crop.water_quality ? 'Set' : 'Pending'}</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
               {/* Fertilizer Management */}
               {crop.fertilizer_requirement && crop.fertilizer_requirement.length > 0 && (
-                <Card className="bg-white border border-gray-200">
-                  <CardHeader>
-                    <CardTitle className="flex items-center gap-2 text-gray-800">
-                      <Shield className="h-5 w-5 text-blue-500" />
-                      Fertilizer Management
-                    </CardTitle>
-                  </CardHeader>
-                  <CardContent>
-                    <ul className="list-disc list-inside space-y-2 text-sm text-gray-600">
-                      {crop.fertilizer_requirement.map((fertilizer, index) => (
-                        <li key={index}>{fertilizer}</li>
-                      ))}
-                    </ul>
-                  </CardContent>
-                </Card>
+                <div className="bg-gradient-to-br from-green-50 to-emerald-50 border border-green-200 rounded-xl p-6 hover:shadow-lg transition-all duration-300">
+                  <div className="flex items-center gap-3 mb-6">
+                    <div className="w-12 h-12 bg-green-400 rounded-lg flex items-center justify-center">
+                      <Shield className="h-6 w-6 text-white" />
+                    </div>
+                    <div>
+                      <h3 className="text-xl font-bold text-gray-800">Fertilizer Management</h3>
+                      <p className="text-sm text-gray-600">Essential nutrient requirements</p>
+                    </div>
+                  </div>
+                  <div className="space-y-3">
+                    {crop.fertilizer_requirement.map((fertilizer, index) => (
+                      <div key={index} className="bg-white rounded-lg p-4 border border-green-100">
+                        <div className="flex items-start gap-3">
+                          <div className="w-6 h-6 bg-green-100 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5">
+                            <span className="text-sm font-bold text-green-600">{index + 1}</span>
+                          </div>
+                          <p className="text-sm text-gray-700 leading-relaxed">{fertilizer}</p>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
               )}
 
-              {/* Advanced Fertilizer Details */}
+              {/* NPK & Micronutrients */}
               {(crop.npk_n || crop.npk_p || crop.npk_k || crop.micronutrient_needs) && (
-                <Card className="bg-white border border-gray-200">
-                  <CardHeader>
-                    <CardTitle className="flex items-center gap-2 text-gray-800">
-                      <Shield className="h-5 w-5 text-green-500" />
-                      NPK & Micronutrients
-                    </CardTitle>
-                  </CardHeader>
-                  <CardContent className="space-y-2 text-sm text-gray-600">
-                    <p><span className="font-medium">Nitrogen (N):</span> {crop.npk_n || 'Not specified'}</p>
-                    <p><span className="font-medium">Phosphorus (P):</span> {crop.npk_p || 'Not specified'}</p>
-                    <p><span className="font-medium">Potassium (K):</span> {crop.npk_k || 'Not specified'}</p>
-                    <p><span className="font-medium">Micronutrients:</span> {crop.micronutrient_needs || 'Not specified'}</p>
-                  </CardContent>
-                </Card>
+                <div className="bg-gradient-to-br from-blue-50 to-cyan-50 border border-blue-200 rounded-xl p-6 hover:shadow-lg transition-all duration-300">
+                  <div className="flex items-center gap-3 mb-6">
+                    <div className="w-12 h-12 bg-blue-400 rounded-lg flex items-center justify-center">
+                      <Activity className="h-6 w-6 text-white" />
+                    </div>
+                    <div>
+                      <h3 className="text-xl font-bold text-gray-800">NPK & Micronutrients</h3>
+                      <p className="text-sm text-gray-600">Detailed nutrient specifications</p>
+                    </div>
+                  </div>
+                  <div className="space-y-4">
+                    <div className="bg-white rounded-lg p-4 border border-blue-100">
+                      <div className="flex items-center gap-3 mb-2">
+                        <div className="w-8 h-8 bg-blue-100 rounded-lg flex items-center justify-center">
+                          <Activity className="h-4 w-4 text-blue-600" />
+                        </div>
+                        <span className="font-semibold text-gray-800">Nitrogen (N)</span>
+                      </div>
+                      <p className="text-gray-700 ml-11">{crop.npk_n || 'Not specified'}</p>
+                    </div>
+                    <div className="bg-white rounded-lg p-4 border border-blue-100">
+                      <div className="flex items-center gap-3 mb-2">
+                        <div className="w-8 h-8 bg-purple-100 rounded-lg flex items-center justify-center">
+                          <Activity className="h-4 w-4 text-purple-600" />
+                        </div>
+                        <span className="font-semibold text-gray-800">Phosphorus (P)</span>
+                      </div>
+                      <p className="text-gray-700 ml-11">{crop.npk_p || 'Not specified'}</p>
+                    </div>
+                    <div className="bg-white rounded-lg p-4 border border-blue-100">
+                      <div className="flex items-center gap-3 mb-2">
+                        <div className="w-8 h-8 bg-orange-100 rounded-lg flex items-center justify-center">
+                          <Activity className="h-4 w-4 text-orange-600" />
+                        </div>
+                        <span className="font-semibold text-gray-800">Potassium (K)</span>
+                      </div>
+                      <p className="text-gray-700 ml-11">{crop.npk_k || 'Not specified'}</p>
+                    </div>
+                    <div className="bg-white rounded-lg p-4 border border-blue-100">
+                      <div className="flex items-center gap-3 mb-2">
+                        <div className="w-8 h-8 bg-green-100 rounded-lg flex items-center justify-center">
+                          <Star className="h-4 w-4 text-green-600" />
+                        </div>
+                        <span className="font-semibold text-gray-800">Micronutrients</span>
+                      </div>
+                      <p className="text-gray-700 ml-11">{crop.micronutrient_needs || 'Not specified'}</p>
+                    </div>
+                  </div>
+                </div>
               )}
 
               {/* Irrigation Schedule */}
               {crop.irrigation_schedule && crop.irrigation_schedule.length > 0 && (
-                <Card className="bg-white border border-gray-200">
-                  <CardHeader>
-                    <CardTitle className="flex items-center gap-2 text-gray-800">
-                      <Droplets className="h-5 w-5 text-blue-500" />
-                      Irrigation Schedule
-                    </CardTitle>
-                  </CardHeader>
-                  <CardContent>
-                    <ul className="list-disc list-inside space-y-2 text-sm text-gray-600">
-                      {crop.irrigation_schedule.map((schedule, index) => (
-                        <li key={index}>{schedule}</li>
-                      ))}
-                    </ul>
-                  </CardContent>
-                </Card>
+                <div className="bg-gradient-to-br from-cyan-50 to-blue-50 border border-cyan-200 rounded-xl p-6 hover:shadow-lg transition-all duration-300">
+                  <div className="flex items-center gap-3 mb-6">
+                    <div className="w-12 h-12 bg-cyan-400 rounded-lg flex items-center justify-center">
+                      <Droplets className="h-6 w-6 text-white" />
+                    </div>
+                    <div>
+                      <h3 className="text-xl font-bold text-gray-800">Irrigation Schedule</h3>
+                      <p className="text-sm text-gray-600">Watering timeline and requirements</p>
+                    </div>
+                  </div>
+                  <div className="space-y-3">
+                    {crop.irrigation_schedule.map((schedule, index) => (
+                      <div key={index} className="bg-white rounded-lg p-4 border border-cyan-100">
+                        <div className="flex items-start gap-3">
+                          <div className="w-6 h-6 bg-cyan-100 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5">
+                            <span className="text-sm font-bold text-cyan-600">{index + 1}</span>
+                          </div>
+                          <p className="text-sm text-gray-700 leading-relaxed">{schedule}</p>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
               )}
 
-              {/* Water Quality & Requirements */}
+              {/* Water Management */}
               {(crop.water_quality || crop.water_requirement) && (
-                <Card className="bg-white border border-gray-200">
-                  <CardHeader>
-                    <CardTitle className="flex items-center gap-2 text-gray-800">
-                      <Droplets className="h-5 w-5 text-cyan-500" />
-                      Water Management
-                    </CardTitle>
-                  </CardHeader>
-                  <CardContent className="space-y-2 text-sm text-gray-600">
-                    <p><span className="font-medium">Water Requirement:</span> {crop.water_requirement || 'Not specified'}</p>
-                    <p><span className="font-medium">Water Quality:</span> {crop.water_quality || 'Not specified'}</p>
-                  </CardContent>
-                </Card>
+                <div className="bg-gradient-to-br from-indigo-50 to-purple-50 border border-indigo-200 rounded-xl p-6 hover:shadow-lg transition-all duration-300">
+                  <div className="flex items-center gap-3 mb-6">
+                    <div className="w-12 h-12 bg-indigo-400 rounded-lg flex items-center justify-center">
+                      <Droplets className="h-6 w-6 text-white" />
+                    </div>
+                    <div>
+                      <h3 className="text-xl font-bold text-gray-800">Water Management</h3>
+                      <p className="text-sm text-gray-600">Quality and quantity requirements</p>
+                    </div>
+                  </div>
+                  <div className="space-y-4">
+                    <div className="bg-white rounded-lg p-4 border border-indigo-100">
+                      <div className="flex items-center gap-3 mb-2">
+                        <div className="w-8 h-8 bg-indigo-100 rounded-lg flex items-center justify-center">
+                          <Droplets className="h-4 w-4 text-indigo-600" />
+                        </div>
+                        <span className="font-semibold text-gray-800">Water Requirement</span>
+                      </div>
+                      <p className="text-gray-700 ml-11">{crop.water_requirement || 'Not specified'}</p>
+                    </div>
+                    <div className="bg-white rounded-lg p-4 border border-indigo-100">
+                      <div className="flex items-center gap-3 mb-2">
+                        <div className="w-8 h-8 bg-purple-100 rounded-lg flex items-center justify-center">
+                          <Shield className="h-4 w-4 text-purple-600" />
+                        </div>
+                        <span className="font-semibold text-gray-800">Water Quality</span>
+                      </div>
+                      <p className="text-gray-700 ml-11">{crop.water_quality || 'Not specified'}</p>
+                    </div>
+                  </div>
+                </div>
               )}
             </div>
           </TabsContent>
