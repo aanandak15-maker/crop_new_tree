@@ -7,7 +7,8 @@ import { supabase } from '@/integrations/supabase/client';
 import { getCropByName } from '@/data/cropData';
 import { 
   ArrowLeft, Info, Wheat, Leaf, Shield, Apple, TrendingUp, 
-  Sprout, Bug, MapPin, Clock, Loader2, AlertTriangle, Droplets, Thermometer
+  Sprout, Bug, MapPin, Clock, Loader2, AlertTriangle, Droplets, Thermometer, 
+  Cloud, Activity
 } from 'lucide-react';
 
 interface CropVariety {
@@ -662,104 +663,266 @@ const SimpleCropProfile: React.FC<SimpleCropProfileProps> = ({ cropName, onBack 
           </div>
 
           {/* Overview Tab */}
-          <TabsContent value="overview" className="space-y-6">
-            {/* Quick Stats */}
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-              {renderStatCard(
-                "Varieties", 
-                stats.varieties, 
-                <Sprout className="h-5 w-5 text-yellow-600" />, 
-                "text-yellow-600"
-              )}
-              {renderStatCard(
-                "States", 
-                stats.states, 
-                <MapPin className="h-5 w-5 text-blue-600" />, 
-                "text-blue-600"
-              )}
-              {renderStatCard(
-                "Avg Yield", 
-                stats.avgYield, 
-                <TrendingUp className="h-5 w-5 text-yellow-600" />, 
-                "text-yellow-600"
-              )}
-              {renderStatCard(
-                "Duration", 
-                stats.avgDuration, 
-                <Clock className="h-5 w-5 text-gray-600" />, 
-                "text-gray-600"
-              )}
-            </div>
-
-            {/* Quick Facts */}
-            <Card className="bg-white border border-gray-200">
-              <CardHeader>
-                <CardTitle className="text-gray-800">Quick Facts</CardTitle>
-              </CardHeader>
-              <CardContent className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div>
-                  <h4 className="font-semibold mb-3 text-gray-800">Botanical Classification</h4>
-                  <div className="space-y-2 text-sm text-gray-600">
-                    <p><span className="font-medium">Family:</span> {crop.family || 'Not specified'}</p>
-                    <p><span className="font-medium">Scientific Name:</span> {crop.scientific_name || 'Not specified'}</p>
-                    <p><span className="font-medium">Field Name:</span> {crop.field_name || 'Not specified'}</p>
-                    <p><span className="font-medium">Season:</span> {crop.season ? crop.season.join(', ') : 'Not specified'}</p>
-                    <p><span className="font-medium">Origin:</span> {crop.origin || 'Not specified'}</p>
-                    <p><span className="font-medium">Climate Zone:</span> {crop.climate_zone || 'Not specified'}</p>
-                    <p><span className="font-medium">Growth Habit:</span> {crop.growth_habit || 'Not specified'}</p>
-                    <p><span className="font-medium">Life Span:</span> {crop.life_span || 'Not specified'}</p>
-                    <p><span className="font-medium">Plant Type:</span> {crop.plant_type || 'Not specified'}</p>
+          <TabsContent value="overview" className="space-y-8">
+            {/* Hero Section */}
+            <div className="relative overflow-hidden rounded-xl bg-gradient-to-br from-yellow-50 to-orange-50 border border-yellow-200 p-8">
+              <div className="absolute top-0 right-0 w-32 h-32 bg-yellow-100 rounded-full -translate-y-16 translate-x-16 opacity-50"></div>
+              <div className="absolute bottom-0 left-0 w-24 h-24 bg-orange-100 rounded-full translate-y-12 -translate-x-12 opacity-50"></div>
+              <div className="relative z-10">
+                <div className="flex items-center gap-4 mb-4">
+                  <div className="w-16 h-16 bg-yellow-400 rounded-full flex items-center justify-center">
+                    <Wheat className="h-8 w-8 text-white" />
+                  </div>
+                  <div>
+                    <h1 className="text-3xl font-bold text-gray-800">{crop.name}</h1>
+                    <p className="text-gray-600 italic">{crop.scientific_name}</p>
                   </div>
                 </div>
-                <div>
-                  <h4 className="font-semibold mb-3 text-gray-800">Major Growing States</h4>
-                  <div className="flex flex-wrap gap-1">
+                <p className="text-gray-700 text-lg leading-relaxed max-w-3xl">
+                  {crop.description || 'A comprehensive overview of this important agricultural crop with detailed information about cultivation, management, and economic aspects.'}
+                </p>
+              </div>
+            </div>
+
+            {/* Quick Stats with Enhanced Design */}
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+              <div className="bg-gradient-to-br from-yellow-50 to-yellow-100 border border-yellow-200 rounded-xl p-6 hover:shadow-lg transition-all duration-300">
+                <div className="flex items-center gap-3 mb-3">
+                  <div className="w-12 h-12 bg-yellow-400 rounded-lg flex items-center justify-center">
+                    <Sprout className="h-6 w-6 text-white" />
+                  </div>
+                  <div>
+                    <p className="text-sm font-medium text-gray-600">Varieties</p>
+                    <p className="text-2xl font-bold text-gray-800">{stats.varieties}</p>
+                  </div>
+                </div>
+                <div className="w-full bg-yellow-200 rounded-full h-2">
+                  <div className="bg-yellow-500 h-2 rounded-full" style={{width: `${Math.min((stats.varieties / 10) * 100, 100)}%`}}></div>
+                </div>
+              </div>
+
+              <div className="bg-gradient-to-br from-blue-50 to-blue-100 border border-blue-200 rounded-xl p-6 hover:shadow-lg transition-all duration-300">
+                <div className="flex items-center gap-3 mb-3">
+                  <div className="w-12 h-12 bg-blue-400 rounded-lg flex items-center justify-center">
+                    <MapPin className="h-6 w-6 text-white" />
+                  </div>
+                  <div>
+                    <p className="text-sm font-medium text-gray-600">States</p>
+                    <p className="text-2xl font-bold text-gray-800">{stats.states}</p>
+                  </div>
+                </div>
+                <div className="w-full bg-blue-200 rounded-full h-2">
+                  <div className="bg-blue-500 h-2 rounded-full" style={{width: `${Math.min((stats.states / 20) * 100, 100)}%`}}></div>
+                </div>
+              </div>
+
+              <div className="bg-gradient-to-br from-green-50 to-green-100 border border-green-200 rounded-xl p-6 hover:shadow-lg transition-all duration-300">
+                <div className="flex items-center gap-3 mb-3">
+                  <div className="w-12 h-12 bg-green-400 rounded-lg flex items-center justify-center">
+                    <TrendingUp className="h-6 w-6 text-white" />
+                  </div>
+                  <div>
+                    <p className="text-sm font-medium text-gray-600">Avg Yield</p>
+                    <p className="text-2xl font-bold text-gray-800">{stats.avgYield}</p>
+                  </div>
+                </div>
+                <div className="w-full bg-green-200 rounded-full h-2">
+                  <div className="bg-green-500 h-2 rounded-full" style={{width: '75%'}}></div>
+                </div>
+              </div>
+
+              <div className="bg-gradient-to-br from-purple-50 to-purple-100 border border-purple-200 rounded-xl p-6 hover:shadow-lg transition-all duration-300">
+                <div className="flex items-center gap-3 mb-3">
+                  <div className="w-12 h-12 bg-purple-400 rounded-lg flex items-center justify-center">
+                    <Clock className="h-6 w-6 text-white" />
+                  </div>
+                  <div>
+                    <p className="text-sm font-medium text-gray-600">Duration</p>
+                    <p className="text-2xl font-bold text-gray-800">{stats.avgDuration}</p>
+                  </div>
+                </div>
+                <div className="w-full bg-purple-200 rounded-full h-2">
+                  <div className="bg-purple-500 h-2 rounded-full" style={{width: '60%'}}></div>
+                </div>
+              </div>
+            </div>
+
+            {/* Quick Facts with Enhanced Design */}
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+              {/* Botanical Classification */}
+              <div className="bg-gradient-to-br from-emerald-50 to-teal-50 border border-emerald-200 rounded-xl p-6 hover:shadow-lg transition-all duration-300">
+                <div className="flex items-center gap-3 mb-6">
+                  <div className="w-12 h-12 bg-emerald-400 rounded-lg flex items-center justify-center">
+                    <Leaf className="h-6 w-6 text-white" />
+                  </div>
+                  <div>
+                    <h3 className="text-xl font-bold text-gray-800">Botanical Classification</h3>
+                    <p className="text-sm text-gray-600">Taxonomic and biological details</p>
+                  </div>
+                </div>
+                <div className="space-y-4">
+                  <div className="grid grid-cols-1 gap-3">
+                    <div className="flex items-center justify-between p-3 bg-white rounded-lg border border-emerald-100">
+                      <span className="font-medium text-gray-700">Family</span>
+                      <span className="text-gray-600">{crop.family || 'Not specified'}</span>
+                    </div>
+                    <div className="flex items-center justify-between p-3 bg-white rounded-lg border border-emerald-100">
+                      <span className="font-medium text-gray-700">Scientific Name</span>
+                      <span className="text-gray-600 italic">{crop.scientific_name || 'Not specified'}</span>
+                    </div>
+                    <div className="flex items-center justify-between p-3 bg-white rounded-lg border border-emerald-100">
+                      <span className="font-medium text-gray-700">Season</span>
+                      <span className="text-gray-600">{crop.season ? crop.season.join(', ') : 'Not specified'}</span>
+                    </div>
+                    <div className="flex items-center justify-between p-3 bg-white rounded-lg border border-emerald-100">
+                      <span className="font-medium text-gray-700">Origin</span>
+                      <span className="text-gray-600">{crop.origin || 'Not specified'}</span>
+                    </div>
+                    <div className="flex items-center justify-between p-3 bg-white rounded-lg border border-emerald-100">
+                      <span className="font-medium text-gray-700">Growth Habit</span>
+                      <span className="text-gray-600">{crop.growth_habit || 'Not specified'}</span>
+                    </div>
+                    <div className="flex items-center justify-between p-3 bg-white rounded-lg border border-emerald-100">
+                      <span className="font-medium text-gray-700">Life Span</span>
+                      <span className="text-gray-600">{crop.life_span || 'Not specified'}</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Major Growing States */}
+              <div className="bg-gradient-to-br from-blue-50 to-indigo-50 border border-blue-200 rounded-xl p-6 hover:shadow-lg transition-all duration-300">
+                <div className="flex items-center gap-3 mb-6">
+                  <div className="w-12 h-12 bg-blue-400 rounded-lg flex items-center justify-center">
+                    <MapPin className="h-6 w-6 text-white" />
+                  </div>
+                  <div>
+                    <h3 className="text-xl font-bold text-gray-800">Major Growing States</h3>
+                    <p className="text-sm text-gray-600">Geographic distribution across India</p>
+                  </div>
+                </div>
+                <div className="space-y-4">
+                  <div className="flex flex-wrap gap-2">
                     {crop.varieties ? 
-                      [...new Set(crop.varieties.flatMap(v => v.suitable_states || []))].slice(0, 8).map((state) => (
-                        <Badge key={state} variant="outline" className="text-xs border-gray-300 text-gray-700">
+                      [...new Set(crop.varieties.flatMap(v => v.suitable_states || []))].slice(0, 12).map((state) => (
+                        <Badge key={state} className="bg-blue-100 text-blue-800 border-blue-200 hover:bg-blue-200 transition-colors">
                           {state}
                         </Badge>
                       )) : []
                     }
-                    {crop.varieties && [...new Set(crop.varieties.flatMap(v => v.suitable_states || []))].length > 8 && (
-                      <Badge variant="outline" className="text-xs border-gray-300 text-gray-700">
-                        +{[...new Set(crop.varieties.flatMap(v => v.suitable_states || []))].length - 8} more
+                    {crop.varieties && [...new Set(crop.varieties.flatMap(v => v.suitable_states || []))].length > 12 && (
+                      <Badge className="bg-gray-100 text-gray-600 border-gray-200">
+                        +{[...new Set(crop.varieties.flatMap(v => v.suitable_states || []))].length - 12} more
                       </Badge>
                     )}
                   </div>
+                  <div className="mt-4 p-4 bg-white rounded-lg border border-blue-100">
+                    <div className="flex items-center gap-2 text-sm text-gray-600">
+                      <div className="w-2 h-2 bg-blue-400 rounded-full"></div>
+                      <span>Primary growing regions with optimal conditions</span>
+                    </div>
+                  </div>
                 </div>
-              </CardContent>
-            </Card>
+              </div>
+            </div>
 
-            {/* Climate & Soil */}
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-              <Card className="bg-white border border-gray-200">
-                <CardHeader>
-                  <CardTitle className="flex items-center gap-2 text-gray-800">
-                    <Info className="h-5 w-5 text-blue-500" />
-                    Climate Requirements
-                  </CardTitle>
-                </CardHeader>
-                <CardContent className="space-y-2 text-sm text-gray-600">
-                  <p><span className="font-medium">Temperature:</span> {crop.temperature_range || 'Not specified'}</p>
-                  <p><span className="font-medium">Rainfall:</span> {crop.rainfall_requirement || 'Not specified'}</p>
-                  <p><span className="font-medium">Humidity:</span> {crop.humidity_range || 'Not specified'}</p>
-                </CardContent>
-              </Card>
+            {/* Climate & Soil with Enhanced Design */}
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+              {/* Climate Requirements */}
+              <div className="bg-gradient-to-br from-sky-50 to-cyan-50 border border-sky-200 rounded-xl p-6 hover:shadow-lg transition-all duration-300">
+                <div className="flex items-center gap-3 mb-6">
+                  <div className="w-12 h-12 bg-sky-400 rounded-lg flex items-center justify-center">
+                    <Thermometer className="h-6 w-6 text-white" />
+                  </div>
+                  <div>
+                    <h3 className="text-xl font-bold text-gray-800">Climate Requirements</h3>
+                    <p className="text-sm text-gray-600">Environmental conditions for optimal growth</p>
+                  </div>
+                </div>
+                <div className="space-y-4">
+                  <div className="bg-white rounded-lg p-4 border border-sky-100">
+                    <div className="flex items-center gap-3 mb-2">
+                      <div className="w-8 h-8 bg-red-100 rounded-lg flex items-center justify-center">
+                        <Thermometer className="h-4 w-4 text-red-500" />
+                      </div>
+                      <span className="font-semibold text-gray-800">Temperature</span>
+                    </div>
+                    <p className="text-gray-600 ml-11">{crop.temperature_range || 'Not specified'}</p>
+                  </div>
+                  <div className="bg-white rounded-lg p-4 border border-sky-100">
+                    <div className="flex items-center gap-3 mb-2">
+                      <div className="w-8 h-8 bg-blue-100 rounded-lg flex items-center justify-center">
+                        <Droplets className="h-4 w-4 text-blue-500" />
+                      </div>
+                      <span className="font-semibold text-gray-800">Rainfall</span>
+                    </div>
+                    <p className="text-gray-600 ml-11">{crop.rainfall_requirement || 'Not specified'}</p>
+                  </div>
+                  <div className="bg-white rounded-lg p-4 border border-sky-100">
+                    <div className="flex items-center gap-3 mb-2">
+                      <div className="w-8 h-8 bg-green-100 rounded-lg flex items-center justify-center">
+                        <Cloud className="h-4 w-4 text-green-500" />
+                      </div>
+                      <span className="font-semibold text-gray-800">Humidity</span>
+                    </div>
+                    <p className="text-gray-600 ml-11">{crop.humidity_range || 'Not specified'}</p>
+                  </div>
+                </div>
+              </div>
 
-              <Card className="bg-white border border-gray-200">
-                <CardHeader>
-                  <CardTitle className="flex items-center gap-2 text-gray-800">
-                    <Leaf className="h-5 w-5 text-green-500" />
-                    Soil Requirements
-                  </CardTitle>
-                </CardHeader>
-                <CardContent className="space-y-2 text-sm text-gray-600">
-                  <p><span className="font-medium">Soil Types:</span> {crop.soil_type ? crop.soil_type.join(', ') : 'Not specified'}</p>
-                  <p><span className="font-medium">pH Range:</span> {crop.soil_ph || 'Not specified'}</p>
-                  <p><span className="font-medium">Drainage:</span> {crop.drainage_requirement || 'Not specified'}</p>
-                </CardContent>
-              </Card>
+              {/* Soil Requirements */}
+              <div className="bg-gradient-to-br from-amber-50 to-orange-50 border border-amber-200 rounded-xl p-6 hover:shadow-lg transition-all duration-300">
+                <div className="flex items-center gap-3 mb-6">
+                  <div className="w-12 h-12 bg-amber-400 rounded-lg flex items-center justify-center">
+                    <Leaf className="h-6 w-6 text-white" />
+                  </div>
+                  <div>
+                    <h3 className="text-xl font-bold text-gray-800">Soil Requirements</h3>
+                    <p className="text-sm text-gray-600">Soil characteristics for successful cultivation</p>
+                  </div>
+                </div>
+                <div className="space-y-4">
+                  <div className="bg-white rounded-lg p-4 border border-amber-100">
+                    <div className="flex items-center gap-3 mb-2">
+                      <div className="w-8 h-8 bg-amber-100 rounded-lg flex items-center justify-center">
+                        <Leaf className="h-4 w-4 text-amber-600" />
+                      </div>
+                      <span className="font-semibold text-gray-800">Soil Types</span>
+                    </div>
+                    <div className="ml-11">
+                      {crop.soil_type ? (
+                        <div className="flex flex-wrap gap-1">
+                          {crop.soil_type.map((type, index) => (
+                            <Badge key={index} className="bg-amber-100 text-amber-800 border-amber-200 text-xs">
+                              {type}
+                            </Badge>
+                          ))}
+                        </div>
+                      ) : (
+                        <p className="text-gray-600">Not specified</p>
+                      )}
+                    </div>
+                  </div>
+                  <div className="bg-white rounded-lg p-4 border border-amber-100">
+                    <div className="flex items-center gap-3 mb-2">
+                      <div className="w-8 h-8 bg-purple-100 rounded-lg flex items-center justify-center">
+                        <Activity className="h-4 w-4 text-purple-500" />
+                      </div>
+                      <span className="font-semibold text-gray-800">pH Range</span>
+                    </div>
+                    <p className="text-gray-600 ml-11">{crop.soil_ph || 'Not specified'}</p>
+                  </div>
+                  <div className="bg-white rounded-lg p-4 border border-amber-100">
+                    <div className="flex items-center gap-3 mb-2">
+                      <div className="w-8 h-8 bg-blue-100 rounded-lg flex items-center justify-center">
+                        <Droplets className="h-4 w-4 text-blue-500" />
+                      </div>
+                      <span className="font-semibold text-gray-800">Drainage</span>
+                    </div>
+                    <p className="text-gray-600 ml-11">{crop.drainage_requirement || 'Not specified'}</p>
+                  </div>
+                </div>
+              </div>
             </div>
           </TabsContent>
 
