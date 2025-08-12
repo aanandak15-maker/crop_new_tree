@@ -7,7 +7,7 @@ import { supabase } from '@/integrations/supabase/client';
 import { getCropByName } from '@/data/cropData';
 import { 
   ArrowLeft, Info, Wheat, Leaf, Shield, Apple, TrendingUp, 
-  Sprout, Bug, MapPin, Clock, Loader2, Home, Sprout as Seedling, BarChart, DollarSign, AlertTriangle
+  Sprout, Bug, MapPin, Clock, Loader2
 } from 'lucide-react';
 
 interface CropVariety {
@@ -608,41 +608,7 @@ const SimpleCropProfile: React.FC<SimpleCropProfileProps> = ({ cropName, onBack 
         </Tabs>
       </div>
 
-      {/* Bottom Navigation */}
-      <footer className="sticky bottom-0 bg-white border-t border-gray-200">
-        <nav className="flex justify-around px-4 py-2">
-          <a className="flex flex-col items-center gap-1 text-yellow-600" href="#">
-            <div className="h-8 flex items-center justify-center">
-              <Home className="h-6 w-6" />
-            </div>
-            <p className="text-xs font-medium tracking-wide">Overview</p>
-          </a>
-          <a className="flex flex-col items-center gap-1 text-gray-600 hover:text-yellow-600 transition-colors duration-200" href="#">
-            <div className="h-8 flex items-center justify-center">
-              <Seedling className="h-6 w-6" />
-            </div>
-            <p className="text-xs font-medium tracking-wide">Cultivation</p>
-          </a>
-          <a className="flex flex-col items-center gap-1 text-gray-600 hover:text-yellow-600 transition-colors duration-200" href="#">
-            <div className="h-8 flex items-center justify-center">
-              <BarChart className="h-6 w-6" />
-            </div>
-            <p className="text-xs font-medium tracking-wide">Growth</p>
-          </a>
-          <a className="flex flex-col items-center gap-1 text-gray-600 hover:text-yellow-600 transition-colors duration-200" href="#">
-            <div className="h-8 flex items-center justify-center">
-              <DollarSign className="h-6 w-6" />
-            </div>
-            <p className="text-xs font-medium tracking-wide">Economics</p>
-          </a>
-          <a className="flex flex-col items-center gap-1 text-gray-600 hover:text-yellow-600 transition-colors duration-200" href="#">
-            <div className="h-8 flex items-center justify-center">
-              <AlertTriangle className="h-6 w-6" />
-            </div>
-            <p className="text-xs font-medium tracking-wide">Challenges</p>
-          </a>
-        </nav>
-      </footer>
+
     </div>
   );
 };
