@@ -13,6 +13,9 @@ import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { Plus, Edit, Trash2, Search, Filter, Download, Upload, RefreshCw } from "lucide-react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { CropTemplateSelector } from "./CropTemplateSelector";
+import { CropTemplate } from "@/types/cropTemplates";
+import { getTemplateById } from "@/data/cropTemplates";
 
 interface Crop {
   id: string;
@@ -173,6 +176,8 @@ const EnhancedCropManagement = () => {
   const [selectedCrops, setSelectedCrops] = useState<string[]>([]);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [editingCrop, setEditingCrop] = useState<Crop | null>(null);
+  const [selectedTemplate, setSelectedTemplate] = useState<CropTemplate | null>(null);
+  const [showTemplateSelector, setShowTemplateSelector] = useState(true);
   const [loading, setLoading] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
   const [seasonFilter, setSeasonFilter] = useState("all");
@@ -814,6 +819,35 @@ const EnhancedCropManagement = () => {
     document.body.removeChild(link);
   };
 
+  const handleTemplateSelect = (template: CropTemplate) => {
+    setSelectedTemplate(template);
+    setShowTemplateSelector(false);
+    
+    // Pre-fill form with template defaults
+    if (template.defaultValues) {
+      // Convert template defaults to match form data structure
+      const templateDefaults = Object.entries(template.defaultValues).reduce((acc, [key, value]) => {
+        if (key === 'season' && Array.isArray(value)) {
+          acc[key] = value.join(', ');
+        } else if (key === 'land_preparation' && Array.isArray(value)) {
+          acc[key] = value.join(', ');
+        } else if (typeof value === 'string') {
+          acc[key] = value;
+        }
+        return acc;
+      }, {} as any);
+      
+      setFormData(prev => ({
+        ...prev,
+        ...templateDefaults,
+        // Keep existing values for fields that shouldn't be overridden
+        name: prev.name,
+        scientific_name: prev.scientific_name,
+        description: prev.description
+      }));
+    }
+  };
+
   const resetForm = () => {
     setFormData({
       name: "", scientific_name: "", description: "", season: "", climate_type: "",
@@ -894,7 +928,12 @@ const EnhancedCropManagement = () => {
             )}
             <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
               <DialogTrigger asChild>
-                <Button onClick={() => { setEditingCrop(null); resetForm(); }}>
+                <Button onClick={() => { 
+                  setEditingCrop(null); 
+                  setSelectedTemplate(null);
+                  setShowTemplateSelector(true);
+                  resetForm(); 
+                }}>
                   <Plus className="h-4 w-4 mr-2" />
                   Add Crop
                 </Button>
@@ -905,9 +944,36 @@ const EnhancedCropManagement = () => {
                   <DialogDescription>
                     {editingCrop ? "Update crop information" : "Enter detailed crop information"}
                   </DialogDescription>
+                  {!editingCrop && selectedTemplate && (
+                    <div className="flex items-center gap-2 mt-2">
+                      <Button
+                        type="button"
+                        variant="outline"
+                        size="sm"
+                        onClick={() => {
+                          setShowTemplateSelector(true);
+                          setSelectedTemplate(null);
+                        }}
+                      >
+                        ← Change Template
+                      </Button>
+                      <Badge variant="outline" className="ml-2">
+                        Using: {selectedTemplate.name}
+                      </Badge>
+                    </div>
+                  )}
                 </DialogHeader>
-                <form onSubmit={handleSubmit} className="flex-1 flex flex-col overflow-hidden">
-                  <Tabs defaultValue="basic" className="flex-1 flex flex-col overflow-hidden">
+                
+                {!editingCrop && showTemplateSelector ? (
+                  <div className="flex-1 overflow-y-auto px-6 pb-6">
+                    <CropTemplateSelector
+                      onTemplateSelect={handleTemplateSelect}
+                      selectedTemplateId={selectedTemplate?.id}
+                    />
+                  </div>
+                ) : (
+                  <form onSubmit={handleSubmit} className="flex-1 flex flex-col overflow-hidden">
+                    <Tabs defaultValue="basic" className="flex-1 flex flex-col overflow-hidden">
                     <TabsList className="flex flex-wrap gap-2 mb-4 px-6 overflow-x-auto scrollbar-thin scrollbar-thumb-muted-foreground/30 scrollbar-track-transparent">
                       <TabsTrigger value="basic">Basic Identification</TabsTrigger>
                       <TabsTrigger value="morphology">Morphology & Anatomy</TabsTrigger>
@@ -1648,6 +1714,7 @@ const EnhancedCropManagement = () => {
                     </Button>
                   </div>
                 </form>
+                )}
               </DialogContent>
             </Dialog>
           </div>

@@ -4,7 +4,7 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { CropTemplate, CropCategory } from '@/types/cropTemplates';
 import { cropTemplates } from '@/data/cropTemplates';
-import { Wheat, Sprout, Apple, Leaf, Pepper, Scissors, Flower2, Pill } from 'lucide-react';
+import { Wheat, Sprout, Apple, Leaf, Scissors, Flower2, Pill, Zap } from 'lucide-react';
 
 interface CropTemplateSelectorProps {
   onTemplateSelect: (template: CropTemplate) => void;
@@ -24,7 +24,7 @@ const getCategoryIcon = (category: CropCategory) => {
     case 'fruit':
       return <Apple className="h-6 w-6" />;
     case 'spice':
-      return <Pepper className="h-6 w-6" />;
+      return <Zap className="h-6 w-6" />;
     case 'fiber':
       return <Scissors className="h-6 w-6" />;
     case 'medicinal':
