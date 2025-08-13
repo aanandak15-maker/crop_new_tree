@@ -6,6 +6,7 @@ import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Skeleton } from '@/components/ui/skeleton';
+import { Checkbox } from '@/components/ui/checkbox';
 import { 
   Wheat, 
   Sprout, 
@@ -39,9 +40,18 @@ import {
   Settings,
   BookOpen,
   Lightbulb,
-
+  Bell,
+  Home,
+  User,
+  ChevronRight,
+  Plus,
+  X,
+  AlertTriangle,
+  CheckCircle,
+  Info,
+  CloudRain
 } from 'lucide-react';
-import { getAllCropNames, getCropByName } from '@/data/cropData';
+// Removed unused import - data comes from Supabase
 import { supabase } from '@/integrations/supabase/client';
 import EnhancedCropCard from './EnhancedCropCard';
 import AdvancedFilters from './AdvancedFilters';
@@ -103,91 +113,21 @@ interface DbCrop {
   application_schedule_stages?: string;
   application_schedule_frequency?: string;
   water_quality?: string;
-  optimum_temp?: string;
-  tolerable_temp?: string;
-  altitude?: string;
-  soil_texture?: string;
-  light_requirement?: string;
   common_weeds?: string;
   weed_season?: string;
   weed_control_method?: string;
   critical_period_weed?: string;
-  pest_name?: string;
-  pest_symptoms?: string;
-  pest_life_cycle?: string;
-  pest_etl?: string;
-  pest_management?: string;
-  pest_biocontrol?: string;
-  disease_name?: string;
-  disease_causal_agent?: string;
-  disease_symptoms?: string;
-  disease_life_cycle?: string;
-  disease_management?: string;
-  disease_biocontrol?: string;
-  disorder_name?: string;
-  disorder_cause?: string;
-  disorder_symptoms?: string;
-  disorder_impact?: string;
-  disorder_control?: string;
-  nematode_name?: string;
-  nematode_symptoms?: string;
-  nematode_life_cycle?: string;
-  nematode_etl?: string;
-  nematode_management?: string;
-  nematode_biocontrol?: string;
-  calories?: string;
-  protein?: string;
-  carbohydrates?: string;
-  fat?: string;
-  fiber?: string;
-  vitamins?: string;
-  minerals?: string;
-  bioactive_compounds?: string;
-  health_benefits?: string;
-  variety_name?: string;
-  yield?: string;
-  variety_features?: string;
-  variety_suitability?: string;
-  market_demand?: string;
-  harvest_time?: string;
-  maturity_indicators?: string;
-  harvesting_tools?: string;
-  post_harvest_losses?: string;
-  storage_conditions?: string;
-  shelf_life?: string;
-  processed_products?: string;
-  packaging_types?: string;
-  cold_chain?: string;
-  ripening_characteristics?: string;
-  pre_cooling?: string;
-  market_trends?: string;
-  export_potential?: string;
-  export_destinations?: string;
-  value_chain_players?: string;
-  certifications?: string;
-  subsidies?: string;
-  schemes?: string;
-  support_agencies?: string;
-  ai_ml_iot?: string;
-  smart_farming?: string;
-  sustainability_potential?: string;
-  waste_to_wealth?: string;
-  climate_resilience?: string;
-  carbon_footprint?: string;
-  religious_use?: string;
-  traditional_uses?: string;
-  gi_status?: string;
-  fun_fact?: string;
-  key_takeaways?: string;
-  swot_strengths?: string;
-  swot_weaknesses?: string;
-  swot_opportunities?: string;
-  swot_threats?: string;
+  pests?: string[];
+  diseases?: string[];
+  created_at?: string;
+  updated_at?: string;
 }
 
 const EnhancedCropDashboard: React.FC<EnhancedCropDashboardProps> = ({ onCropSelect }) => {
+  // Core state
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedSeason, setSelectedSeason] = useState<string>('all');
+  const [selectedCropType, setSelectedCropType] = useState<string>('all');
   const [selectedState, setSelectedState] = useState<string>('all');
   const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
   const [dbCrops, setDbCrops] = useState<DbCrop[]>([]);
@@ -198,8 +138,15 @@ const EnhancedCropDashboard: React.FC<EnhancedCropDashboardProps> = ({ onCropSel
   const [showComparison, setShowComparison] = useState(false);
   const [showInsights, setShowInsights] = useState(false);
   const [advancedFilters, setAdvancedFilters] = useState<any>({});
+  
+  // New state for enhanced features
+  const [selectedCrops, setSelectedCrops] = useState<string[]>([]);
+  const [showCompareTray, setShowCompareTray] = useState(false);
+  const [savedFilters, setSavedFilters] = useState<string[]>([]);
+  const [notifications, setNotifications] = useState<number>(3);
+  const [userRole, setUserRole] = useState<'student' | 'researcher' | 'farmer' | 'admin'>('farmer');
 
-  const staticCrops = getAllCropNames();
+  // No static crops - data comes from Supabase
 
   useEffect(() => {
     fetchDbCrops();
@@ -207,43 +154,56 @@ const EnhancedCropDashboard: React.FC<EnhancedCropDashboardProps> = ({ onCropSel
 
   const fetchDbCrops = async () => {
     try {
+      setLoading(true);
       const { data, error } = await supabase
         .from('crops')
-        .select('*')
+        .select(`
+          *,
+          crop_images (
+            id,
+            image_url,
+            alt_text,
+            caption,
+            is_primary
+          )
+        `)
         .order('created_at', { ascending: false });
 
-      if (error) throw error;
+      if (error) {
+        console.error('Error fetching crops:', error);
+        setDbCrops([]);
+        return;
+      }
+      
       setDbCrops(data || []);
     } catch (error) {
       console.error('Error fetching crops:', error);
+      setDbCrops([]);
     } finally {
       setLoading(false);
     }
   };
 
-  // For now, let's use only static crops to ensure wheat shows up
-  const filteredCrops = staticCrops.filter(cropName => {
-    const staticCrop = getCropByName(cropName);
-    if (!staticCrop) return false;
+  // Filter database crops only
+  const filteredCrops = dbCrops.filter(dbCrop => {
+    if (!dbCrop.name) return false;
     
     // Handle search
-    const matchesSearch = cropName.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         staticCrop.scientificName?.toLowerCase().includes(searchTerm.toLowerCase());
+    const matchesSearch = dbCrop.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                         (dbCrop.scientific_name && dbCrop.scientific_name.toLowerCase().includes(searchTerm.toLowerCase()));
     
     // Handle season filtering
     const matchesSeason = selectedSeason === 'all' || 
-      staticCrop.season?.some(s => s.toLowerCase().includes(selectedSeason.toLowerCase()));
+      (dbCrop.season && dbCrop.season.some((s: string) => s.toLowerCase().includes(selectedSeason.toLowerCase())));
     
-    // Handle state filtering
-    const matchesState = selectedState === 'all' || 
-      staticCrop.varieties?.some(variety => 
-        variety.states?.some(state => 
-          state.toLowerCase().includes(selectedState.toLowerCase())
-        )
-      );
+    // Handle crop type filtering (database crops don't have crop type data yet)
+    const matchesCropType = selectedCropType === 'all' || true; // For now, include all database crops
     
-    return matchesSearch && matchesSeason && matchesState;
-  });
+    // Handle state filtering (if available in database crop)
+    const matchesState = selectedState === 'all' || true; // For now, include all database crops
+    
+    return matchesSearch && matchesSeason && matchesCropType && matchesState;
+  }).map(crop => crop.name);
 
   // Apply advanced filters
   const applyAdvancedFilters = (crops: any[]) => {
@@ -301,159 +261,35 @@ const EnhancedCropDashboard: React.FC<EnhancedCropDashboardProps> = ({ onCropSel
     });
   };
 
-  // Combine static and database crops for final display
-  const combinedCrops = [
-    ...staticCrops.map(cropName => {
-      const staticCrop = getCropByName(cropName);
-      return {
-        id: cropName,
-        name: cropName,
-        scientific_name: staticCrop?.scientificName || '',
-        description: staticCrop?.description || '',
-        season: staticCrop?.season || [],
-        climate_type: staticCrop?.climate?.zone ? [staticCrop.climate.zone] : [],
-        soil_type: staticCrop?.soil?.type || [],
-        water_requirement: staticCrop?.climate?.rainfall || '',
-        growth_duration: staticCrop?.morphology?.lifeSpan || '',
-        average_yield: staticCrop?.economics?.averageYield || '',
-        yield: staticCrop?.economics?.averageYield || '',
-        // Add more fields as needed for filtering
-        gi_status: staticCrop?.cultural?.giStatus ? true : false,
-        patents: staticCrop?.genetics?.patents || false,
-        ai_ml_iot: staticCrop?.technology?.aiMlIot ? true : false,
-        // Add static crop data for display
-        staticCropData: staticCrop
-      };
-    }),
-    ...dbCrops
-  ];
+  // Use only database crops for final display
+  const finalFilteredCrops = applyAdvancedFilters(dbCrops);
 
-  const finalFilteredCrops = applyAdvancedFilters(
-    combinedCrops.filter(crop => filteredCrops.includes(crop.name))
-  );
-
-  // Debug logging
+  // Production logging (only in development)
   useEffect(() => {
-    console.log('Static crops:', staticCrops);
-    console.log('Database crops:', dbCrops);
-    console.log('Filtered crops:', filteredCrops);
-    console.log('Combined crops:', combinedCrops);
-    console.log('Final filtered crops:', finalFilteredCrops);
-  }, [staticCrops, dbCrops, filteredCrops, combinedCrops, finalFilteredCrops]);
+    if (process.env.NODE_ENV === 'development') {
+      // Dashboard loaded successfully
+    }
+  }, [dbCrops.length, finalFilteredCrops.length]);
 
-  const renderCropCard = (crop: any, index: number) => {
-    const priority = getCropPriority(crop.name);
-    const status = getCropStatus(crop);
-    
-    return (
-      <Card 
-        key={crop.id || crop.name}
-        className="group cursor-pointer transition-all duration-200 ease-out hover:shadow-lg border border-gray-200 bg-white hover:border-yellow-400"
-        onClick={() => onCropSelect(crop.name)}
-      >
-        <CardHeader className="pb-4">
-          <div className="flex items-start justify-between">
-            <div className="flex items-center gap-3">
-              <div className="relative">
-                <div className="h-12 w-12 bg-yellow-400 rounded-full flex items-center justify-center">
-                  <Sprout className="h-6 w-6 text-gray-800" />
-                </div>
-              </div>
-              <div>
-                <CardTitle className="text-lg font-semibold text-gray-800 group-hover:text-yellow-600 transition-colors">
-                  {crop.name || 'Unknown Crop'}
-                </CardTitle>
-                <div className="text-sm italic text-gray-600">
-                  {crop.scientific_name || 'Scientific name not available'}
-                </div>
-              </div>
-            </div>
-            
-            <div className="flex flex-col items-end gap-2">
-              <div className="flex items-center gap-1">
-                {crop.season?.map((season: string, idx: number) => (
-                  <div key={idx} className="flex items-center gap-1">
-                    {getSeasonIcon(season)}
-                    <span className="text-xs font-medium text-gray-600">{season}</span>
-                  </div>
-                ))}
-              </div>
-            </div>
-          </div>
-        </CardHeader>
-
-        <CardContent className="space-y-4">
-          {/* Quick Metrics Grid */}
-          {getQuickMetrics(crop).length > 0 && (
-            <div className="grid grid-cols-2 gap-3">
-              {getQuickMetrics(crop).map((metric, idx) => (
-                <div key={idx} className="bg-gray-50 rounded-lg p-3 border border-gray-200">
-                  <div className="flex items-center justify-center mb-1">
-                    <div className={`${metric.color} mr-1`}>
-                      {metric.icon}
-                    </div>
-                    <div className="text-base font-bold text-gray-800">{metric.value}</div>
-                  </div>
-                  <div className="text-xs text-gray-600 text-center">{metric.label}</div>
-                </div>
-              ))}
-            </div>
-          )}
-
-          {/* Description Preview */}
-          {crop.description && (
-            <div className="text-sm text-gray-600 line-clamp-2 bg-gray-50 rounded p-3 max-w-prose">
-              {crop.description}
-            </div>
-          )}
-
-          {/* Action Button */}
-          <Button 
-            className="w-full bg-yellow-400 text-gray-800 hover:bg-yellow-500 transition-colors duration-200"
-            onClick={(e) => {
-              e.stopPropagation();
-              onCropSelect(crop.name);
-            }}
-          >
-            <TrendingUp className="mr-2 h-4 w-4" />
-            Explore Full Profile
-          </Button>
-        </CardContent>
-      </Card>
-    );
+  // Crop selection handlers
+  const handleCropSelection = (cropName: string) => {
+    if (selectedCrops.includes(cropName)) {
+      setSelectedCrops(selectedCrops.filter(name => name !== cropName));
+    } else {
+      setSelectedCrops([...selectedCrops, cropName]);
+    }
   };
 
-  const renderSkeletonCard = (index: number) => (
-    <Card key={index} className="animate-pulse bg-white border border-gray-200">
-      <CardHeader>
-        <div className="flex items-center gap-3">
-          <Skeleton className="h-8 w-8 rounded-full bg-gray-200" />
-          <div className="space-y-2">
-            <Skeleton className="h-4 w-32 bg-gray-200" />
-            <Skeleton className="h-3 w-24 bg-gray-200" />
-          </div>
-        </div>
-      </CardHeader>
-      <CardContent className="space-y-4">
-        <div className="grid grid-cols-3 gap-3">
-          {[1, 2, 3].map((i) => (
-            <Skeleton 
-              key={i} 
-              className="h-16 rounded-lg bg-gray-200" 
-              style={{ animationDelay: `${i * 200}ms` }}
-            />
-          ))}
-        </div>
-        <Skeleton className="h-4 w-full bg-gray-200" />
-        <Skeleton className="h-10 w-full bg-gray-200" />
-      </CardContent>
-    </Card>
-  );
+  const clearSelection = () => {
+    setSelectedCrops([]);
+  };
 
-  // Helper functions
+  // Utility functions
   const getCropPriority = (cropName: string) => {
-    const priorityCrops = ['wheat', 'rice', 'corn', 'potato', 'tomato'];
-    return priorityCrops.includes(cropName?.toLowerCase()) ? 'high' : 'normal';
+    // Priority logic based on user role and crop importance
+    if (userRole === 'farmer') return 'high';
+    if (userRole === 'researcher') return 'medium';
+    return 'low';
   };
 
   const getCropStatus = (cropData: any) => {
@@ -499,9 +335,135 @@ const EnhancedCropDashboard: React.FC<EnhancedCropDashboardProps> = ({ onCropSel
     }
   };
 
+  const getCropImage = (crop: any) => {
+    // First, check if this is a database crop with uploaded images
+    if (crop.crop_images && crop.crop_images.length > 0) {
+      // Find the primary image or use the first one
+      const primaryImage = crop.crop_images.find((img: any) => img.is_primary) || crop.crop_images[0];
+      
+      return (
+        <img 
+          src={primaryImage.image_url} 
+          alt={primaryImage.alt_text || crop.name} 
+          className="h-full w-full object-cover rounded-full"
+          onError={(e) => {
+            e.currentTarget.style.display = 'none';
+            e.currentTarget.nextElementSibling?.classList.remove('hidden');
+          }}
+        />
+      );
+    }
+    
+    // For static crops, use predefined images
+    const cropNameLower = crop.name.toLowerCase();
+    
+    switch (cropNameLower) {
+      case 'wheat':
+        return (
+          <img 
+            src="/images/wheat.svg" 
+            alt="Wheat" 
+            className="h-full w-full object-cover rounded-full"
+            onError={(e) => {
+              e.currentTarget.style.display = 'none';
+              e.currentTarget.nextElementSibling?.classList.remove('hidden');
+            }}
+          />
+        );
+      case 'rice':
+        return (
+          <img 
+            src="/images/rice.svg" 
+            alt="Rice" 
+            className="h-full w-full object-cover rounded-full"
+            onError={(e) => {
+              e.currentTarget.style.display = 'none';
+              e.currentTarget.nextElementSibling?.classList.remove('hidden');
+            }}
+          />
+        );
+      case 'maize':
+        return (
+          <img 
+            src="/images/maize.svg" 
+            alt="Maize" 
+            className="h-full w-full object-cover rounded-full"
+            onError={(e) => {
+              e.currentTarget.style.display = 'none';
+              e.currentTarget.nextElementSibling?.classList.remove('hidden');
+            }}
+          />
+        );
+      case 'anand':
+        return (
+          <img 
+            src="/images/anand.svg" 
+            alt="Anand" 
+            className="h-full w-full object-cover rounded-full"
+            onError={(e) => {
+              e.currentTarget.style.display = 'none';
+              e.currentTarget.nextElementSibling?.classList.remove('hidden');
+            }}
+          />
+        );
+      case 'ashwagandha':
+        return (
+          <img 
+            src="/images/ashwagandha.svg" 
+            alt="Ashwagandha" 
+            className="h-full w-full object-cover rounded-full"
+            onError={(e) => {
+              e.currentTarget.style.display = 'none';
+              e.currentTarget.nextElementSibling?.classList.remove('hidden');
+            }}
+          />
+        );
+      case 'tulsi':
+        return (
+          <img 
+            src="/images/tulsi.svg" 
+            alt="Tulsi" 
+            className="h-full w-full object-cover rounded-full"
+            onError={(e) => {
+              e.currentTarget.style.display = 'none';
+              e.currentTarget.nextElementSibling?.classList.remove('hidden');
+            }}
+          />
+        );
+      case 'marigold':
+        return (
+          <img 
+            src="/images/marigold.svg" 
+            alt="Marigold" 
+            className="h-full w-full object-cover rounded-full"
+            onError={(e) => {
+              e.currentTarget.style.display = 'none';
+              e.currentTarget.nextElementSibling?.classList.remove('hidden');
+            }}
+          />
+        );
+      case 'rose':
+        return (
+          <img 
+            src="/images/rose.svg" 
+            alt="Rose" 
+            className="h-full w-full object-cover rounded-full"
+            onError={(e) => {
+              e.currentTarget.style.display = 'none';
+              e.currentTarget.nextElementSibling?.classList.remove('hidden');
+            }}
+          />
+        );
+      default:
+        // For database crops without images, show a generic icon
+        return <Sprout className="h-8 w-8 text-white" />;
+    }
+  };
+
   const getQuickMetrics = (cropData: any) => {
     const metrics = [];
     
+    // Yield information
     if (cropData.average_yield || cropData.yield) {
       metrics.push({
         label: 'Yield',
@@ -511,6 +473,7 @@ const EnhancedCropDashboard: React.FC<EnhancedCropDashboardProps> = ({ onCropSel
       });
     }
     
+    // Growth duration
     if (cropData.growth_duration) {
       metrics.push({
         label: 'Duration',
@@ -520,15 +483,17 @@ const EnhancedCropDashboard: React.FC<EnhancedCropDashboardProps> = ({ onCropSel
       });
     }
     
-    if (cropData.optimum_temp) {
+    // Temperature requirements
+    if (cropData.optimum_temp || cropData.climate?.temperature) {
       metrics.push({
-        label: 'Opt. Temp',
-        value: cropData.optimum_temp,
+        label: 'Temperature',
+        value: cropData.optimum_temp || cropData.climate?.temperature || 'N/A',
         icon: <Thermometer className="h-4 w-4" />,
         color: 'text-orange-600'
       });
     }
     
+    // Water requirements
     if (cropData.water_requirement) {
       metrics.push({
         label: 'Water',
@@ -538,44 +503,202 @@ const EnhancedCropDashboard: React.FC<EnhancedCropDashboardProps> = ({ onCropSel
       });
     }
 
+    // Soil pH
+    if (cropData.soil_ph || cropData.soil?.ph) {
+      metrics.push({
+        label: 'Soil pH',
+        value: cropData.soil_ph || cropData.soil?.ph || 'N/A',
+        icon: <Leaf className="h-4 w-4" />,
+        color: 'text-green-600'
+      });
+    }
+
+    // Rainfall requirements
+    if (cropData.rainfall_requirement || cropData.climate?.rainfall) {
+      metrics.push({
+        label: 'Rainfall',
+        value: cropData.rainfall_requirement || cropData.climate?.rainfall || 'N/A',
+        icon: <CloudRain className="h-4 w-4" />,
+        color: 'text-cyan-600'
+      });
+    }
+
     return metrics;
   };
+
+  const renderCropCard = (crop: any, index: number) => {
+    // Safety checks for production
+    if (!crop || !crop.name) {
+      console.warn('Invalid crop data:', crop);
+      return null;
+    }
+
+    const isSelected = selectedCrops.includes(crop.name);
+    
+    return (
+      <Card 
+        key={crop.id || crop.name}
+        className={`group cursor-pointer transition-all duration-300 ease-out hover:shadow-xl border-2 ${
+          isSelected ? 'border-green-500 bg-green-50' : 'border-gray-200 bg-white'
+        } rounded-xl overflow-hidden`}
+        onClick={() => onCropSelect(crop.name)}
+      >
+        {/* Simple Header with Image and Name */}
+        <div className="bg-gradient-to-r from-green-600 to-emerald-600 p-6 text-white relative">
+          {/* Selection checkbox */}
+          <div className="absolute top-4 right-4">
+            <Checkbox
+              checked={isSelected}
+              onCheckedChange={() => handleCropSelection(crop.name)}
+              className="data-[state=checked]:bg-white data-[state=checked]:text-green-600"
+            />
+          </div>
+          
+          <div className="flex items-center gap-4">
+            <div className="relative">
+              <div className="h-20 w-20 bg-white/20 backdrop-blur-sm rounded-full flex items-center justify-center border-2 border-white/30 overflow-hidden">
+                {getCropImage(crop)}
+                <Sprout className="h-8 w-8 text-white hidden" />
+              </div>
+            </div>
+            <div>
+              <CardTitle className="text-2xl font-bold text-white">
+                {crop.name || 'Unknown Crop'}
+              </CardTitle>
+            </div>
+          </div>
+        </div>
+
+        <CardContent className="p-6">
+          {/* Action Buttons */}
+          <div className="flex gap-3">
+            <Button 
+              className="flex-1 bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700 text-white font-semibold py-3 rounded-xl transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-xl"
+              onClick={(e) => {
+                e.stopPropagation();
+                onCropSelect(crop.name);
+              }}
+            >
+              <TrendingUp className="mr-3 h-5 w-5" />
+              Explore Full Profile
+            </Button>
+            
+            <Button 
+              variant="outline"
+              className="px-4 py-3 border-green-300 text-green-600 hover:bg-green-50 rounded-xl"
+              onClick={(e) => {
+                e.stopPropagation();
+                handleCropSelection(crop.name);
+              }}
+            >
+              {isSelected ? <X className="h-5 w-5" /> : <Plus className="h-5 w-5" />}
+            </Button>
+          </div>
+        </CardContent>
+      </Card>
+    );
+  };
+
+  const renderSkeletonCard = (index: number) => (
+    <Card key={index} className="animate-pulse bg-white border border-gray-200">
+      <CardHeader>
+        <div className="flex items-center gap-3">
+          <Skeleton className="h-8 w-8 rounded-full bg-gray-200" />
+          <div className="space-y-2">
+            <Skeleton className="h-4 w-32 bg-gray-200" />
+            <Skeleton className="h-3 w-24 bg-gray-200" />
+          </div>
+        </div>
+      </CardHeader>
+      <CardContent>
+        <div className="space-y-3">
+          <Skeleton className="h-4 w-full bg-gray-200" />
+          <Skeleton className="h-4 w-3/4 bg-gray-200" />
+          <Skeleton className="h-4 w-1/2 bg-gray-200" />
+        </div>
+      </CardContent>
+    </Card>
+  );
 
   return (
     <div className="min-h-screen bg-gray-50">
       <div className="max-w-7xl mx-auto p-4 md:p-6">
-        {/* Enhanced Header */}
-        <div className="text-center mb-12">
-          <div className="relative inline-block mb-6">
-            <h1 className="text-[clamp(28px,4vw,40px)] font-bold text-gray-800">
-              CropTree Explorer
-            </h1>
-          </div>
-          <p className="text-lg text-gray-600 max-w-prose mx-auto mb-8 leading-relaxed">
-            Discover comprehensive crop profiles with scientific insights, variety-specific recommendations, and AI-powered farming guidance
-          </p>
-          
-          {/* Action Buttons */}
-          <div className="flex flex-wrap justify-center gap-4">
-            <Button
-              variant="outline"
-              size="lg"
-              onClick={() => setShowInsights(!showInsights)}
-              className="border-yellow-400 text-yellow-600 hover:bg-yellow-400 hover:text-gray-800"
-            >
-              <BarChart3 className="h-5 w-5 mr-2" />
-              {showInsights ? 'Hide Insights' : 'Show Insights'}
-            </Button>
+        {/* Control Strip - Search, Filter, Compare */}
+        <div className="mb-8">
+          <div className="bg-gradient-to-r from-white to-gray-50 rounded-2xl p-8 border border-gray-100 shadow-lg">
+            <div className="text-center mb-6">
+              <h2 className="text-2xl font-bold text-gray-800 mb-2">Find Your Perfect Crop</h2>
+              <p className="text-gray-600">Search, filter, and compare crops based on your research needs</p>
+            </div>
             
-            <Button
-              variant="outline"
-              size="lg"
-              onClick={() => setShowComparison(!showComparison)}
-              className="border-yellow-400 text-yellow-600 hover:bg-yellow-400 hover:text-gray-800"
-            >
-              <GitCompare className="h-5 w-5 mr-2" />
-              {showComparison ? 'Hide Comparison' : 'Compare Crops'}
-            </Button>
+            <div className="flex flex-col lg:flex-row gap-6 items-stretch lg:items-end">
+              {/* Smart Search - Smaller */}
+              <div className="flex-1 max-w-md">
+                <div className="relative">
+                  <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
+                  <Input
+                    placeholder="🔍 Search crops..."
+                    value={searchTerm}
+                    onChange={(e) => setSearchTerm(e.target.value)}
+                    onFocus={() => setIsSearchFocused(true)}
+                    onBlur={() => setIsSearchFocused(false)}
+                    className={`pl-10 h-12 text-base border-2 bg-white rounded-lg transition-all duration-300 ${
+                      isSearchFocused 
+                        ? 'border-green-400 shadow-lg shadow-green-400/20' 
+                        : 'border-gray-200 hover:border-green-400/50'
+                    }`}
+                  />
+                </div>
+              </div>
+              
+              {/* Season Filter */}
+              <div className="flex flex-col sm:flex-row gap-4">
+                <Select value={selectedSeason} onValueChange={setSelectedSeason}>
+                  <SelectTrigger className="w-full sm:w-40 h-12 bg-white border-gray-200 rounded-lg">
+                    <Calendar className="h-4 w-4 mr-2" />
+                    <SelectValue placeholder="Season" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="all">🌱 All Seasons</SelectItem>
+                    <SelectItem value="rabi">☀️ Rabi</SelectItem>
+                    <SelectItem value="kharif">🌧️ Kharif</SelectItem>
+                    <SelectItem value="zaid">⚡ Zaid</SelectItem>
+                  </SelectContent>
+                </Select>
+
+                {/* Crop Type Filter */}
+                <Select value={selectedCropType} onValueChange={setSelectedCropType}>
+                  <SelectTrigger className="w-full sm:w-40 h-12 bg-white border-gray-200 rounded-lg">
+                    <Leaf className="h-4 w-4 mr-2" />
+                    <SelectValue placeholder="Crop Type" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="all">🌾 All Types</SelectItem>
+                    <SelectItem value="cereals">🌾 Cereals</SelectItem>
+                    <SelectItem value="pulses">🫘 Pulses</SelectItem>
+                    <SelectItem value="vegetables">🥬 Vegetables</SelectItem>
+                    <SelectItem value="fruits">🍎 Fruits</SelectItem>
+                    <SelectItem value="oilseeds">🫘 Oilseeds</SelectItem>
+                    <SelectItem value="spices">🌶️ Spices</SelectItem>
+                    <SelectItem value="medicinal">🌿 Medicinal</SelectItem>
+                    <SelectItem value="ornamental">🌸 Ornamental</SelectItem>
+                  </SelectContent>
+                </Select>
+
+
+
+                <Button
+                  variant="outline"
+                  onClick={() => setShowComparison(!showComparison)}
+                  className="h-12 bg-white border-gray-200 hover:border-blue-400 rounded-lg px-4 font-medium"
+                >
+                  <GitCompare className="h-4 w-4 mr-2" />
+                  {showComparison ? 'Hide' : 'Compare'}
+                </Button>
+              </div>
+            </div>
+
+
           </div>
         </div>
 
@@ -588,101 +711,6 @@ const EnhancedCropDashboard: React.FC<EnhancedCropDashboardProps> = ({ onCropSel
             />
           </div>
         )}
-
-        {/* Enhanced Search and Filters */}
-        <div className="mb-8">
-          <div className="bg-white rounded-lg p-6 border border-gray-200 shadow-sm">
-            <div className="flex flex-col lg:flex-row gap-4 items-stretch lg:items-end">
-              <div className="flex-1">
-                <div className="relative">
-                  <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400 h-5 w-5" />
-                  <Input
-                    placeholder="Search crops by name, scientific name, or characteristics..."
-                    value={searchTerm}
-                    onChange={(e) => setSearchTerm(e.target.value)}
-                    onFocus={() => setIsSearchFocused(true)}
-                    onBlur={() => setIsSearchFocused(false)}
-                    onKeyDown={(e) => {
-                      if (e.key === 'Escape') {
-                        setSearchTerm('');
-                        e.currentTarget.blur();
-                      }
-                    }}
-                    className={`pl-12 h-14 text-lg border-2 bg-white transition-all duration-200 ${
-                      isSearchFocused 
-                        ? 'border-yellow-400 shadow-lg shadow-yellow-400/20' 
-                        : 'border-gray-300 hover:border-yellow-400/50'
-                    }`}
-                    aria-label="Search crops"
-                  />
-                </div>
-              </div>
-              
-              <div className="flex flex-col sm:flex-row gap-3">
-                <Button
-                  variant="outline"
-                  onClick={() => setShowFilters(!showFilters)}
-                  className="h-14 bg-white border-gray-300 hover:border-yellow-400"
-                >
-                  <Filter className="h-4 w-4 mr-2" />
-                  {showFilters ? 'Hide Filters' : 'Show Filters'}
-                </Button>
-
-                <div className="flex gap-3">
-                  <Select value={selectedSeason} onValueChange={setSelectedSeason}>
-                    <SelectTrigger className="w-full sm:w-40 h-14 bg-white border-gray-300">
-                      <Calendar className="h-4 w-4 mr-2" />
-                      <SelectValue placeholder="Season" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="all">All Seasons</SelectItem>
-                      <SelectItem value="rabi">Rabi</SelectItem>
-                      <SelectItem value="kharif">Kharif</SelectItem>
-                      <SelectItem value="zaid">Zaid</SelectItem>
-                    </SelectContent>
-                  </Select>
-
-                  <Select value={selectedState} onValueChange={setSelectedState}>
-                    <SelectTrigger className="w-full sm:w-40 h-14 bg-white border-gray-300">
-                      <MapPin className="h-4 w-4 mr-2" />
-                      <SelectValue placeholder="State" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="all">All States</SelectItem>
-                      <SelectItem value="punjab">Punjab</SelectItem>
-                      <SelectItem value="haryana">Haryana</SelectItem>
-                      <SelectItem value="uttar pradesh">UP</SelectItem>
-                      <SelectItem value="bihar">Bihar</SelectItem>
-                      <SelectItem value="west bengal">West Bengal</SelectItem>
-                      <SelectItem value="maharashtra">Maharashtra</SelectItem>
-                      <SelectItem value="karnataka">Karnataka</SelectItem>
-                      <SelectItem value="tamil nadu">Tamil Nadu</SelectItem>
-                    </SelectContent>
-                  </Select>
-
-                  <div className="flex border border-gray-300 rounded-lg bg-white">
-                    <Button
-                      variant={viewMode === 'grid' ? 'default' : 'ghost'}
-                      size="sm"
-                      onClick={() => setViewMode('grid')}
-                      className="h-14 px-3"
-                    >
-                      <Grid3X3 className="h-4 w-4" />
-                    </Button>
-                    <Button
-                      variant={viewMode === 'list' ? 'default' : 'ghost'}
-                      size="sm"
-                      onClick={() => setViewMode('list')}
-                      className="h-14 px-3"
-                    >
-                      <List className="h-4 w-4" />
-                    </Button>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
 
         {/* Advanced Filters */}
         {showFilters && (
@@ -699,39 +727,41 @@ const EnhancedCropDashboard: React.FC<EnhancedCropDashboardProps> = ({ onCropSel
         {showComparison && (
           <div className="mb-8">
             <CropComparison 
-              availableCrops={finalFilteredCrops}
-              onClose={() => setShowComparison(false)}
+              onClose={() => setShowComparison(false)} 
             />
           </div>
         )}
 
         {/* Quick Stats Summary */}
         {(searchTerm || selectedSeason !== 'all' || selectedState !== 'all' || Object.keys(advancedFilters).length > 0) && (
-          <div className="mb-6 p-4 bg-yellow-50 rounded-xl border border-yellow-200">
+          <div className="mb-8 p-6 bg-gradient-to-r from-green-50 to-blue-50 rounded-2xl border border-green-200 shadow-sm">
             <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
-              <div className="flex items-center gap-4">
-                <div className="text-sm text-gray-600">
-                  Showing <span className="font-bold text-yellow-600">{finalFilteredCrops.length}</span> of <span className="font-bold">{dbCrops.length}</span> crops
-                </div>
-                <div className="flex flex-wrap gap-2">
+              <div className="flex items-center gap-6">
+
+                <div className="flex flex-wrap gap-3">
                   {searchTerm && (
-                    <Badge variant="secondary" className="bg-yellow-100 text-yellow-800 border-yellow-300">
-                      Search: "{searchTerm}"
+                    <Badge variant="secondary" className="bg-green-100 text-green-800 border-green-300 px-3 py-1">
+                      🔍 Search: "{searchTerm}"
                     </Badge>
                   )}
                   {selectedSeason !== 'all' && (
-                    <Badge variant="secondary" className="bg-yellow-100 text-yellow-800 border-yellow-300">
-                      Season: {selectedSeason}
+                    <Badge variant="secondary" className="bg-blue-100 text-blue-800 border-blue-300 px-3 py-1">
+                      🌱 Season: {selectedSeason}
+                    </Badge>
+                  )}
+                  {selectedCropType !== 'all' && (
+                    <Badge variant="secondary" className="bg-orange-100 text-orange-800 border-orange-300 px-3 py-1">
+                      🌾 Type: {selectedCropType}
                     </Badge>
                   )}
                   {selectedState !== 'all' && (
-                    <Badge variant="secondary" className="bg-yellow-100 text-yellow-800 border-yellow-300">
-                      State: {selectedState}
+                    <Badge variant="secondary" className="bg-purple-100 text-purple-800 border-purple-300 px-3 py-1">
+                      🗺️ State: {selectedState}
                     </Badge>
                   )}
                   {Object.keys(advancedFilters).length > 0 && (
-                    <Badge variant="secondary" className="bg-purple-100 text-purple-800 border-purple-300">
-                      Advanced Filters: {Object.keys(advancedFilters).length}
+                    <Badge variant="secondary" className="bg-purple-100 text-purple-800 border-purple-300 px-3 py-1">
+                      ⚙️ Advanced Filters: {Object.keys(advancedFilters).length}
                     </Badge>
                   )}
                 </div>
@@ -742,74 +772,133 @@ const EnhancedCropDashboard: React.FC<EnhancedCropDashboardProps> = ({ onCropSel
                 onClick={() => {
                   setSearchTerm('');
                   setSelectedSeason('all');
+                  setSelectedCropType('all');
                   setSelectedState('all');
                   setAdvancedFilters({});
                 }}
-                className="text-xs border-yellow-300 text-yellow-600 hover:bg-yellow-50"
+                className="text-sm border-green-300 text-green-600 hover:bg-green-50 px-4 py-2 rounded-lg"
               >
-                <Filter className="h-3 w-3 mr-1" />
+                <Filter className="h-4 w-4 mr-2" />
                 Clear All
               </Button>
             </div>
           </div>
         )}
 
-        {/* Tabs for Different Views */}
-        <Tabs value={activeTab} onValueChange={setActiveTab} className="mb-8">
-          <TabsList className="grid w-full grid-cols-4 bg-white border border-gray-200">
-            <TabsTrigger value="overview" className="data-[state=active]:bg-yellow-400 data-[state=active]:text-gray-800">
-              All Crops ({finalFilteredCrops.length})
-            </TabsTrigger>
-            <TabsTrigger value="priority" className="data-[state=active]:bg-yellow-400 data-[state=active]:text-gray-800">
-              Priority Crops
-            </TabsTrigger>
-            <TabsTrigger value="recent" className="data-[state=active]:bg-yellow-400 data-[state=active]:text-gray-800">
-              Recently Added
-            </TabsTrigger>
-            <TabsTrigger value="popular" className="data-[state=active]:bg-yellow-400 data-[state=active]:text-gray-800">
-              Most Popular
-            </TabsTrigger>
-          </TabsList>
-        </Tabs>
+        {/* Enhanced Tabs and View Toggle */}
+        <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-6 mb-8">
+          <Tabs value={activeTab} onValueChange={setActiveTab} className="flex-1">
+            <TabsList className="grid w-full grid-cols-4 bg-white border border-gray-200 rounded-xl p-1 shadow-sm">
+              <TabsTrigger value="overview" className="data-[state=active]:bg-gradient-to-r data-[state=active]:from-green-500 data-[state=active]:to-blue-500 data-[state=active]:text-white rounded-lg transition-all duration-300">
+                🌾 All Crops ({finalFilteredCrops.length})
+              </TabsTrigger>
+              <TabsTrigger value="priority" className="data-[state=active]:bg-gradient-to-r data-[state=active]:from-green-500 data-[state=active]:to-blue-500 data-[state=active]:text-white rounded-lg transition-all duration-300">
+                ⭐ Priority Crops
+              </TabsTrigger>
+              <TabsTrigger value="recent" className="data-[state=active]:bg-gradient-to-r data-[state=active]:from-green-500 data-[state=active]:to-blue-500 data-[state=active]:text-white rounded-lg transition-all duration-300">
+                🆕 Recently Added
+              </TabsTrigger>
+              <TabsTrigger value="popular" className="data-[state=active]:bg-gradient-to-r data-[state=active]:from-green-500 data-[state=active]:to-blue-500 data-[state=active]:text-white rounded-lg transition-all duration-300">
+                🔥 Most Popular
+              </TabsTrigger>
+            </TabsList>
+          </Tabs>
+          
+          {/* View Mode Toggle */}
+          <div className="flex items-center gap-2 bg-white rounded-xl p-1 border border-gray-200 shadow-sm">
+            <Button
+              variant={viewMode === 'grid' ? 'default' : 'ghost'}
+              size="sm"
+              onClick={() => setViewMode('grid')}
+              className={`rounded-lg transition-all duration-200 ${
+                viewMode === 'grid' 
+                  ? 'bg-gradient-to-r from-green-500 to-blue-500 text-white shadow-md' 
+                  : 'text-gray-600 hover:text-gray-800'
+              }`}
+            >
+              <Grid3X3 className="h-4 w-4" />
+            </Button>
+            <Button
+              variant={viewMode === 'list' ? 'default' : 'ghost'}
+              size="sm"
+              onClick={() => setViewMode('list')}
+              className={`rounded-lg transition-all duration-200 ${
+                viewMode === 'list' 
+                  ? 'bg-gradient-to-r from-green-500 to-blue-500 text-white shadow-md' 
+                  : 'text-gray-600 hover:text-gray-800'
+              }`}
+            >
+              <List className="h-4 w-4" />
+            </Button>
+          </div>
+        </div>
 
-        {/* Crop Cards Grid/List */}
+        {/* Enhanced Crop Cards Grid/List */}
         {loading ? (
-          <div className={viewMode === 'grid' ? 'grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6' : 'space-y-4'}>
+          <div className={viewMode === 'grid' ? 'grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8' : 'space-y-6'}>
             {Array.from({ length: 6 }).map((_, index) => renderSkeletonCard(index))}
           </div>
+        ) : finalFilteredCrops.length === 0 ? (
+          <div className="text-center py-16">
+            <div className="bg-white rounded-2xl p-12 border border-gray-200 shadow-sm">
+              <div className="text-6xl mb-6">🌾</div>
+              <h3 className="text-2xl font-bold text-gray-800 mb-4">No Crops Found</h3>
+              <p className="text-gray-600 mb-6 max-w-md mx-auto">
+                Try adjusting your search terms or filters to find the crops you're looking for.
+              </p>
+              <Button
+                onClick={() => {
+                  setSearchTerm('');
+                  setSelectedSeason('all');
+                  setSelectedCropType('all');
+                  setSelectedState('all');
+                  setAdvancedFilters({});
+                }}
+                className="bg-gradient-to-r from-green-600 to-blue-600 hover:from-green-700 hover:to-blue-700 text-white px-8 py-3 rounded-xl"
+              >
+                🔄 Reset Filters
+              </Button>
+            </div>
+          </div>
         ) : (
-          <div className={viewMode === 'grid' ? 'grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6' : 'space-y-4'}>
+          <div className={viewMode === 'grid' ? 'grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8' : 'space-y-6'}>
             {finalFilteredCrops.map((crop, index) => renderCropCard(crop, index))}
           </div>
         )}
 
-        {/* Enhanced No Results */}
-        {finalFilteredCrops.length === 0 && (searchTerm || selectedSeason !== 'all' || selectedState !== 'all' || Object.keys(advancedFilters).length > 0) && !loading && (
-          <div className="text-center py-16">
-            <div className="relative inline-block mb-6">
-              <Sprout className="h-20 w-20 text-gray-400 mx-auto mb-4" />
+        {/* Floating Compare Tray */}
+        {selectedCrops.length > 0 && (
+          <div className="fixed bottom-6 right-6 bg-white rounded-2xl shadow-2xl border border-gray-200 p-4 z-50">
+            <div className="flex items-center gap-4">
+              <div className="flex items-center gap-2">
+                <span className="text-sm font-medium text-gray-700">Selected:</span>
+                <Badge className="bg-green-100 text-green-800">{selectedCrops.length}</Badge>
+              </div>
+              
+              <div className="flex gap-2">
+                <Button
+                  size="sm"
+                  onClick={() => setShowCompareTray(true)}
+                  disabled={selectedCrops.length < 2}
+                  className="bg-blue-600 hover:bg-blue-700 text-white"
+                >
+                  <GitCompare className="h-4 w-4 mr-1" />
+                  Compare
+                </Button>
+                
+                <Button
+                  size="sm"
+                  variant="outline"
+                  onClick={clearSelection}
+                  className="border-gray-300 text-gray-600 hover:bg-gray-50"
+                >
+                  <X className="h-4 w-4" />
+                </Button>
+              </div>
             </div>
-            <h3 className="text-xl font-semibold text-gray-800 mb-3">No crops found</h3>
-            <p className="text-gray-600 mb-6 max-w-md mx-auto">
-              Try adjusting your search criteria or browse our complete collection
-            </p>
-            <Button 
-              onClick={() => {
-                setSearchTerm('');
-                setSelectedSeason('all');
-                setSelectedState('all');
-                setAdvancedFilters({});
-              }}
-              className="bg-yellow-400 text-gray-800 hover:bg-yellow-500"
-            >
-              <Filter className="mr-2 h-4 w-4" />
-              Clear Filters
-            </Button>
           </div>
         )}
       </div>
-
-
     </div>
   );
 };

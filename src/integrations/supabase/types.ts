@@ -142,6 +142,7 @@ export type Database = {
           climate_type: string[] | null
           cost_of_cultivation: string | null
           created_at: string
+          crop_type: string | null
           description: string | null
           disease_list: string[] | null
           drainage_requirement: string | null
@@ -176,6 +177,7 @@ export type Database = {
           climate_type?: string[] | null
           cost_of_cultivation?: string | null
           created_at?: string
+          crop_type?: string | null
           description?: string | null
           disease_list?: string[] | null
           drainage_requirement?: string | null
@@ -210,6 +212,7 @@ export type Database = {
           climate_type?: string[] | null
           cost_of_cultivation?: string | null
           created_at?: string
+          crop_type?: string | null
           description?: string | null
           disease_list?: string[] | null
           drainage_requirement?: string | null

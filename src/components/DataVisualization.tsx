@@ -101,8 +101,8 @@ const DataVisualization: React.FC<DataVisualizationProps> = ({ crop }) => {
               <p className="text-sm font-medium text-gray-800">Soil</p>
               <Badge variant="outline" className={`mt-1 ${getStatusColor(crop.soil_texture || 'Not specified')}`}>
                 {crop.soil_texture || 'Not specified'}
-              </Badge>
-            </div>
+          </Badge>
+        </div>
           </div>
         </CardContent>
       </Card>
@@ -297,8 +297,8 @@ const DataVisualization: React.FC<DataVisualizationProps> = ({ crop }) => {
               <Leaf className="h-5 w-5 text-green-500" />
               Sustainability Metrics
             </CardTitle>
-          </CardHeader>
-          <CardContent>
+      </CardHeader>
+      <CardContent>
             <div className="space-y-4">
               {crop.sustainability_potential && (
                 <div>
@@ -334,8 +334,8 @@ const DataVisualization: React.FC<DataVisualizationProps> = ({ crop }) => {
                 </div>
               )}
             </div>
-          </CardContent>
-        </Card>
+      </CardContent>
+    </Card>
       )}
     </div>
   );

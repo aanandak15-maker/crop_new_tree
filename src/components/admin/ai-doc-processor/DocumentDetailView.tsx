@@ -18,8 +18,7 @@ export const DocumentDetailView: React.FC<DocumentDetailViewProps> = ({
   saveCropToDatabase
 }) => {
   // Debug logging
-  console.log('DocumentDetailView render - currentDocument:', currentDocument);
-  console.log('Extracted crops count:', currentDocument?.extracted_crops?.length || 0);
+  // DocumentDetailView rendered
   const getFileIcon = (type: string) => {
     switch (type) {
       case 'pdf':

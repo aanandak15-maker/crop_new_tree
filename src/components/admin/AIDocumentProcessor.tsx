@@ -209,8 +209,7 @@ const AIDocumentProcessor: React.FC = () => {
             source_document: item.source_document
           }));
           
-          console.log('AI extracted data:', aiExtractedData);
-          console.log('Converted data:', extractedData);
+                  // AI data extracted and converted successfully
           
           setDocuments(prev => prev.map(d => 
             d.id === doc.id 
@@ -239,7 +238,7 @@ const AIDocumentProcessor: React.FC = () => {
               }
             : d
         );
-        console.log('Updated documents state:', updated);
+        // Documents state updated successfully
         return updated;
       });
 

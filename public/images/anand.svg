@@ -1,0 +1,20 @@
+<svg width="80" height="80" viewBox="0 0 80 80" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <circle cx="40" cy="40" r="40" fill="#F0FDF4"/>
+  <!-- Anand plant -->
+  <path d="M40 20 L40 60" stroke="#166534" stroke-width="2" stroke-linecap="round"/>
+  <!-- Anand flowers/fruits -->
+  <circle cx="38" cy="18" r="2" fill="#F59E0B"/>
+  <circle cx="42" cy="18" r="2" fill="#F59E0B"/>
+  <circle cx="36" cy="22" r="2" fill="#F59E0B"/>
+  <circle cx="44" cy="22" r="2" fill="#F59E0B"/>
+  <circle cx="40" cy="26" r="2" fill="#F59E0B"/>
+  <!-- Anand leaves -->
+  <path d="M35 30 Q30 25 35 20" stroke="#16A34A" stroke-width="1.5" fill="none"/>
+  <path d="M45 30 Q50 25 45 20" stroke="#16A34A" stroke-width="1.5" fill="none"/>
+  <path d="M35 40 Q30 35 35 30" stroke="#16A34A" stroke-width="1.5" fill="none"/>
+  <path d="M45 40 Q50 35 45 30" stroke="#16A34A" stroke-width="1.5" fill="none"/>
+  <path d="M35 50 Q30 45 35 40" stroke="#16A34A" stroke-width="1.5" fill="none"/>
+  <path d="M45 50 Q50 45 45 40" stroke="#16A34A" stroke-width="1.5" fill="none"/>
+  <!-- Special Anand feature -->
+  <path d="M40 15 Q45 10 50 15" stroke="#F59E0B" stroke-width="2" fill="none"/>
+</svg>

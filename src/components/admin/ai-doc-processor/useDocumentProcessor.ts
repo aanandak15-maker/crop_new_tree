@@ -24,13 +24,7 @@ export const useDocumentProcessor = () => {
   const fileInputRef = useRef<HTMLInputElement>(null);
   const { toast } = useToast();
 
-  // Debug effect to monitor documents state
-  useEffect(() => {
-    console.log('Documents state changed:', documents.length, 'documents');
-    documents.forEach(doc => {
-      console.log(`Document ${doc.name}: ${doc.extracted_crops.length} crops, status: ${doc.status}`);
-    });
-  }, [documents]);
+  // Monitor documents state changes
 
   // Test Gemini API connection
   const testGeminiConnection = async () => {

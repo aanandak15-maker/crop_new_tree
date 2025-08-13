@@ -4,7 +4,7 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { supabase } from '@/integrations/supabase/client';
-import { getCropByName } from '@/data/cropData';
+// Removed unused import - data comes from Supabase
 import { 
   ArrowLeft, Info, Wheat, Leaf, Shield, Apple, TrendingUp, 
   Sprout, Bug, MapPin, Clock, Loader2, AlertTriangle, Droplets, Thermometer, 
@@ -237,6 +237,29 @@ const SimpleCropProfile: React.FC<SimpleCropProfileProps> = ({ cropName, onBack 
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
+  const getVarietyImage = (variety: any) => {
+    // Check if this variety has uploaded images
+    if (variety.variety_images && variety.variety_images.length > 0) {
+      // Find the primary image or use the first one
+      const primaryImage = variety.variety_images.find((img: any) => img.is_primary) || variety.variety_images[0];
+      
+      return (
+        <img 
+          src={primaryImage.image_url} 
+          alt={primaryImage.alt_text || variety.name} 
+          className="h-full w-full object-cover rounded-lg"
+          onError={(e) => {
+            e.currentTarget.style.display = 'none';
+            e.currentTarget.nextElementSibling?.classList.remove('hidden');
+          }}
+        />
+      );
+    }
+    
+    // Fallback to generic sprout icon
+    return <Sprout className="h-6 w-6 text-white" />;
+  };
+
   useEffect(() => {
     const fetchCrop = async () => {
       try {
@@ -246,7 +269,16 @@ const SimpleCropProfile: React.FC<SimpleCropProfileProps> = ({ cropName, onBack 
           .from('crops')
           .select(`
             *,
-            varieties (*)
+            varieties (
+              *,
+              variety_images (
+                id,
+                image_url,
+                alt_text,
+                caption,
+                is_primary
+              )
+            )
           `)
           .eq('name', cropName)
           .maybeSingle();
@@ -260,216 +292,7 @@ const SimpleCropProfile: React.FC<SimpleCropProfileProps> = ({ cropName, onBack 
           return;
         }
         
-        // Fallback to static dataset if DB has no record
-        const staticCrop = getCropByName(cropName);
-        if (staticCrop) {
-          const mapped: CropData = {
-            id: staticCrop.id,
-            name: staticCrop.name,
-            scientific_name: staticCrop.scientificName || null,
-            family: staticCrop.family || null,
-            season: staticCrop.season || null,
-            description: staticCrop.description || null,
-            origin: staticCrop.origin,
-            field_name: staticCrop.morphology?.growthHabit || null,
-            climate_zone: staticCrop.climate?.zone || null,
-            growth_habit: staticCrop.morphology?.growthHabit || null,
-            life_span: staticCrop.morphology?.lifeSpan || null,
-            plant_type: staticCrop.morphology?.plantType || null,
-            climate_type: staticCrop.climate?.zone ? [staticCrop.climate.zone] : null,
-            temperature_range: staticCrop.climate?.temperature || null,
-            rainfall_requirement: staticCrop.climate?.rainfall || null,
-            humidity_range: staticCrop.climate?.humidity || null,
-            soil_type: staticCrop.soil?.type || null,
-            soil_ph: staticCrop.soil?.ph || null,
-            drainage_requirement: staticCrop.soil?.drainage || null,
-            land_preparation: staticCrop.cultivation?.landPreparation || null,
-            sowing_time: Array.isArray(staticCrop.cultivation?.sowing)
-              ? staticCrop.cultivation.sowing.join('; ')
-              : null,
-            seed_rate: null,
-            row_spacing: staticCrop.cultivation?.spacing || null,
-            fertilizer_requirement: staticCrop.cultivation?.fertilizers || null,
-            irrigation_schedule: staticCrop.cultivation?.irrigation || null,
-            harvesting_info: staticCrop.cultivation?.harvesting || null,
-            pest_list: staticCrop.pests || null,
-            disease_list: staticCrop.diseases || null,
-            average_yield: staticCrop.economics?.averageYield || null,
-            market_price: staticCrop.economics?.marketPrice || null,
-            cost_of_cultivation: staticCrop.economics?.costOfCultivation || null,
-            nutritional_info: staticCrop.nutrition
-              ? `Calories: ${staticCrop.nutrition.calories}, Protein: ${staticCrop.nutrition.protein}, Carbs: ${staticCrop.nutrition.carbohydrates}`
-              : null,
-            innovations: staticCrop.innovations || null,
-            sustainability_practices: staticCrop.sustainability || null,
-            water_requirement: staticCrop.climate?.rainfall || null,
-            
-            // Advanced agronomy fields
-            npk_n: staticCrop.management?.npkN || null,
-            npk_p: staticCrop.management?.npkP || null,
-            npk_k: staticCrop.management?.npkK || null,
-            micronutrient_needs: staticCrop.management?.micronutrientNeeds || null,
-            biofertilizer_usage: staticCrop.management?.biofertilizerUsage || null,
-            application_schedule_method: staticCrop.management?.applicationScheduleMethod || null,
-            application_schedule_stages: staticCrop.management?.applicationScheduleStages || null,
-            application_schedule_frequency: staticCrop.management?.applicationScheduleFrequency || null,
-            water_quality: staticCrop.management?.waterQuality || null,
-            optimum_temp: staticCrop.climate?.optimumTemp || null,
-            tolerable_temp: staticCrop.climate?.tolerableTemp || null,
-            altitude: staticCrop.climate?.altitude || null,
-            soil_texture: staticCrop.soil?.texture || null,
-            light_requirement: staticCrop.soil?.lightRequirement || null,
-            spacing: staticCrop.cultivation?.spacing || null,
-            planting_season: staticCrop.cultivation?.plantingSeason || null,
-            
-            // Weed management
-            common_weeds: staticCrop.weeds?.commonWeeds || null,
-            weed_season: staticCrop.weeds?.weedSeason || null,
-            weed_control_method: staticCrop.weeds?.weedControlMethod || null,
-            critical_period_weed: staticCrop.weeds?.criticalPeriodWeed || null,
-            
-            // Detailed pest management
-            pest_name: staticCrop.pestDetails?.name || null,
-            pest_symptoms: staticCrop.pestDetails?.symptoms || null,
-            pest_life_cycle: staticCrop.pestDetails?.lifeCycle || null,
-            pest_etl: staticCrop.pestDetails?.etl || null,
-            pest_management: staticCrop.pestDetails?.management || null,
-            pest_biocontrol: staticCrop.pestDetails?.biocontrol || null,
-            pest_image: staticCrop.pestDetails?.image || null,
-            additional_pests: staticCrop.additionalPests || null,
-            
-            // Detailed disease management
-            disease_name: staticCrop.diseaseDetails?.name || null,
-            disease_causal_agent: staticCrop.diseaseDetails?.causalAgent || null,
-            disease_symptoms: staticCrop.diseaseDetails?.symptoms || null,
-            disease_life_cycle: staticCrop.diseaseDetails?.lifeCycle || null,
-            disease_management: staticCrop.diseaseDetails?.management || null,
-            disease_biocontrol: staticCrop.diseaseDetails?.biocontrol || null,
-            disease_image: staticCrop.diseaseDetails?.image || null,
-            additional_diseases: staticCrop.additionalDiseases || null,
-            
-            // Disorder management
-            disorder_name: staticCrop.disorders?.name || null,
-            disorder_cause: staticCrop.disorders?.cause || null,
-            disorder_symptoms: staticCrop.disorders?.symptoms || null,
-            disorder_impact: staticCrop.disorders?.impact || null,
-            disorder_control: staticCrop.disorders?.control || null,
-            disorder_image: staticCrop.disorders?.image || null,
-            
-            // Nematode management
-            nematode_name: staticCrop.nematodes?.name || null,
-            nematode_symptoms: staticCrop.nematodes?.symptoms || null,
-            nematode_life_cycle: staticCrop.nematodes?.lifeCycle || null,
-            nematode_etl: staticCrop.nematodes?.etl || null,
-            nematode_management: staticCrop.nematodes?.management || null,
-            nematode_biocontrol: staticCrop.nematodes?.biocontrol || null,
-            nematode_image: staticCrop.nematodes?.image || null,
-            
-            // Detailed nutrition
-            calories: staticCrop.nutrition?.calories || null,
-            protein: staticCrop.nutrition?.protein || null,
-            carbohydrates: staticCrop.nutrition?.carbohydrates || null,
-            fat: staticCrop.nutrition?.fat || null,
-            fiber: staticCrop.nutrition?.fiber || null,
-            vitamins: Array.isArray(staticCrop.nutrition?.vitamins) ? staticCrop.nutrition.vitamins.join(', ') : null,
-            minerals: Array.isArray(staticCrop.nutrition?.minerals) ? staticCrop.nutrition.minerals.join(', ') : null,
-            bioactive_compounds: staticCrop.nutrition?.bioactiveCompounds || null,
-            health_benefits: staticCrop.nutrition?.healthBenefits || null,
-            
-            // Post-harvest and market
-            harvest_time: staticCrop.harvest?.harvestTime || null,
-            maturity_indicators: staticCrop.harvest?.maturityIndicators || null,
-            harvesting_tools: staticCrop.harvest?.harvestingTools || null,
-            post_harvest_losses: staticCrop.harvest?.postHarvestLosses || null,
-            storage_conditions: staticCrop.harvest?.storageConditions || null,
-            shelf_life: staticCrop.harvest?.shelfLife || null,
-            processed_products: staticCrop.harvest?.processedProducts || null,
-            packaging_types: staticCrop.harvest?.packagingTypes || null,
-            cold_chain: staticCrop.harvest?.coldChain || null,
-            ripening_characteristics: staticCrop.harvest?.ripeningCharacteristics || null,
-            pre_cooling: staticCrop.harvest?.preCooling || null,
-            market_trends: staticCrop.market?.marketTrends || null,
-            export_potential: staticCrop.market?.exportPotential || null,
-            export_destinations: staticCrop.market?.exportDestinations || null,
-            value_chain_players: staticCrop.market?.valueChainPlayers || null,
-            certifications: staticCrop.market?.certifications || null,
-            subsidies: staticCrop.market?.subsidies || null,
-            schemes: staticCrop.market?.schemes || null,
-            support_agencies: staticCrop.market?.supportAgencies || null,
-            
-            // Advanced analytics
-            ai_ml_iot: staticCrop.technology?.aiMlIot || null,
-            smart_farming: staticCrop.technology?.smartFarming || null,
-            sustainability_potential: staticCrop.sustainabilityDetails?.potential || null,
-            waste_to_wealth: staticCrop.sustainabilityDetails?.wasteToWealth || null,
-            climate_resilience: staticCrop.climateResilience ? staticCrop.climateResilience.join(', ') : null,
-            carbon_footprint: staticCrop.sustainabilityDetails?.carbonFootprint || null,
-            religious_use: staticCrop.cultural?.religiousUse || null,
-            traditional_uses: staticCrop.cultural?.traditionalUses || null,
-            gi_status: staticCrop.cultural?.giStatus || null,
-            fun_fact: staticCrop.cultural?.funFact || null,
-            key_takeaways: staticCrop.insights?.keyTakeaways || null,
-            swot_strengths: staticCrop.insights?.swotStrengths || null,
-            swot_weaknesses: staticCrop.insights?.swotWeaknesses || null,
-            swot_opportunities: staticCrop.insights?.swotOpportunities || null,
-            swot_threats: staticCrop.insights?.swotThreats || null,
-            
-            // Morphology fields
-            root_system: staticCrop.morphology?.rootSystem || null,
-            leaf: staticCrop.morphology?.leaf || null,
-            flowering_season: staticCrop.morphology?.floweringSeason || null,
-            inflorescence_type: staticCrop.morphology?.inflorescenceType || null,
-            fruit_type: staticCrop.morphology?.fruitType || null,
-            fruit_development: staticCrop.morphology?.fruitDevelopment || null,
-            unique_morphology: staticCrop.morphology?.uniqueMorphology || null,
-            edible_part: staticCrop.morphology?.ediblePart || null,
-            
-            // Genetics fields
-            chromosome_number: staticCrop.genetics?.chromosomeNumber || null,
-            breeding_methods: staticCrop.genetics?.breedingMethods || null,
-            biotech_advances: staticCrop.genetics?.biotechAdvances || null,
-            hybrid_varieties: staticCrop.genetics?.hybridVarieties || null,
-            patents: staticCrop.genetics?.patents || null,
-            research_institutes: staticCrop.genetics?.researchInstitutes || null,
-            
-            // Reproductive biology fields
-            pollination: staticCrop.reproduction?.pollination || null,
-            propagation_type: staticCrop.reproduction?.propagationType || null,
-            planting_material: staticCrop.reproduction?.plantingMaterial || null,
-            germination_percent: staticCrop.reproduction?.germinationPercent || null,
-            rootstock_compatibility: staticCrop.reproduction?.rootstockCompatibility || null,
-            nursery_practices: staticCrop.reproduction?.nurseryPractices || null,
-            training_system: staticCrop.reproduction?.trainingSystem || null,
-            
-            // Variety-specific fields
-            variety_name: staticCrop.varieties?.[0]?.name || null,
-            yield: staticCrop.varieties?.[0]?.yield || null,
-            variety_features: staticCrop.varieties?.[0]?.characteristics ? staticCrop.varieties[0].characteristics.join(', ') : null,
-            variety_suitability: staticCrop.varieties?.[0]?.zone || null,
-            market_demand: staticCrop.economics?.marketDemand || null,
-            
-            varieties: (staticCrop.varieties || []).map(v => ({
-              id: v.id,
-              name: v.name,
-              duration: v.duration || null,
-              yield_potential: v.yield || null,
-              suitable_states: v.states || null,
-              disease_resistance: v.resistance || null,
-              special_features: v.characteristics || null,
-              grain_quality: v.grainQuality || null,
-              description: null,
-              zone: v.zone || null,
-              premium_market: v.premiumMarket || false,
-              late_sowing_suitable: v.lateSowingSuitable || false,
-              irrigation_responsive: v.irrigationResponsive || false,
-              certified_seed_available: v.certifiedSeedAvailable || false,
-            })),
-          };
-
-          setCrop(mapped);
-          setError(null);
-          return;
-        }
+        // No fallback needed - data comes from Supabase
 
         setError(`Could not find crop: ${cropName}`);
       } catch (err) {
@@ -691,7 +514,7 @@ const SimpleCropProfile: React.FC<SimpleCropProfileProps> = ({ cropName, onBack 
                   <div className="w-12 h-12 bg-yellow-400 rounded-lg flex items-center justify-center">
                     <Sprout className="h-6 w-6 text-white" />
                   </div>
-                  <div>
+                <div>
                     <p className="text-sm font-medium text-gray-600">Varieties</p>
                     <p className="text-2xl font-bold text-gray-800">{stats.varieties}</p>
                   </div>
@@ -705,8 +528,8 @@ const SimpleCropProfile: React.FC<SimpleCropProfileProps> = ({ cropName, onBack 
                 <div className="flex items-center gap-3 mb-3">
                   <div className="w-12 h-12 bg-blue-400 rounded-lg flex items-center justify-center">
                     <MapPin className="h-6 w-6 text-white" />
-                  </div>
-                  <div>
+                </div>
+                <div>
                     <p className="text-sm font-medium text-gray-600">States</p>
                     <p className="text-2xl font-bold text-gray-800">{stats.states}</p>
                   </div>
@@ -820,7 +643,7 @@ const SimpleCropProfile: React.FC<SimpleCropProfileProps> = ({ cropName, onBack 
                     <div className="flex items-center gap-2 text-sm text-gray-600">
                       <div className="w-2 h-2 bg-blue-400 rounded-full"></div>
                       <span>Primary growing regions with optimal conditions</span>
-                    </div>
+                </div>
                   </div>
                 </div>
               </div>
@@ -981,8 +804,9 @@ const SimpleCropProfile: React.FC<SimpleCropProfileProps> = ({ cropName, onBack 
                     {/* Header */}
                     <div className="flex items-center justify-between mb-6">
                       <div className="flex items-center gap-3">
-                        <div className="w-12 h-12 bg-gradient-to-br from-green-400 to-emerald-500 rounded-lg flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
-                          <Sprout className="h-6 w-6 text-white" />
+                        <div className="w-12 h-12 bg-gradient-to-br from-green-400 to-emerald-500 rounded-lg flex items-center justify-center group-hover:scale-110 transition-transform duration-300 overflow-hidden">
+                          {getVarietyImage(variety)}
+                          <Sprout className="h-6 w-6 text-white hidden" />
                         </div>
                         <div>
                           <h3 className="text-xl font-bold text-gray-800">{variety.name}</h3>
@@ -998,9 +822,9 @@ const SimpleCropProfile: React.FC<SimpleCropProfileProps> = ({ cropName, onBack 
                             Premium
                           </Badge>
                         )}
+                        </div>
                       </div>
-                    </div>
-
+                      
                     {/* Key Metrics */}
                     <div className="grid grid-cols-2 gap-4 mb-6">
                       <div className="bg-white rounded-lg p-4 border border-gray-100">
@@ -1054,14 +878,14 @@ const SimpleCropProfile: React.FC<SimpleCropProfileProps> = ({ cropName, onBack 
                            <Badge key={state} className="bg-blue-100 text-blue-800 border-blue-200 hover:bg-blue-200 transition-colors">
                              {state}
                            </Badge>
-                         )) : []}
+                          )) : []}
                          {variety.suitable_states && variety.suitable_states.length > 8 && (
                            <Badge className="bg-gray-100 text-gray-600 border-gray-200">
                              +{variety.suitable_states.length - 8} more
-                           </Badge>
-                         )}
-                       </div>
-            </div>
+                            </Badge>
+                          )}
+                        </div>
+                      </div>
 
                      {/* Special Features */}
                      {variety.special_features && variety.special_features.length > 0 && (
@@ -1136,13 +960,13 @@ const SimpleCropProfile: React.FC<SimpleCropProfileProps> = ({ cropName, onBack 
                      </div>
 
                      {/* Description */}
-                     {variety.description && (
+                      {variety.description && (
                        <div className="bg-gray-50 rounded-lg p-4 border border-gray-100">
                          <p className="text-sm text-gray-700 leading-relaxed">
-                           {variety.description}
-                         </p>
+                          {variety.description}
+                        </p>
                        </div>
-                     )}
+                      )}
                     </div>
                 ))}
               </div>
@@ -1235,7 +1059,7 @@ const SimpleCropProfile: React.FC<SimpleCropProfileProps> = ({ cropName, onBack 
                     </div>
                   </div>
                   <div className="space-y-3">
-                    {crop.land_preparation.map((step, index) => (
+                      {crop.land_preparation.map((step, index) => (
                       <div key={index} className="bg-white rounded-lg p-4 border border-green-100">
                         <div className="flex items-start gap-3">
                           <div className="w-6 h-6 bg-green-100 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5">
@@ -1456,7 +1280,7 @@ const SimpleCropProfile: React.FC<SimpleCropProfileProps> = ({ cropName, onBack 
                     </div>
                   </div>
                   <div className="space-y-3">
-                    {crop.fertilizer_requirement.map((fertilizer, index) => (
+                      {crop.fertilizer_requirement.map((fertilizer, index) => (
                       <div key={index} className="bg-white rounded-lg p-4 border border-green-100">
                         <div className="flex items-start gap-3">
                           <div className="w-6 h-6 bg-green-100 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5">
@@ -2149,12 +1973,12 @@ const SimpleCropProfile: React.FC<SimpleCropProfileProps> = ({ cropName, onBack 
               {/* Fallback for basic pest/disease lists */}
               {!crop.pest_name && crop.pest_list && crop.pest_list.length > 0 && (
                 <Card className="bg-white border border-gray-200">
-                <CardHeader>
+                  <CardHeader>
                     <CardTitle className="flex items-center gap-2 text-gray-800">
                       <Bug className="h-5 w-5 text-red-500" />
                       Common Pests
-                  </CardTitle>
-                </CardHeader>
+                    </CardTitle>
+                  </CardHeader>
                   <CardContent>
                     <div className="space-y-2">
                       {crop.pest_list.map((pest, index) => (
@@ -2164,19 +1988,19 @@ const SimpleCropProfile: React.FC<SimpleCropProfileProps> = ({ cropName, onBack 
                         </div>
                       ))}
                     </div>
-                </CardContent>
-              </Card>
+                  </CardContent>
+                </Card>
               )}
 
               {!crop.disease_name && crop.disease_list && crop.disease_list.length > 0 && (
                 <Card className="bg-white border border-gray-200">
-                  <CardHeader>
+                <CardHeader>
                     <CardTitle className="flex items-center gap-2 text-gray-800">
                       <Shield className="h-5 w-5 text-orange-500" />
                       Common Diseases
-                    </CardTitle>
-                  </CardHeader>
-                  <CardContent>
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
                     <div className="space-y-2">
                       {crop.disease_list.map((disease, index) => (
                         <div key={index} className="flex items-center gap-2">
@@ -2185,8 +2009,8 @@ const SimpleCropProfile: React.FC<SimpleCropProfileProps> = ({ cropName, onBack 
             </div>
                       ))}
                     </div>
-                  </CardContent>
-                </Card>
+                </CardContent>
+              </Card>
               )}
             </div>
 
@@ -2200,15 +2024,15 @@ const SimpleCropProfile: React.FC<SimpleCropProfileProps> = ({ cropName, onBack 
 
                 {/* Additional Pests */}
                 {crop.additional_pests && crop.additional_pests.length > 0 && (
-              <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
                     {crop.additional_pests.map((pest, index) => (
                       <Card key={index} className="bg-white border border-gray-200">
-                    <CardHeader>
+                <CardHeader>
                           <CardTitle className="flex items-center gap-2 text-gray-800">
                             <Bug className="h-5 w-5 text-red-500" />
                             {pest.name}
-                      </CardTitle>
-                    </CardHeader>
+                  </CardTitle>
+                </CardHeader>
                         <CardContent className="space-y-4 text-sm text-gray-600">
                           {/* Pest Image */}
                           {pest.image && (
@@ -2235,8 +2059,8 @@ const SimpleCropProfile: React.FC<SimpleCropProfileProps> = ({ cropName, onBack 
                           <div>
                             <span className="font-medium">Biological Control:</span> {pest.biocontrol}
                       </div>
-                        </CardContent>
-                      </Card>
+                </CardContent>
+              </Card>
                     ))}
                   </div>
                 )}
@@ -2246,12 +2070,12 @@ const SimpleCropProfile: React.FC<SimpleCropProfileProps> = ({ cropName, onBack 
                   <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mt-6">
                     {crop.additional_diseases.map((disease, index) => (
                       <Card key={index} className="bg-white border border-gray-200">
-                        <CardHeader>
+                <CardHeader>
                           <CardTitle className="flex items-center gap-2 text-gray-800">
                             <Shield className="h-5 w-5 text-orange-500" />
                             {disease.name}
-                          </CardTitle>
-                        </CardHeader>
+                  </CardTitle>
+                </CardHeader>
                         <CardContent className="space-y-4 text-sm text-gray-600">
                           {/* Disease Image */}
                           {disease.image && (
@@ -2278,8 +2102,8 @@ const SimpleCropProfile: React.FC<SimpleCropProfileProps> = ({ cropName, onBack 
                           <div>
                             <span className="font-medium">Biological Control:</span> {disease.biocontrol}
                           </div>
-                    </CardContent>
-                  </Card>
+                </CardContent>
+              </Card>
                 ))}
               </div>
                 )}

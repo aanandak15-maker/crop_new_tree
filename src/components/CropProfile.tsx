@@ -201,6 +201,29 @@ const CropProfile: React.FC<CropProfileProps> = ({ cropName, onBack }) => {
   
   const crop = getCropByName(cropName);
 
+  const getVarietyImage = (variety: any) => {
+    // Check if this variety has uploaded images
+    if (variety.variety_images && variety.variety_images.length > 0) {
+      // Find the primary image or use the first one
+      const primaryImage = variety.variety_images.find((img: any) => img.is_primary) || variety.variety_images[0];
+      
+      return (
+        <img 
+          src={primaryImage.image_url} 
+          alt={primaryImage.alt_text || variety.name} 
+          className="h-full w-full object-cover rounded-lg"
+          onError={(e) => {
+            e.currentTarget.style.display = 'none';
+            e.currentTarget.nextElementSibling?.classList.remove('hidden');
+          }}
+        />
+      );
+    }
+    
+    // Fallback to generic sprout icon
+    return <Sprout className="h-6 w-6 text-white" />;
+  };
+
   useEffect(() => {
     fetchAllCropData();
   }, [cropName]);
@@ -217,10 +240,19 @@ const CropProfile: React.FC<CropProfileProps> = ({ cropName, onBack }) => {
       if (cropData) {
         setDbCrop(cropData);
         
-        // Fetch varieties for this crop
+        // Fetch varieties for this crop with images
         const { data: varietiesData } = await supabase
           .from('varieties')
-          .select('*')
+          .select(`
+            *,
+            variety_images (
+              id,
+              image_url,
+              alt_text,
+              caption,
+              is_primary
+            )
+          `)
           .eq('crop_id', cropData.id);
         
         // Fetch pests for this crop
@@ -675,11 +707,19 @@ const CropProfile: React.FC<CropProfileProps> = ({ cropName, onBack }) => {
                 {dbVarieties.map((variety) => (
                   <Card key={variety.id} className="border-2 hover:border-crop-green transition-colors cursor-pointer">
                     <CardHeader>
-                      <CardTitle className="flex items-center justify-between">
-                        <span>{variety.name}</span>
-                        <Badge>{variety.maturity_group || 'Standard'}</Badge>
-                      </CardTitle>
-                      <CardDescription>{variety.description}</CardDescription>
+                      <div className="flex items-center gap-3 mb-3">
+                        <div className="w-12 h-12 bg-gradient-to-br from-green-400 to-emerald-500 rounded-lg flex items-center justify-center overflow-hidden">
+                          {getVarietyImage(variety)}
+                          <Sprout className="h-6 w-6 text-white hidden" />
+                        </div>
+                        <div className="flex-1">
+                          <CardTitle className="flex items-center justify-between">
+                            <span>{variety.name}</span>
+                            <Badge>{variety.maturity_group || 'Standard'}</Badge>
+                          </CardTitle>
+                          <CardDescription>{variety.description}</CardDescription>
+                        </div>
+                      </div>
                     </CardHeader>
                     <CardContent className="space-y-3">
                       <div className="grid grid-cols-2 gap-4 text-sm">

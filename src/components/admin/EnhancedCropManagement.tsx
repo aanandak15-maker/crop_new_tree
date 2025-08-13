@@ -24,6 +24,7 @@ interface Crop {
   description: string;
   season: string[];
   climate_type: string[];
+  crop_type: string;
   soil_type: string[];
   water_requirement: string;
   growth_duration: string;
@@ -192,6 +193,7 @@ const EnhancedCropManagement = () => {
     description: "",
     season: "",
     climate_type: "",
+    crop_type: "",
     soil_type: "",
     water_requirement: "",
     growth_duration: "",
@@ -396,6 +398,7 @@ const EnhancedCropManagement = () => {
         description: formData.description,
         season: formData.season.split(',').map(s => s.trim()).filter(Boolean),
         climate_type: formData.climate_type.split(',').map(s => s.trim()).filter(Boolean),
+        crop_type: formData.crop_type,
         soil_type: formData.soil_type.split(',').map(s => s.trim()).filter(Boolean),
         water_requirement: formData.water_requirement,
         growth_duration: formData.growth_duration,
@@ -541,7 +544,7 @@ const EnhancedCropManagement = () => {
         swot_threats: formData.swot_threats,
       };
 
-      console.log('Saving crop data:', cropData);
+              // Saving crop data
 
       if (editingCrop) {
         const { error } = await supabase
@@ -588,6 +591,7 @@ const EnhancedCropManagement = () => {
       description: crop.description || "",
       season: crop.season?.join(', ') || "",
       climate_type: crop.climate_type?.join(', ') || "",
+      crop_type: crop.crop_type || "",
       soil_type: crop.soil_type?.join(', ') || "",
       water_requirement: crop.water_requirement || "",
       growth_duration: crop.growth_duration || "",
@@ -851,7 +855,7 @@ const EnhancedCropManagement = () => {
   const resetForm = () => {
     setFormData({
       name: "", scientific_name: "", description: "", season: "", climate_type: "",
-      soil_type: "", water_requirement: "", growth_duration: "", family: "",
+      crop_type: "", soil_type: "", water_requirement: "", growth_duration: "", family: "",
       temperature_range: "", rainfall_requirement: "", humidity_range: "",
       soil_ph: "", drainage_requirement: "", land_preparation: "", seed_rate: "",
       row_spacing: "", sowing_time: "", fertilizer_requirement: "", irrigation_schedule: "",
@@ -1012,9 +1016,27 @@ const EnhancedCropManagement = () => {
                                 <Label htmlFor="field_name">Field Name</Label>
                                 <Input id="field_name" value={formData.field_name || ''} onChange={e => setFormData({ ...formData, field_name: e.target.value })} />
                     </div>
-                    <div>
+                                                  <div>
                                 <Label htmlFor="family">Family</Label>
                                 <Input id="family" value={formData.family} onChange={e => setFormData({ ...formData, family: e.target.value })} />
+                              </div>
+                              <div>
+                                <Label htmlFor="crop_type">Crop Type *</Label>
+                                <Select value={formData.crop_type} onValueChange={(value) => setFormData({ ...formData, crop_type: value })}>
+                                  <SelectTrigger>
+                                    <SelectValue placeholder="Select crop type" />
+                                  </SelectTrigger>
+                                  <SelectContent>
+                                    <SelectItem value="cereals">🌾 Cereals</SelectItem>
+                                    <SelectItem value="pulses">🫘 Pulses</SelectItem>
+                                    <SelectItem value="oilseeds">🫘 Oilseeds</SelectItem>
+                                    <SelectItem value="vegetables">🥬 Vegetables</SelectItem>
+                                    <SelectItem value="fruits">🍎 Fruits</SelectItem>
+                                    <SelectItem value="spices">🌶️ Spices</SelectItem>
+                                    <SelectItem value="medicinal">🌿 Medicinal</SelectItem>
+                                    <SelectItem value="ornamental">🌸 Ornamental</SelectItem>
+                                  </SelectContent>
+                                </Select>
                               </div>
                               <div>
                                 <Label htmlFor="origin">Origin / Center of Origin</Label>

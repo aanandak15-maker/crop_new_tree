@@ -18,7 +18,8 @@ export type CropCategory =
   | 'fruit' 
   | 'spice' 
   | 'fiber' 
-  | 'medicinal';
+  | 'medicinal'
+  | 'ornamental';
 
 export interface CropData {
   // Basic Information

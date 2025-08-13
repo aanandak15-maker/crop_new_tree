@@ -70,14 +70,14 @@ class GeminiService {
         const timeSinceLastRequest = now - this.lastRequestTime;
         if (timeSinceLastRequest < this.minRequestInterval) {
           const waitTime = this.minRequestInterval - timeSinceLastRequest;
-          console.log(`Rate limiting: waiting ${waitTime}ms before next request`);
+          // Rate limiting: waiting before next request
           await new Promise(resolve => setTimeout(resolve, waitTime));
         }
         this.lastRequestTime = Date.now();
         
         const prompt = this.buildExtractionPrompt(request);
         
-        console.log(`Attempting Gemini API call (attempt ${attempt}/${maxRetries})`);
+        // Attempting Gemini API call
         
         const response = await fetch(`${this.baseUrl}/${this.model}:generateContent?key=${this.apiKey}`, {
           method: 'POST',
