@@ -41,8 +41,18 @@ export default defineConfig(({ mode }) => ({
     esbuild: {
       drop: mode === 'production' ? ['console', 'debugger'] : [],
     },
+    // Ensure proper asset handling for Netlify
+    assetsInlineLimit: 4096,
+    // Better error reporting
+    reportCompressedSize: false,
+    // Ensure proper chunk loading
+    commonjsOptions: {
+      include: [/node_modules/],
+    },
   },
   optimizeDeps: {
     include: ['react', 'react-dom', '@supabase/supabase-js'],
   },
+  // Ensure proper base path for Netlify
+  base: '/',
 }));

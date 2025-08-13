@@ -394,3 +394,4 @@ export const getCropByName = (name: string): CropData | undefined => {
 export const getAllCropNames = (): string[] => {
   return cropDatabase.map(crop => crop.name);
 };
+
