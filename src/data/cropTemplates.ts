@@ -506,10 +506,494 @@ export const vegetableTemplate: CropTemplate = {
   }
 };
 
+// Oilseed crops template
+export const oilseedTemplate: CropTemplate = {
+  id: 'oilseed',
+  name: 'Oilseed Crops',
+  description: 'Template for oilseed crops like groundnut, soybean, sunflower, and mustard',
+  category: 'oilseed',
+  icon: 'Leaf',
+  color: 'blue',
+  baseFields: [
+    // Basic Information (Required)
+    'name', 'scientific_name', 'family', 'season', 'description', 'origin',
+    
+    // Morphology (Required)
+    'growth_habit', 'life_span', 'plant_type', 'root_system', 'leaf', 'flowering_season',
+    
+    // Genetics (Required)
+    'chromosome_number', 'breeding_methods',
+    
+    // Varieties (Required)
+    'varieties',
+    
+    // Cultivation (Required)
+    'land_preparation', 'sowing_time', 'spacing', 'planting_season',
+    
+    // Management (Required)
+    'npk_n', 'npk_p', 'npk_k', 'water_quality',
+    
+    // Pests & Diseases (Required)
+    'pest_name', 'disease_name',
+    
+    // Nutrition (Required)
+    'calories', 'protein', 'carbohydrates', 'fiber',
+    
+    // Harvest (Required)
+    'harvest_time', 'maturity_indicators', 'storage_conditions',
+    
+    // Market (Required)
+    'average_yield', 'market_price', 'cost_of_cultivation'
+  ],
+  optionalFields: [
+    // Advanced Morphology
+    'inflorescence_type', 'fruit_type', 'fruit_development', 'unique_morphology', 'edible_part',
+    
+    // Advanced Genetics
+    'biotech_advances', 'hybrid_varieties', 'patents', 'research_institutes',
+    
+    // Advanced Reproduction
+    'pollination', 'propagation_type', 'planting_material', 'germination_percent',
+    'rootstock_compatibility', 'nursery_practices', 'training_system',
+    
+    // Advanced Management
+    'micronutrient_needs', 'biofertilizer_usage', 'application_schedule_method',
+    'application_schedule_stages', 'application_schedule_frequency',
+    
+    // Climate & Soil
+    'optimum_temp', 'tolerable_temp', 'altitude', 'soil_texture', 'light_requirement',
+    
+    // Weeds
+    'common_weeds', 'weed_season', 'weed_control_method', 'critical_period_weed',
+    
+    // Additional Pests & Diseases
+    'additional_pests', 'additional_diseases',
+    
+    // Disorders & Nematodes
+    'disorder_name', 'nematode_name',
+    
+    // Advanced Nutrition
+    'fat', 'vitamins', 'minerals', 'bioactive_compounds', 'health_benefits',
+    
+    // Advanced Harvest
+    'harvesting_tools', 'post_harvest_losses', 'shelf_life', 'processed_products',
+    'packaging_types', 'cold_chain', 'ripening_characteristics', 'pre_cooling',
+    
+    // Advanced Market
+    'market_trends', 'export_potential', 'export_destinations', 'value_chain_players',
+    'certifications',
+    
+    // Government
+    'subsidies', 'schemes', 'support_agencies', 'required_certifications',
+    
+    // Technology
+    'ai_ml_iot', 'smart_farming',
+    
+    // Cultural
+    'religious_use', 'traditional_uses', 'gi_status', 'fun_fact',
+    
+    // Insights
+    'key_takeaways', 'swot_strengths', 'swot_weaknesses', 'swot_opportunities', 'swot_threats',
+    
+    // Sustainability
+    'sustainability_practices', 'innovations', 'climate_resilience'
+  ],
+  defaultValues: {
+    family: 'Fabaceae/Brassicaceae/Asteraceae',
+    plant_type: 'Annual',
+    growth_habit: 'Erect/Spreading',
+    root_system: 'Tap root',
+    leaf: 'Simple/Compound',
+    flowering_season: 'Spring/Summer',
+    chromosome_number: '2n=18, 20, 34, 38',
+    breeding_methods: 'Hybrid breeding, Pure line selection',
+    land_preparation: ['Deep ploughing', 'Harrowing', 'Planking', 'Leveling', 'Bed preparation'],
+    spacing: '30-45 cm row spacing',
+    npk_n: '80-120 kg/ha',
+    npk_p: '60-80 kg/ha',
+    npk_k: '40-60 kg/ha',
+    water_quality: 'Good quality water, avoid saline water',
+    calories: '500-600 kcal',
+    protein: '18-25%',
+    carbohydrates: '15-25%',
+    fiber: '8-12g',
+    harvest_time: '90-120 days after sowing',
+    maturity_indicators: 'Yellowing of leaves, Hard seeds',
+    storage_conditions: 'Cool, dry place, 8-10% moisture',
+    average_yield: '20-35 q/ha',
+    market_price: '₹5000-8000/quintal',
+    cost_of_cultivation: '₹40000-60000/ha'
+  }
+};
+
+// Fruit crops template
+export const fruitTemplate: CropTemplate = {
+  id: 'fruit',
+  name: 'Fruit Crops',
+  description: 'Template for fruit crops like mango, banana, apple, and orange',
+  category: 'fruit',
+  icon: 'Apple',
+  color: 'red',
+  baseFields: [
+    // Basic Information (Required)
+    'name', 'scientific_name', 'family', 'season', 'description', 'origin',
+    
+    // Morphology (Required)
+    'growth_habit', 'life_span', 'plant_type', 'root_system', 'leaf', 'flowering_season',
+    
+    // Genetics (Required)
+    'chromosome_number', 'breeding_methods',
+    
+    // Varieties (Required)
+    'varieties',
+    
+    // Cultivation (Required)
+    'land_preparation', 'sowing_time', 'spacing', 'planting_season',
+    
+    // Management (Required)
+    'npk_n', 'npk_p', 'npk_k', 'water_quality',
+    
+    // Pests & Diseases (Required)
+    'pest_name', 'disease_name',
+    
+    // Nutrition (Required)
+    'calories', 'protein', 'carbohydrates', 'fiber',
+    
+    // Harvest (Required)
+    'harvest_time', 'maturity_indicators', 'storage_conditions',
+    
+    // Market (Required)
+    'average_yield', 'market_price', 'cost_of_cultivation'
+  ],
+  optionalFields: [
+    // Advanced Morphology
+    'inflorescence_type', 'fruit_type', 'fruit_development', 'unique_morphology', 'edible_part',
+    
+    // Advanced Genetics
+    'biotech_advances', 'hybrid_varieties', 'patents', 'research_institutes',
+    
+    // Advanced Reproduction
+    'pollination', 'propagation_type', 'planting_material', 'germination_percent',
+    'rootstock_compatibility', 'nursery_practices', 'training_system',
+    
+    // Advanced Management
+    'micronutrient_needs', 'biofertilizer_usage', 'application_schedule_method',
+    'application_schedule_stages', 'application_schedule_frequency',
+    
+    // Climate & Soil
+    'optimum_temp', 'tolerable_temp', 'altitude', 'soil_texture', 'light_requirement',
+    
+    // Weeds
+    'common_weeds', 'weed_season', 'weed_control_method', 'critical_period_weed',
+    
+    // Additional Pests & Diseases
+    'additional_pests', 'additional_diseases',
+    
+    // Disorders & Nematodes
+    'disorder_name', 'nematode_name',
+    
+    // Advanced Nutrition
+    'fat', 'vitamins', 'minerals', 'bioactive_compounds', 'health_benefits',
+    
+    // Advanced Harvest
+    'harvesting_tools', 'post_harvest_losses', 'shelf_life', 'processed_products',
+    'packaging_types', 'cold_chain', 'ripening_characteristics', 'pre_cooling',
+    
+    // Advanced Market
+    'market_trends', 'export_potential', 'export_destinations', 'value_chain_players',
+    'certifications',
+    
+    // Government
+    'subsidies', 'schemes', 'support_agencies', 'required_certifications',
+    
+    // Technology
+    'ai_ml_iot', 'smart_farming',
+    
+    // Cultural
+    'religious_use', 'traditional_uses', 'gi_status', 'fun_fact',
+    
+    // Insights
+    'key_takeaways', 'swot_strengths', 'swot_weaknesses', 'swot_opportunities', 'swot_threats',
+    
+    // Sustainability
+    'sustainability_practices', 'innovations', 'climate_resilience'
+  ],
+  defaultValues: {
+    family: 'Anacardiaceae/Musaceae/Rosaceae/Rutaceae',
+    plant_type: 'Perennial',
+    growth_habit: 'Tree/Shrub',
+    root_system: 'Tap root',
+    leaf: 'Simple/Compound',
+    flowering_season: 'Spring/Summer',
+    chromosome_number: '2n=14, 16, 18, 24, 34',
+    breeding_methods: 'Hybrid breeding, Grafting, Tissue culture',
+    land_preparation: ['Deep ploughing', 'Harrowing', 'Planking', 'Leveling', 'Pit preparation'],
+    spacing: '6-12 m spacing',
+    npk_n: '200-300 kg/ha',
+    npk_p: '100-150 kg/ha',
+    npk_k: '150-200 kg/ha',
+    water_quality: 'Good quality water, regular irrigation',
+    calories: '50-150 kcal',
+    protein: '0.5-2%',
+    carbohydrates: '10-25%',
+    fiber: '2-8g',
+    harvest_time: '3-8 years after planting',
+    maturity_indicators: 'Color change, Size, Firmness, Aroma',
+    storage_conditions: 'Cool storage, Controlled atmosphere, Cold chain',
+    average_yield: '150-300 q/ha',
+    market_price: '₹2000-8000/quintal',
+    cost_of_cultivation: '₹150000-300000/ha'
+  }
+};
+
+// Spice crops template
+export const spiceTemplate: CropTemplate = {
+  id: 'spice',
+  name: 'Spice Crops',
+  description: 'Template for spice crops like turmeric, ginger, black pepper, and cardamom',
+  category: 'spice',
+  icon: 'Zap',
+  color: 'orange',
+  baseFields: [
+    // Basic Information (Required)
+    'name', 'scientific_name', 'family', 'season', 'description', 'origin',
+    
+    // Morphology (Required)
+    'growth_habit', 'life_span', 'plant_type', 'root_system', 'leaf', 'flowering_season',
+    
+    // Genetics (Required)
+    'chromosome_number', 'breeding_methods',
+    
+    // Varieties (Required)
+    'varieties',
+    
+    // Cultivation (Required)
+    'land_preparation', 'sowing_time', 'spacing', 'planting_season',
+    
+    // Management (Required)
+    'npk_n', 'npk_p', 'npk_k', 'water_quality',
+    
+    // Pests & Diseases (Required)
+    'pest_name', 'disease_name',
+    
+    // Nutrition (Required)
+    'calories', 'protein', 'carbohydrates', 'fiber',
+    
+    // Harvest (Required)
+    'harvest_time', 'maturity_indicators', 'storage_conditions',
+    
+    // Market (Required)
+    'average_yield', 'market_price', 'cost_of_cultivation'
+  ],
+  optionalFields: [
+    // Advanced Morphology
+    'inflorescence_type', 'fruit_type', 'fruit_development', 'unique_morphology', 'edible_part',
+    
+    // Advanced Genetics
+    'biotech_advances', 'hybrid_varieties', 'patents', 'research_institutes',
+    
+    // Advanced Reproduction
+    'pollination', 'propagation_type', 'planting_material', 'germination_percent',
+    'rootstock_compatibility', 'nursery_practices', 'training_system',
+    
+    // Advanced Management
+    'micronutrient_needs', 'biofertilizer_usage', 'application_schedule_method',
+    'application_schedule_stages', 'application_schedule_frequency',
+    
+    // Climate & Soil
+    'optimum_temp', 'tolerable_temp', 'altitude', 'soil_texture', 'light_requirement',
+    
+    // Weeds
+    'common_weeds', 'weed_season', 'weed_control_method', 'critical_period_weed',
+    
+    // Additional Pests & Diseases
+    'additional_pests', 'additional_diseases',
+    
+    // Disorders & Nematodes
+    'disorder_name', 'nematode_name',
+    
+    // Advanced Nutrition
+    'fat', 'vitamins', 'minerals', 'bioactive_compounds', 'health_benefits',
+    
+    // Advanced Harvest
+    'harvesting_tools', 'post_harvest_losses', 'shelf_life', 'processed_products',
+    'packaging_types', 'cold_chain', 'ripening_characteristics', 'pre_cooling',
+    
+    // Advanced Market
+    'market_trends', 'export_potential', 'export_destinations', 'value_chain_players',
+    'certifications',
+    
+    // Government
+    'subsidies', 'schemes', 'support_agencies', 'required_certifications',
+    
+    // Technology
+    'ai_ml_iot', 'smart_farming',
+    
+    // Cultural
+    'religious_use', 'traditional_uses', 'gi_status', 'fun_fact',
+    
+    // Insights
+    'key_takeaways', 'swot_strengths', 'swot_weaknesses', 'swot_opportunities', 'swot_threats',
+    
+    // Sustainability
+    'sustainability_practices', 'innovations', 'climate_resilience'
+  ],
+  defaultValues: {
+    family: 'Zingiberaceae/Piperaceae/Zingiberaceae',
+    plant_type: 'Perennial',
+    growth_habit: 'Herbaceous/Climbing',
+    root_system: 'Rhizome/Tap root',
+    leaf: 'Simple',
+    flowering_season: 'Monsoon/Post-monsoon',
+    chromosome_number: '2n=22, 24, 26, 52',
+    breeding_methods: 'Clonal propagation, Tissue culture, Hybrid breeding',
+    land_preparation: ['Deep ploughing', 'Harrowing', 'Planking', 'Leveling', 'Bed preparation'],
+    spacing: '30-60 cm spacing',
+    npk_n: '150-200 kg/ha',
+    npk_p: '80-120 kg/ha',
+    npk_k: '100-150 kg/ha',
+    water_quality: 'Good quality water, regular irrigation',
+    calories: '300-400 kcal',
+    protein: '8-12%',
+    carbohydrates: '60-70%',
+    fiber: '15-20g',
+    harvest_time: '8-10 months after planting',
+    maturity_indicators: 'Yellowing of leaves, Rhizome size, Aroma',
+    storage_conditions: 'Cool, dry place, 10-12% moisture',
+    average_yield: '80-150 q/ha',
+    market_price: '₹8000-15000/quintal',
+    cost_of_cultivation: '₹80000-120000/ha'
+  }
+};
+
+// Fiber crops template
+export const fiberTemplate: CropTemplate = {
+  id: 'fiber',
+  name: 'Fiber Crops',
+  description: 'Template for fiber crops like cotton, jute, hemp, and flax',
+  category: 'fiber',
+  icon: 'Scissors',
+  color: 'purple',
+  baseFields: [
+    // Basic Information (Required)
+    'name', 'scientific_name', 'family', 'season', 'description', 'origin',
+    
+    // Morphology (Required)
+    'growth_habit', 'life_span', 'plant_type', 'root_system', 'leaf', 'flowering_season',
+    
+    // Genetics (Required)
+    'chromosome_number', 'breeding_methods',
+    
+    // Varieties (Required)
+    'varieties',
+    
+    // Cultivation (Required)
+    'land_preparation', 'sowing_time', 'spacing', 'planting_season',
+    
+    // Management (Required)
+    'npk_n', 'npk_p', 'npk_k', 'water_quality',
+    
+    // Pests & Diseases (Required)
+    'pest_name', 'disease_name',
+    
+    // Nutrition (Required)
+    'calories', 'protein', 'carbohydrates', 'fiber',
+    
+    // Harvest (Required)
+    'harvest_time', 'maturity_indicators', 'storage_conditions',
+    
+    // Market (Required)
+    'average_yield', 'market_price', 'cost_of_cultivation'
+  ],
+  optionalFields: [
+    // Advanced Morphology
+    'inflorescence_type', 'fruit_type', 'fruit_development', 'unique_morphology', 'edible_part',
+    
+    // Advanced Genetics
+    'biotech_advances', 'hybrid_varieties', 'patents', 'research_institutes',
+    
+    // Advanced Reproduction
+    'pollination', 'propagation_type', 'planting_material', 'germination_percent',
+    'rootstock_compatibility', 'nursery_practices', 'training_system',
+    
+    // Advanced Management
+    'micronutrient_needs', 'biofertilizer_usage', 'application_schedule_method',
+    'application_schedule_stages', 'application_schedule_frequency',
+    
+    // Climate & Soil
+    'optimum_temp', 'tolerable_temp', 'altitude', 'soil_texture', 'light_requirement',
+    
+    // Weeds
+    'common_weeds', 'weed_season', 'weed_control_method', 'critical_period_weed',
+    
+    // Additional Pests & Diseases
+    'additional_pests', 'additional_diseases',
+    
+    // Disorders & Nematodes
+    'disorder_name', 'nematode_name',
+    
+    // Advanced Nutrition
+    'fat', 'vitamins', 'minerals', 'bioactive_compounds', 'health_benefits',
+    
+    // Advanced Harvest
+    'harvesting_tools', 'post_harvest_losses', 'shelf_life', 'processed_products',
+    'packaging_types', 'cold_chain', 'ripening_characteristics', 'pre_cooling',
+    
+    // Advanced Market
+    'market_trends', 'export_potential', 'export_destinations', 'value_chain_players',
+    'certifications',
+    
+    // Government
+    'subsidies', 'schemes', 'support_agencies', 'required_certifications',
+    
+    // Technology
+    'ai_ml_iot', 'smart_farming',
+    
+    // Cultural
+    'religious_use', 'traditional_uses', 'gi_status', 'fun_fact',
+    
+    // Insights
+    'key_takeaways', 'swot_strengths', 'swot_weaknesses', 'swot_opportunities', 'swot_threats',
+    
+    // Sustainability
+    'sustainability_practices', 'innovations', 'climate_resilience'
+  ],
+  defaultValues: {
+    family: 'Malvaceae/Tiliaceae/Cannabaceae/Linaceae',
+    plant_type: 'Annual',
+    growth_habit: 'Erect/Climbing',
+    root_system: 'Tap root',
+    leaf: 'Simple/Palmate',
+    flowering_season: 'Summer/Monsoon',
+    chromosome_number: '2n=26, 28, 38, 30',
+    breeding_methods: 'Hybrid breeding, Pure line selection, GMO',
+    land_preparation: ['Deep ploughing', 'Harrowing', 'Planking', 'Leveling', 'Bed preparation'],
+    spacing: '45-90 cm row spacing',
+    npk_n: '120-180 kg/ha',
+    npk_p: '60-90 kg/ha',
+    npk_k: '60-90 kg/ha',
+    water_quality: 'Good quality water, regular irrigation',
+    calories: '200-300 kcal',
+    protein: '5-10%',
+    carbohydrates: '40-60%',
+    fiber: '25-35g',
+    harvest_time: '120-180 days after sowing',
+    maturity_indicators: 'Boll opening, Fiber maturity, Color change',
+    storage_conditions: 'Cool, dry place, 8-10% moisture',
+    average_yield: '25-40 q/ha',
+    market_price: '₹3000-6000/quintal',
+    cost_of_cultivation: '₹50000-80000/ha'
+  }
+};
+
 export const cropTemplates: CropTemplate[] = [
   cerealTemplate,
   pulseTemplate,
-  vegetableTemplate
+  vegetableTemplate,
+  oilseedTemplate,
+  fruitTemplate,
+  spiceTemplate,
+  fiberTemplate
 ];
 
 // Helper function to get template by category
