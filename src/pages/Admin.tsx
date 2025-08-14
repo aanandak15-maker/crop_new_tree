@@ -1,8 +1,9 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
+import { Badge } from "@/components/ui/badge";
 import EnhancedCropManagement from "@/components/admin/EnhancedCropManagement";
 import VarietyManagement from "@/components/admin/VarietyManagement";
 import PestManagement from "@/components/admin/PestManagement";
@@ -17,11 +18,13 @@ import ContentManagement from "@/components/admin/ContentManagement";
 import PerformanceMonitoring from "@/components/admin/PerformanceMonitoring";
 import UserManagement from "@/components/admin/UserManagement";
 import { AIDocumentProcessor } from "@/components/admin/ai-doc-processor";
-import { Sprout, Bug, Shield, Upload, Database, Link, History, Image, CheckCircle, Calendar, Globe, Activity, Sparkles, Users, Menu } from "lucide-react";
+import { Sprout, Bug, Shield, Upload, Database, Link, History, Image, CheckCircle, Calendar, Globe, Activity, Sparkles, Users, Menu, Bell } from "lucide-react";
+import { supabase } from "@/integrations/supabase/client";
 
 const Admin = () => {
   const [activeTab, setActiveTab] = useState("crops");
   const [showUserManagement, setShowUserManagement] = useState(false);
+  const [pendingUsersCount, setPendingUsersCount] = useState(0);
 
   const tabItems = [
     { value: "crops", label: "Crops", icon: Sprout },
@@ -38,6 +41,47 @@ const Admin = () => {
     { value: "performance", label: "Performance", icon: Activity },
     { value: "ai-processor", label: "AI Processor", icon: Sparkles },
   ];
+
+  // Fetch pending users count
+  useEffect(() => {
+    const fetchPendingCount = async () => {
+      try {
+        const { count, error } = await supabase
+          .from('user_profiles')
+          .select('*', { count: 'exact', head: true })
+          .eq('is_approved', false);
+
+        if (!error && count !== null) {
+          setPendingUsersCount(count);
+        }
+      } catch (error) {
+        console.error('Error fetching pending users count:', error);
+      }
+    };
+
+    fetchPendingCount();
+
+    // Set up real-time subscription for pending users count
+    const channel = supabase
+      .channel('pending_users_count')
+      .on(
+        'postgres_changes',
+        {
+          event: '*',
+          schema: 'public',
+          table: 'user_profiles'
+        },
+        () => {
+          // Refresh count when user_profiles table changes
+          fetchPendingCount();
+        }
+      )
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
+  }, []);
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100">
@@ -59,10 +103,18 @@ const Admin = () => {
                 variant="outline"
                 size="sm"
                 onClick={() => setShowUserManagement(!showUserManagement)}
-                className="flex items-center gap-2"
+                className="flex items-center gap-2 relative"
               >
                 <Users className="h-4 w-4" />
                 User Management
+                {pendingUsersCount > 0 && (
+                  <Badge 
+                    variant="destructive" 
+                    className="absolute -top-2 -right-2 h-5 w-5 flex items-center justify-center p-0 text-xs animate-pulse"
+                  >
+                    <Bell className="h-3 w-3" />
+                  </Badge>
+                )}
               </Button>
             </div>
           </CardHeader>

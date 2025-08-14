@@ -38,24 +38,11 @@ export const LoginForm: React.FC<LoginFormProps> = ({ onSwitchToRegister, onLogi
       }
 
       if (data.user) {
-        // Check if user is approved
-        const { data: profile } = await supabase
-          .from('user_profiles')
-          .select('is_approved, role')
-          .eq('user_id', data.user.id)
-          .single();
-
-        if (!profile?.is_approved) {
-          setError('Your account is pending approval. Please wait for admin approval.');
-          await supabase.auth.signOut();
-          return;
-        }
-
+        // Immediately proceed; route guard will handle approval and role checks
         toast({
           title: "Login successful!",
           description: `Welcome back, ${data.user.email}`,
         });
-
         onLoginSuccess();
       }
     } catch (err) {

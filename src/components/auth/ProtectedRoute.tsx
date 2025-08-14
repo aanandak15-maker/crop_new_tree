@@ -14,7 +14,7 @@ export const ProtectedRoute: React.FC<ProtectedRouteProps> = ({
   requireApproval = true,
   requiredRole 
 }) => {
-  const { user, profile, loading } = useAuth();
+  const { user, profile, loading, refreshProfile } = useAuth();
   const location = useLocation();
 
   if (loading) {
@@ -48,18 +48,36 @@ export const ProtectedRoute: React.FC<ProtectedRouteProps> = ({
             Your user profile could not be found. Please contact an administrator.
           </p>
           <button
-            onClick={() => window.location.reload()}
+            onClick={() => refreshProfile()}
             className="px-4 py-2 bg-primary text-primary-foreground rounded-md hover:bg-primary/90"
           >
-            Refresh Page
+            Retry
           </button>
         </div>
       </div>
     );
   }
 
-  // Check if approval is required and user is not approved
-  if (requireApproval && !profile.is_approved) {
+  // If profile is a temporary local pending, attempt a fast refresh and show syncing UI
+  if ((profile as any).id === 'local-pending') {
+    refreshProfile();
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="text-center max-w-md mx-auto p-6">
+          <div className="mb-4">
+            <div className="mx-auto w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center">
+              <span className="text-2xl">🔄</span>
+            </div>
+          </div>
+          <h2 className="text-xl font-semibold mb-2">Syncing Your Profile…</h2>
+          <p className="text-muted-foreground mb-4">Please wait a moment.</p>
+        </div>
+      </div>
+    );
+  }
+
+  // Check if approval is required and user is not approved (admins bypass transient approval checks)
+  if (requireApproval && !profile.is_approved && profile.role !== 'admin') {
     return (
       <div className="min-h-screen flex items-center justify-center">
         <div className="text-center max-w-md mx-auto p-6">

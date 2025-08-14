@@ -8,7 +8,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Alert, AlertDescription } from '@/components/ui/alert';
-import { Loader2, Users, UserCheck, UserX, Mail, Building, Shield, Clock, CheckCircle, XCircle } from 'lucide-react';
+import { Loader2, Users, UserCheck, UserX, Mail, Building, Shield, Clock, CheckCircle, XCircle, RefreshCw, Bell } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
 
@@ -27,19 +27,59 @@ interface UserProfile {
 const UserManagement = () => {
   const [users, setUsers] = useState<UserProfile[]>([]);
   const [loading, setLoading] = useState(true);
+  const [refreshing, setRefreshing] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
   const [roleFilter, setRoleFilter] = useState('all');
   const [statusFilter, setStatusFilter] = useState('all');
   const [processingUser, setProcessingUser] = useState<string | null>(null);
+  const [lastRefresh, setLastRefresh] = useState<Date>(new Date());
   const { toast } = useToast();
 
   useEffect(() => {
     fetchUsers();
+    
+    // Set up real-time subscription for user_profiles table
+    const channel = supabase
+      .channel('user_profiles_changes')
+      .on(
+        'postgres_changes',
+        {
+          event: '*',
+          schema: 'public',
+          table: 'user_profiles'
+        },
+        (payload) => {
+          console.log('🔄 Real-time update received:', payload);
+          // Refresh the users list when changes occur
+          fetchUsers();
+          
+          // Show notification for new registrations
+          if (payload.eventType === 'INSERT') {
+            const newUser = payload.new as UserProfile;
+            toast({
+              title: "New User Registration",
+              description: `${newUser.full_name} (${newUser.email}) has registered and is pending approval.`,
+              duration: 5000,
+            });
+          }
+        }
+      )
+      .subscribe();
+
+    // Auto-refresh every 30 seconds
+    const interval = setInterval(() => {
+      fetchUsers();
+    }, 30000);
+
+    return () => {
+      supabase.removeChannel(channel);
+      clearInterval(interval);
+    };
   }, []);
 
   const fetchUsers = async () => {
     try {
-      setLoading(true);
+      setRefreshing(true);
       const { data, error } = await supabase
         .from('user_profiles')
         .select('*')
@@ -56,10 +96,12 @@ const UserManagement = () => {
       }
 
       setUsers(data || []);
+      setLastRefresh(new Date());
     } catch (error) {
       console.error('Error fetching users:', error);
     } finally {
       setLoading(false);
+      setRefreshing(false);
     }
   };
 
@@ -220,13 +262,42 @@ const UserManagement = () => {
     <div className="space-y-6">
       <Card>
         <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <Users className="h-6 w-6" />
-            User Management
-          </CardTitle>
-          <CardDescription>
-            Manage user accounts, approve registrations, and assign roles
-          </CardDescription>
+          <div className="flex items-center justify-between">
+            <div>
+              <CardTitle className="flex items-center gap-2">
+                <Users className="h-6 w-6" />
+                User Management
+              </CardTitle>
+              <CardDescription>
+                Manage user accounts, approve registrations, and assign roles
+              </CardDescription>
+            </div>
+            <div className="flex items-center gap-2">
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={fetchUsers}
+                disabled={refreshing}
+                className="flex items-center gap-2"
+              >
+                {refreshing ? (
+                  <Loader2 className="h-4 w-4 animate-spin" />
+                ) : (
+                  <RefreshCw className="h-4 w-4" />
+                )}
+                Refresh
+              </Button>
+              {pendingUsers.length > 0 && (
+                <Badge variant="destructive" className="flex items-center gap-1">
+                  <Bell className="h-3 w-3" />
+                  {pendingUsers.length} Pending
+                </Badge>
+              )}
+            </div>
+          </div>
+          <div className="text-xs text-muted-foreground">
+            Last updated: {lastRefresh.toLocaleTimeString()} | Auto-refresh every 30 seconds
+          </div>
         </CardHeader>
         <CardContent>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
@@ -256,7 +327,12 @@ const UserManagement = () => {
           <Tabs defaultValue="all" className="w-full">
             <TabsList className="grid w-full grid-cols-4">
               <TabsTrigger value="all">All Users ({users.length})</TabsTrigger>
-              <TabsTrigger value="pending">Pending ({pendingUsers.length})</TabsTrigger>
+              <TabsTrigger value="pending" className="relative">
+                Pending ({pendingUsers.length})
+                {pendingUsers.length > 0 && (
+                  <span className="absolute -top-1 -right-1 h-3 w-3 bg-red-500 rounded-full animate-pulse"></span>
+                )}
+              </TabsTrigger>
               <TabsTrigger value="approved">Approved ({approvedUsers.length})</TabsTrigger>
               <TabsTrigger value="management">Management</TabsTrigger>
             </TabsList>
@@ -398,7 +474,7 @@ const UserManagement = () => {
               ) : (
                 <div className="space-y-4">
                   {pendingUsers.map((user) => (
-                    <Card key={user.id}>
+                    <Card key={user.id} className="border-l-4 border-l-yellow-500">
                       <CardContent className="p-4">
                         <div className="flex items-center justify-between">
                           <div className="space-y-2">

@@ -44,7 +44,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    console.log('🔄 AuthContext useEffect started');
+    console.log('🔄 AuthContext useEffect started (no-timeout build)');
     
     // Get initial session
     supabase.auth.getSession().then(({ data: { session } }) => {
@@ -81,6 +81,35 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     return () => subscription.unsubscribe();
   }, []);
 
+  // Realtime subscribe to the signed-in user's profile so approval changes apply instantly
+  useEffect(() => {
+    if (!user?.id) return;
+    const channel = supabase
+      .channel(`user_profile_${user.id}`)
+      .on(
+        'postgres_changes',
+        {
+          event: '*',
+          schema: 'public',
+          table: 'user_profiles',
+          filter: `user_id=eq.${user.id}`,
+        },
+        (payload) => {
+          const updated = (payload.new || payload.old) as Partial<UserProfile> | null;
+          if (updated && updated.user_id === user.id) {
+            console.log('🔔 Realtime profile update received');
+            // Refetch to ensure we have the latest row (and correct types)
+            fetchUserProfile(user.id, session);
+          }
+        }
+      )
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
+  }, [user?.id]);
+
   const fetchUserProfile = async (userId: string, currentSession?: Session | null) => {
     try {
       console.log('🔍 fetchUserProfile called with userId:', userId);
@@ -97,33 +126,117 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       console.log('✅ Fetching profile from Supabase...');
       console.log('🔑 Using session:', activeSession.access_token ? 'Has token' : 'No token');
       
-      // Simple direct fetch with timeout
-      const timeoutPromise = new Promise<never>((_, reject) => {
-        setTimeout(() => reject(new Error('Profile fetch timeout after 3 seconds')), 3000);
-      });
-
+      // Try to fetch profile with a soft timeout; if it stalls, we'll upsert a pending profile
       const fetchPromise = supabase
         .from('user_profiles')
         .select('*')
         .eq('user_id', userId)
-        .single();
+        .maybeSingle();
 
-      const result = await Promise.race([fetchPromise, timeoutPromise]);
-      const { data, error } = result;
+      const timeoutPromise = new Promise((_, reject) =>
+        setTimeout(() => reject(new Error('profile-select-timeout')), 5000)
+      );
+
+      let data: any | null = null;
+      let error: any | null = null;
+      try {
+        const res: any = await Promise.race([fetchPromise, timeoutPromise]);
+        ({ data, error } = res || {});
+      } catch (e) {
+        if ((e as Error).message === 'profile-select-timeout') {
+          console.warn('⏳ Profile select timed out, proceeding to upsert pending profile');
+        } else {
+          throw e;
+        }
+      }
 
       if (error) {
         console.error('❌ Error fetching user profile:', error);
         console.error('❌ Error details:', {
-          message: error.message,
-          code: error.code,
-          details: error.details,
-          hint: error.hint
+          message: (error as any).message,
+          code: (error as any).code,
+          details: (error as any).details,
+          hint: (error as any).hint
         });
         setProfile(null);
-      } else {
-        console.log('✅ Profile fetched successfully:', data);
-        setProfile(data);
+        return;
       }
+
+      if (!data) {
+        // No profile yet → create one from auth metadata so admin can approve
+        console.log('ℹ️ No profile found, creating a pending profile...');
+        const metadata = activeSession.user.user_metadata || {};
+        const pendingProfile = {
+          user_id: userId,
+          email: activeSession.user.email ?? '',
+          full_name: metadata.full_name ?? '',
+          organization: metadata.organization ?? '',
+          role: metadata.role ?? 'user',
+          is_approved: false,
+          created_at: new Date().toISOString(),
+          updated_at: new Date().toISOString(),
+        };
+
+        // Upsert ensures we don't duplicate if it exists server-side already
+        // Insert only if missing; do NOT overwrite approval status
+        const insertPromise = supabase
+          .from('user_profiles')
+          .insert(pendingProfile)
+          .select('*')
+          .single();
+
+        const upsertTimeout = new Promise((_, reject) =>
+          setTimeout(() => reject(new Error('profile-upsert-timeout')), 5000)
+        );
+
+        try {
+          const { data: created, error: insertError } = (await Promise.race([
+            insertPromise,
+            upsertTimeout,
+          ])) as any;
+
+          if (insertError) {
+            // If conflict or insert failure, try to fetch again (it may already exist)
+            console.warn('⚠️ Auto-create profile failed; attempting re-fetch', insertError);
+            const { data: refetched } = await supabase
+              .from('user_profiles')
+              .select('*')
+              .eq('user_id', userId)
+              .maybeSingle();
+            if (refetched) {
+              console.log('✅ Profile found on re-fetch:', refetched);
+              setProfile(refetched as unknown as UserProfile);
+              return;
+            }
+            setProfile(null);
+            return;
+          }
+
+          console.log('✅ Auto-created pending profile:', created);
+          setProfile(created as unknown as UserProfile);
+          return;
+        } catch (e) {
+          if ((e as Error).message === 'profile-upsert-timeout') {
+            console.warn('⏳ Profile upsert timed out; falling back to in-memory pending profile');
+            setProfile({
+              id: 'local-pending',
+              user_id: userId,
+              email: activeSession.user.email ?? '',
+              full_name: pendingProfile.full_name,
+              organization: pendingProfile.organization,
+              role: pendingProfile.role,
+              is_approved: false,
+              created_at: pendingProfile.created_at,
+              updated_at: pendingProfile.updated_at,
+            });
+            return;
+          }
+          throw e;
+        }
+      }
+
+      console.log('✅ Profile fetched successfully:', data);
+      setProfile(data as unknown as UserProfile);
       
     } catch (error) {
       console.error('❌ Exception in fetchUserProfile:', error);
