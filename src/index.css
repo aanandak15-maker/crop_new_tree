@@ -55,22 +55,6 @@ All colors MUST be HSL.
     --transition-bounce: all 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55);
 
     --radius: 0.5rem;
-
-    --sidebar-background: 0 0% 98%;
-
-    --sidebar-foreground: 240 5.3% 26.1%;
-
-    --sidebar-primary: 240 5.9% 10%;
-
-    --sidebar-primary-foreground: 0 0% 98%;
-
-    --sidebar-accent: 240 4.8% 95.9%;
-
-    --sidebar-accent-foreground: 240 5.9% 10%;
-
-    --sidebar-border: 220 13% 91%;
-
-    --sidebar-ring: 217.2 91.2% 59.8%;
   }
 
   .dark {
@@ -99,26 +83,16 @@ All colors MUST be HSL.
     --destructive: 0 62.8% 30.6%;
     --destructive-foreground: 210 40% 98%;
 
-    --border: 120 20% 25%;
-    --input: 120 20% 25%;
+    --border: 120 15% 20%;
+    --input: 120 15% 20%;
     --ring: 120 55% 45%;
 
-    /* Dark theme custom tokens */
-    --crop-green: 120 55% 45%;
-    --earth-brown: 30 35% 40%;
+    /* Dark agriculture theme tokens */
+    --crop-green: 120 65% 45%;
+    --earth-brown: 30 25% 40%;
     --harvest-gold: 45 75% 55%;
-    --soil-dark: 25 25% 15%;
-    --leaf-light: 110 35% 25%;
-    --growth-gradient: linear-gradient(135deg, hsl(120 55% 45%), hsl(45 75% 55%));
-    --nature-glow: 0 20px 40px hsl(120 55% 45% / 0.25);
-    --sidebar-background: 240 5.9% 10%;
-    --sidebar-foreground: 240 4.8% 95.9%;
-    --sidebar-primary: 224.3 76.3% 48%;
-    --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 240 3.7% 15.9%;
-    --sidebar-accent-foreground: 240 4.8% 95.9%;
-    --sidebar-border: 240 3.7% 15.9%;
-    --sidebar-ring: 217.2 91.2% 59.8%;
+    --soil-dark: 25 15% 15%;
+    --leaf-light: 110 20% 25%;
   }
 }
 
@@ -126,8 +100,29 @@ All colors MUST be HSL.
   * {
     @apply border-border;
   }
-
   body {
     @apply bg-background text-foreground;
+  }
+}
+
+@layer utilities {
+  .shadow-elegant {
+    box-shadow: var(--shadow-elegant);
+  }
+  
+  .shadow-glow {
+    box-shadow: var(--shadow-glow);
+  }
+  
+  .bg-gradient-nature {
+    background: var(--growth-gradient);
+  }
+  
+  .transition-smooth {
+    transition: var(--transition-smooth);
+  }
+  
+  .transition-bounce {
+    transition: var(--transition-bounce);
   }
 }

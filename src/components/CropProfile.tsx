@@ -21,7 +21,17 @@ import {
   MapPin,
   Calendar,
   Droplets,
-  Sprout
+  Sprout,
+  Leaf,
+  Dna,
+  Flower,
+  Wheat,
+  Shield,
+  Zap,
+  Globe,
+  Heart,
+  BookOpen,
+  Target
 } from 'lucide-react';
 
 interface CropProfileProps {
@@ -60,6 +70,125 @@ interface DbCrop {
   nutritional_info?: string;
   sustainability_practices?: string[];
   innovations?: string[];
+  // New fields from admin form
+  field_name?: string;
+  origin?: string;
+  climate_zone?: string;
+  growth_habit?: string;
+  life_span?: string;
+  plant_type?: string;
+  root_system?: string;
+  leaf?: string;
+  flowering_season?: string;
+  inflorescence_type?: string;
+  fruit_type?: string;
+  fruit_development?: string;
+  unique_morphology?: string;
+  edible_part?: string;
+  chromosome_number?: string;
+  breeding_methods?: string;
+  biotech_advances?: string;
+  hybrid_varieties?: string;
+  patents?: string;
+  research_institutes?: string;
+  pollination?: string;
+  propagation_type?: string;
+  planting_material?: string;
+  germination_percent?: string;
+  rootstock_compatibility?: string;
+  nursery_practices?: string;
+  training_system?: string;
+  spacing?: string;
+  planting_season?: string;
+  npk_n?: string;
+  npk_p?: string;
+  npk_k?: string;
+  micronutrient_needs?: string;
+  biofertilizer_usage?: string;
+  application_schedule_method?: string;
+  application_schedule_stages?: string;
+  application_schedule_frequency?: string;
+  water_quality?: string;
+  optimum_temp?: string;
+  tolerable_temp?: string;
+  altitude?: string;
+  soil_texture?: string;
+  light_requirement?: string;
+  common_weeds?: string;
+  weed_season?: string;
+  weed_control_method?: string;
+  critical_period_weed?: string;
+  pest_name?: string;
+  pest_symptoms?: string;
+  pest_life_cycle?: string;
+  pest_etl?: string;
+  pest_management?: string;
+  pest_biocontrol?: string;
+  disease_name?: string;
+  disease_causal_agent?: string;
+  disease_symptoms?: string;
+  disease_life_cycle?: string;
+  disease_management?: string;
+  disease_biocontrol?: string;
+  disorder_name?: string;
+  disorder_cause?: string;
+  disorder_symptoms?: string;
+  disorder_impact?: string;
+  disorder_control?: string;
+  nematode_name?: string;
+  nematode_symptoms?: string;
+  nematode_life_cycle?: string;
+  nematode_etl?: string;
+  nematode_management?: string;
+  nematode_biocontrol?: string;
+  calories?: string;
+  protein?: string;
+  carbohydrates?: string;
+  fat?: string;
+  fiber?: string;
+  vitamins?: string;
+  minerals?: string;
+  bioactive_compounds?: string;
+  health_benefits?: string;
+  variety_name?: string;
+  yield?: string;
+  variety_features?: string;
+  variety_suitability?: string;
+  market_demand?: string;
+  harvest_time?: string;
+  maturity_indicators?: string;
+  harvesting_tools?: string;
+  post_harvest_losses?: string;
+  storage_conditions?: string;
+  shelf_life?: string;
+  processed_products?: string;
+  packaging_types?: string;
+  cold_chain?: string;
+  ripening_characteristics?: string;
+  pre_cooling?: string;
+  market_trends?: string;
+  export_potential?: string;
+  export_destinations?: string;
+  value_chain_players?: string;
+  certifications?: string;
+  subsidies?: string;
+  schemes?: string;
+  support_agencies?: string;
+  ai_ml_iot?: string;
+  smart_farming?: string;
+  sustainability_potential?: string;
+  waste_to_wealth?: string;
+  climate_resilience?: string;
+  carbon_footprint?: string;
+  religious_use?: string;
+  traditional_uses?: string;
+  gi_status?: string;
+  fun_fact?: string;
+  key_takeaways?: string;
+  swot_strengths?: string;
+  swot_weaknesses?: string;
+  swot_opportunities?: string;
+  swot_threats?: string;
 }
 
 const CropProfile: React.FC<CropProfileProps> = ({ cropName, onBack }) => {
@@ -71,6 +200,29 @@ const CropProfile: React.FC<CropProfileProps> = ({ cropName, onBack }) => {
   const [loading, setLoading] = useState(true);
   
   const crop = getCropByName(cropName);
+
+  const getVarietyImage = (variety: any) => {
+    // Check if this variety has uploaded images
+    if (variety.variety_images && variety.variety_images.length > 0) {
+      // Find the primary image or use the first one
+      const primaryImage = variety.variety_images.find((img: any) => img.is_primary) || variety.variety_images[0];
+      
+      return (
+        <img 
+          src={primaryImage.image_url} 
+          alt={primaryImage.alt_text || variety.name} 
+          className="h-full w-full object-cover rounded-lg"
+          onError={(e) => {
+            e.currentTarget.style.display = 'none';
+            e.currentTarget.nextElementSibling?.classList.remove('hidden');
+          }}
+        />
+      );
+    }
+    
+    // Fallback to generic sprout icon
+    return <Sprout className="h-6 w-6 text-white" />;
+  };
 
   useEffect(() => {
     fetchAllCropData();
@@ -88,10 +240,19 @@ const CropProfile: React.FC<CropProfileProps> = ({ cropName, onBack }) => {
       if (cropData) {
         setDbCrop(cropData);
         
-        // Fetch varieties for this crop
+        // Fetch varieties for this crop with images
         const { data: varietiesData } = await supabase
           .from('varieties')
-          .select('*')
+          .select(`
+            *,
+            variety_images (
+              id,
+              image_url,
+              alt_text,
+              caption,
+              is_primary
+            )
+          `)
           .eq('crop_id', cropData.id);
         
         // Fetch pests for this crop
@@ -139,16 +300,56 @@ const CropProfile: React.FC<CropProfileProps> = ({ cropName, onBack }) => {
   if (!cropData) return null;
 
   const tabItems = [
-    { id: 'overview', label: 'Overview', icon: Info },
-    { id: 'varieties', label: 'Varieties', icon: Sprout },
-    { id: 'cultivation', label: 'Cultivation Process', icon: Calendar },
-    { id: 'comparison', label: 'Compare Varieties', icon: TrendingUp },
+    { id: 'basic', label: 'Basic Info', icon: Info },
+    { id: 'morphology', label: 'Morphology', icon: Leaf },
+    { id: 'genetics', label: 'Genetics', icon: Dna },
+    { id: 'reproduction', label: 'Reproduction', icon: Flower },
+    { id: 'cultivation', label: 'Cultivation', icon: Wheat },
     { id: 'climate', label: 'Climate & Soil', icon: Thermometer },
+    { id: 'management', label: 'Management', icon: Shield },
     { id: 'nutrition', label: 'Nutrition', icon: Apple },
-    { id: 'pests', label: 'Pests & Diseases', icon: Bug },
-    { id: 'economics', label: 'Economics', icon: TrendingUp },
-    { id: 'innovations', label: 'Innovations', icon: Lightbulb },
+    { id: 'varieties', label: 'Varieties', icon: Sprout },
+    { id: 'harvest', label: 'Harvest', icon: Scissors },
+    { id: 'market', label: 'Market', icon: TrendingUp },
+    { id: 'tech', label: 'Tech & Innovation', icon: Zap },
+    { id: 'sustainability', label: 'Sustainability', icon: Globe },
+    { id: 'cultural', label: 'Cultural', icon: Heart },
+    { id: 'insights', label: 'Insights', icon: BookOpen },
   ];
+
+  const renderField = (label: string, value: any, unit?: string) => {
+    if (!value || value === '') return null;
+    return (
+      <div className="flex justify-between items-center py-2 border-b border-muted/50 last:border-b-0">
+        <span className="font-medium text-sm">{label}:</span>
+        <span className="text-sm text-muted-foreground">
+          {Array.isArray(value) ? value.join(', ') : value}{unit && ` ${unit}`}
+        </span>
+      </div>
+    );
+  };
+
+  const renderSection = (title: string, fields: { label: string; value: any; unit?: string }[]) => {
+    const validFields = fields.filter(f => f.value && f.value !== '');
+    if (validFields.length === 0) return null;
+
+    return (
+      <AccordionItem value={title.toLowerCase().replace(/\s+/g, '-')}>
+        <AccordionTrigger className="text-sm font-medium">
+          {title}
+        </AccordionTrigger>
+        <AccordionContent>
+          <div className="space-y-1">
+            {validFields.map((field, index) => (
+              <div key={index}>
+                {renderField(field.label, field.value, field.unit)}
+              </div>
+            ))}
+          </div>
+        </AccordionContent>
+      </AccordionItem>
+    );
+  };
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-leaf-light to-background">
@@ -177,7 +378,7 @@ const CropProfile: React.FC<CropProfileProps> = ({ cropName, onBack }) => {
 
       {/* Content */}
       <div className="max-w-7xl mx-auto p-4 md:p-6">
-        <Tabs defaultValue="varieties" className="space-y-6">
+        <Tabs defaultValue="basic" className="space-y-6">
           {/* Tab Navigation */}
           <div className="overflow-x-auto">
             <TabsList className="inline-flex w-max min-w-full bg-muted p-1">
@@ -185,7 +386,7 @@ const CropProfile: React.FC<CropProfileProps> = ({ cropName, onBack }) => {
                 <TabsTrigger 
                   key={tab.id} 
                   value={tab.id}
-                  className="flex items-center gap-2 px-4 py-2 data-[state=active]:bg-crop-green data-[state=active]:text-white"
+                  className="flex items-center gap-2 px-3 py-2 text-xs data-[state=active]:bg-crop-green data-[state=active]:text-white"
                 >
                   <tab.icon className="h-4 w-4" />
                   <span className="hidden sm:inline">{tab.label}</span>
@@ -194,120 +395,290 @@ const CropProfile: React.FC<CropProfileProps> = ({ cropName, onBack }) => {
             </TabsList>
           </div>
 
-          {/* Overview Tab */}
-          <TabsContent value="overview" className="space-y-6">
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-              <Card>
-                <CardHeader className="pb-3">
-                  <CardTitle className="text-lg flex items-center gap-2">
-                    <Sprout className="h-5 w-5 text-crop-green" />
-                    Varieties
-                  </CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <div className="text-3xl font-bold text-crop-green">
-                    {crop?.varieties?.length || dbVarieties.length || 0}
-                  </div>
-                  <p className="text-sm text-muted-foreground">Available varieties</p>
-                </CardContent>
-              </Card>
-
-              <Card>
-                <CardHeader className="pb-3">
-                  <CardTitle className="text-lg flex items-center gap-2">
-                    <MapPin className="h-5 w-5 text-primary" />
-                    States
-                  </CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <div className="text-3xl font-bold text-primary">
-                    {crop ? [...new Set(crop.varieties.flatMap(v => v.states))].length : 0}
-                  </div>
-                  <p className="text-sm text-muted-foreground">Growing states</p>
-                </CardContent>
-              </Card>
-
-              <Card>
-                <CardHeader className="pb-3">
-                  <CardTitle className="text-lg flex items-center gap-2">
-                    <TrendingUp className="h-5 w-5 text-harvest-gold" />
-                    Avg Yield
-                  </CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <div className="text-3xl font-bold text-harvest-gold">
-                    {crop ? (() => {
-                      const avgYield = crop.varieties.reduce((sum, v) => {
-                        const yieldStr = v.yield.replace(/[^\d.-]/g, '');
-                        const yieldRange = yieldStr.split('-');
-                        const avg = yieldRange.length > 1 ? 
-                          (parseFloat(yieldRange[0]) + parseFloat(yieldRange[1])) / 2 : 
-                          parseFloat(yieldRange[0]);
-                        return sum + (isNaN(avg) ? 0 : avg);
-                      }, 0) / crop.varieties.length;
-                      return Math.round(avgYield);
-                    })() : (dbCrop?.average_yield || 'N/A')}
-                  </div>
-                  <p className="text-sm text-muted-foreground">Quintals/hectare</p>
-                </CardContent>
-              </Card>
-
-              <Card>
-                <CardHeader className="pb-3">
-                  <CardTitle className="text-lg flex items-center gap-2">
-                    <Calendar className="h-5 w-5 text-secondary" />
-                    Duration
-                  </CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <div className="text-3xl font-bold text-secondary">
-                    {crop ? (() => {
-                      const avgDuration = crop.varieties.reduce((sum, v) => {
-                        const durationStr = v.duration.replace(/[^\d.-]/g, '');
-                        const durationRange = durationStr.split('-');
-                        const avg = durationRange.length > 1 ? 
-                          (parseFloat(durationRange[0]) + parseFloat(durationRange[1])) / 2 : 
-                          parseFloat(durationRange[0]);
-                        return sum + (isNaN(avg) ? 0 : avg);
-                      }, 0) / crop.varieties.length;
-                      return Math.round(avgDuration);
-                    })() : (dbCrop?.growth_duration || 'N/A')}
-                  </div>
-                  <p className="text-sm text-muted-foreground">Days average</p>
-                </CardContent>
-              </Card>
-            </div>
-
+          {/* Basic Info Tab */}
+          <TabsContent value="basic" className="space-y-6">
             <Card>
               <CardHeader>
-                <CardTitle>Quick Facts</CardTitle>
+                <CardTitle className="flex items-center gap-2">
+                  <Info className="h-5 w-5 text-primary" />
+                  Basic Plant Identification
+                </CardTitle>
               </CardHeader>
-              <CardContent className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div>
-                  <h4 className="font-semibold mb-2">Botanical Classification</h4>
-                  <div className="space-y-1 text-sm text-muted-foreground">
-                    <p><span className="font-medium">Family:</span> {crop?.family || dbCrop?.family || 'Not specified'}</p>
-                    <p><span className="font-medium">Scientific Name:</span> {crop?.scientificName || dbCrop?.scientific_name || 'Not specified'}</p>
-                    <p><span className="font-medium">Season:</span> {(crop?.season || dbCrop?.season || []).join(', ')}</p>
-                  </div>
-                </div>
-                <div>
-                  <h4 className="font-semibold mb-2">Major Growing States</h4>
-                  <div className="flex flex-wrap gap-1">
-                    {crop ? [...new Set(crop.varieties.flatMap(v => v.states))].slice(0, 8).map((state) => (
-                      <Badge key={state} variant="outline" className="text-xs">
-                        {state}
-                      </Badge>
-                    )) : (
-                      <Badge variant="outline" className="text-xs">No varieties data</Badge>
-                    )}
-                  </div>
-                </div>
+              <CardContent>
+                <Accordion type="single" collapsible className="w-full">
+                  {renderSection("Plant Details", [
+                    { label: "Common Name", value: dbCrop?.name },
+                    { label: "Botanical Name", value: dbCrop?.scientific_name },
+                    { label: "Field Name", value: dbCrop?.field_name },
+                    { label: "Family", value: dbCrop?.family },
+                    { label: "Origin", value: dbCrop?.origin },
+                    { label: "Climate Zone", value: dbCrop?.climate_zone },
+                    { label: "Growth Habit", value: dbCrop?.growth_habit },
+                    { label: "Life Span", value: dbCrop?.life_span },
+                    { label: "Plant Type", value: dbCrop?.plant_type },
+                  ])}
+                  {renderSection("Description", [
+                    { label: "Description", value: dbCrop?.description },
+                  ])}
+                </Accordion>
               </CardContent>
             </Card>
           </TabsContent>
 
-          {/* Varieties Tab - The Main USP */}
+          {/* Morphology Tab */}
+          <TabsContent value="morphology" className="space-y-6">
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <Leaf className="h-5 w-5 text-primary" />
+                  Morphology & Anatomy
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <Accordion type="single" collapsible className="w-full">
+                  {renderSection("Root System", [
+                    { label: "Root System", value: dbCrop?.root_system },
+                  ])}
+                  {renderSection("Leaf Characteristics", [
+                    { label: "Leaf", value: dbCrop?.leaf },
+                  ])}
+                  {renderSection("Flowering", [
+                    { label: "Flowering Season", value: dbCrop?.flowering_season },
+                    { label: "Inflorescence Type", value: dbCrop?.inflorescence_type },
+                  ])}
+                  {renderSection("Fruit", [
+                    { label: "Fruit Type", value: dbCrop?.fruit_type },
+                    { label: "Fruit Development", value: dbCrop?.fruit_development },
+                    { label: "Edible Part", value: dbCrop?.edible_part },
+                  ])}
+                  {renderSection("Unique Features", [
+                    { label: "Unique Morphological Features", value: dbCrop?.unique_morphology },
+                  ])}
+                </Accordion>
+              </CardContent>
+            </Card>
+          </TabsContent>
+
+          {/* Genetics Tab */}
+          <TabsContent value="genetics" className="space-y-6">
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <Dna className="h-5 w-5 text-primary" />
+                  Genetic Information
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <Accordion type="single" collapsible className="w-full">
+                  {renderSection("Genetic Details", [
+                    { label: "Chromosome Number", value: dbCrop?.chromosome_number },
+                    { label: "Breeding Methods", value: dbCrop?.breeding_methods },
+                    { label: "Biotech Advances", value: dbCrop?.biotech_advances },
+                    { label: "Hybrid Varieties", value: dbCrop?.hybrid_varieties },
+                  ])}
+                  {renderSection("Research & Patents", [
+                    { label: "Patents/GI Tag", value: dbCrop?.patents },
+                    { label: "Research Institutes", value: dbCrop?.research_institutes },
+                  ])}
+                </Accordion>
+              </CardContent>
+            </Card>
+          </TabsContent>
+
+          {/* Reproduction Tab */}
+          <TabsContent value="reproduction" className="space-y-6">
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <Flower className="h-5 w-5 text-primary" />
+                  Reproductive Biology
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <Accordion type="single" collapsible className="w-full">
+                  {renderSection("Pollination", [
+                    { label: "Pollination Type", value: dbCrop?.pollination },
+                  ])}
+                  {renderSection("Propagation", [
+                    { label: "Propagation Type", value: dbCrop?.propagation_type },
+                    { label: "Planting Material", value: dbCrop?.planting_material },
+                    { label: "Germination %", value: dbCrop?.germination_percent },
+                  ])}
+                  {renderSection("Nursery & Training", [
+                    { label: "Rootstock Compatibility", value: dbCrop?.rootstock_compatibility },
+                    { label: "Nursery Practices", value: dbCrop?.nursery_practices },
+                    { label: "Training System", value: dbCrop?.training_system },
+                  ])}
+                </Accordion>
+              </CardContent>
+            </Card>
+          </TabsContent>
+
+          {/* Cultivation Tab */}
+          <TabsContent value="cultivation" className="space-y-6">
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <Wheat className="h-5 w-5 text-primary" />
+                  Cultivation Practices
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <Accordion type="single" collapsible className="w-full">
+                  {renderSection("Planting", [
+                    { label: "Spacing", value: dbCrop?.spacing },
+                    { label: "Seed Rate", value: dbCrop?.seed_rate },
+                    { label: "Planting Season", value: dbCrop?.planting_season },
+                    { label: "Row Spacing", value: dbCrop?.row_spacing },
+                    { label: "Sowing Time", value: dbCrop?.sowing_time },
+                  ])}
+                  {renderSection("Fertilizer", [
+                    { label: "NPK - N", value: dbCrop?.npk_n, unit: "kg/plant" },
+                    { label: "NPK - P", value: dbCrop?.npk_p, unit: "kg/plant" },
+                    { label: "NPK - K", value: dbCrop?.npk_k, unit: "kg/plant" },
+                    { label: "Micronutrients", value: dbCrop?.micronutrient_needs },
+                    { label: "Biofertilizer", value: dbCrop?.biofertilizer_usage },
+                  ])}
+                  {renderSection("Application Schedule", [
+                    { label: "Method", value: dbCrop?.application_schedule_method },
+                    { label: "Critical Stages", value: dbCrop?.application_schedule_stages },
+                    { label: "Frequency", value: dbCrop?.application_schedule_frequency },
+                  ])}
+                  {renderSection("Land Preparation", [
+                    { label: "Land Preparation", value: dbCrop?.land_preparation },
+                  ])}
+                  {renderSection("Fertilizer Requirements", [
+                    { label: "Fertilizer Requirements", value: dbCrop?.fertilizer_requirement },
+                  ])}
+                </Accordion>
+              </CardContent>
+            </Card>
+          </TabsContent>
+
+          {/* Climate & Soil Tab */}
+          <TabsContent value="climate" className="space-y-6">
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <Thermometer className="h-5 w-5 text-primary" />
+                  Climate & Soil Requirements
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <Accordion type="single" collapsible className="w-full">
+                  {renderSection("Temperature", [
+                    { label: "Optimum Temperature", value: dbCrop?.optimum_temp },
+                    { label: "Tolerable Temperature", value: dbCrop?.tolerable_temp },
+                  ])}
+                  {renderSection("Water", [
+                    { label: "Water Requirement", value: dbCrop?.water_requirement },
+                    { label: "Water Quality", value: dbCrop?.water_quality },
+                    { label: "Rainfall Requirement", value: dbCrop?.rainfall_requirement },
+                    { label: "Humidity Range", value: dbCrop?.humidity_range },
+                  ])}
+                  {renderSection("Soil", [
+                    { label: "Soil Type", value: dbCrop?.soil_type },
+                    { label: "Soil Texture", value: dbCrop?.soil_texture },
+                    { label: "pH Range", value: dbCrop?.soil_ph },
+                    { label: "Drainage", value: dbCrop?.drainage_requirement },
+                  ])}
+                  {renderSection("Environment", [
+                    { label: "Altitude", value: dbCrop?.altitude },
+                    { label: "Light Requirement", value: dbCrop?.light_requirement },
+                  ])}
+                  {renderSection("Irrigation", [
+                    { label: "Irrigation Schedule", value: dbCrop?.irrigation_schedule },
+                  ])}
+                </Accordion>
+              </CardContent>
+            </Card>
+          </TabsContent>
+
+          {/* Management Tab */}
+          <TabsContent value="management" className="space-y-6">
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <Shield className="h-5 w-5 text-primary" />
+                  Management Practices
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <Accordion type="single" collapsible className="w-full">
+                  {renderSection("Weed Management", [
+                    { label: "Common Weeds", value: dbCrop?.common_weeds },
+                    { label: "Weed Season", value: dbCrop?.weed_season },
+                    { label: "Control Method", value: dbCrop?.weed_control_method },
+                    { label: "Critical Period", value: dbCrop?.critical_period_weed },
+                  ])}
+                  {renderSection("Pest Management", [
+                    { label: "Pest Name", value: dbCrop?.pest_name },
+                    { label: "Symptoms", value: dbCrop?.pest_symptoms },
+                    { label: "Life Cycle", value: dbCrop?.pest_life_cycle },
+                    { label: "ETL", value: dbCrop?.pest_etl },
+                    { label: "Management", value: dbCrop?.pest_management },
+                    { label: "Biocontrol", value: dbCrop?.pest_biocontrol },
+                  ])}
+                  {renderSection("Disease Management", [
+                    { label: "Disease Name", value: dbCrop?.disease_name },
+                    { label: "Causal Agent", value: dbCrop?.disease_causal_agent },
+                    { label: "Symptoms", value: dbCrop?.disease_symptoms },
+                    { label: "Life Cycle", value: dbCrop?.disease_life_cycle },
+                    { label: "Management", value: dbCrop?.disease_management },
+                    { label: "Biocontrol", value: dbCrop?.disease_biocontrol },
+                  ])}
+                  {renderSection("Physiological Disorders", [
+                    { label: "Disorder Name", value: dbCrop?.disorder_name },
+                    { label: "Cause", value: dbCrop?.disorder_cause },
+                    { label: "Symptoms", value: dbCrop?.disorder_symptoms },
+                    { label: "Impact", value: dbCrop?.disorder_impact },
+                    { label: "Control", value: dbCrop?.disorder_control },
+                  ])}
+                  {renderSection("Nematode Management", [
+                    { label: "Nematode Name", value: dbCrop?.nematode_name },
+                    { label: "Symptoms", value: dbCrop?.nematode_symptoms },
+                    { label: "Life Cycle", value: dbCrop?.nematode_life_cycle },
+                    { label: "ETL", value: dbCrop?.nematode_etl },
+                    { label: "Management", value: dbCrop?.nematode_management },
+                    { label: "Biocontrol", value: dbCrop?.nematode_biocontrol },
+                  ])}
+                </Accordion>
+              </CardContent>
+            </Card>
+          </TabsContent>
+
+          {/* Nutrition Tab */}
+          <TabsContent value="nutrition" className="space-y-6">
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <Apple className="h-5 w-5 text-primary" />
+                  Nutritional Composition
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <Accordion type="single" collapsible className="w-full">
+                  {renderSection("Basic Nutrients", [
+                    { label: "Calories", value: dbCrop?.calories, unit: "kcal/100g" },
+                    { label: "Protein", value: dbCrop?.protein, unit: "g/100g" },
+                    { label: "Carbohydrates", value: dbCrop?.carbohydrates, unit: "g/100g" },
+                    { label: "Fat", value: dbCrop?.fat, unit: "g/100g" },
+                    { label: "Fiber", value: dbCrop?.fiber, unit: "g/100g" },
+                  ])}
+                  {renderSection("Vitamins & Minerals", [
+                    { label: "Vitamins", value: dbCrop?.vitamins },
+                    { label: "Minerals", value: dbCrop?.minerals },
+                  ])}
+                  {renderSection("Bioactive Compounds", [
+                    { label: "Bioactive Compounds", value: dbCrop?.bioactive_compounds },
+                    { label: "Health Benefits", value: dbCrop?.health_benefits },
+                  ])}
+                </Accordion>
+              </CardContent>
+            </Card>
+          </TabsContent>
+
+          {/* Varieties Tab */}
           <TabsContent value="varieties" className="space-y-6">
             <div className="text-center mb-6">
               <h2 className="text-2xl font-bold text-foreground mb-2">
@@ -318,7 +689,7 @@ const CropProfile: React.FC<CropProfileProps> = ({ cropName, onBack }) => {
               </p>
             </div>
 
-{crop?.varieties || dbVarieties.length > 0 ? (
+            {crop?.varieties || dbVarieties.length > 0 ? (
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
                 {/* Static varieties */}
                 {crop?.varieties?.map((variety) => (
@@ -336,11 +707,19 @@ const CropProfile: React.FC<CropProfileProps> = ({ cropName, onBack }) => {
                 {dbVarieties.map((variety) => (
                   <Card key={variety.id} className="border-2 hover:border-crop-green transition-colors cursor-pointer">
                     <CardHeader>
-                      <CardTitle className="flex items-center justify-between">
-                        <span>{variety.name}</span>
-                        <Badge>{variety.maturity_group || 'Standard'}</Badge>
-                      </CardTitle>
-                      <CardDescription>{variety.description}</CardDescription>
+                      <div className="flex items-center gap-3 mb-3">
+                        <div className="w-12 h-12 bg-gradient-to-br from-green-400 to-emerald-500 rounded-lg flex items-center justify-center overflow-hidden">
+                          {getVarietyImage(variety)}
+                          <Sprout className="h-6 w-6 text-white hidden" />
+                        </div>
+                        <div className="flex-1">
+                          <CardTitle className="flex items-center justify-between">
+                            <span>{variety.name}</span>
+                            <Badge>{variety.maturity_group || 'Standard'}</Badge>
+                          </CardTitle>
+                          <CardDescription>{variety.description}</CardDescription>
+                        </div>
+                      </div>
                     </CardHeader>
                     <CardContent className="space-y-3">
                       <div className="grid grid-cols-2 gap-4 text-sm">
@@ -399,424 +778,190 @@ const CropProfile: React.FC<CropProfileProps> = ({ cropName, onBack }) => {
                 </CardContent>
               </Card>
             )}
-          </TabsContent>
 
-          {/* Climate & Soil Tab */}
-          <TabsContent value="climate" className="space-y-6">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <Card>
-                <CardHeader>
-                  <CardTitle className="flex items-center gap-2">
-                    <Thermometer className="h-5 w-5 text-primary" />
-                    Climate Requirements
-                  </CardTitle>
-                </CardHeader>
-                <CardContent className="space-y-3">
-                  <div>
-                    <span className="font-medium">Temperature:</span>
-                    <span className="ml-2 text-muted-foreground">
-                      {crop?.climate?.temperature || dbCrop?.temperature_range || 'Not specified'}
-                    </span>
-                  </div>
-                  <div>
-                    <span className="font-medium">Rainfall:</span>
-                    <span className="ml-2 text-muted-foreground">
-                      {crop?.climate?.rainfall || dbCrop?.rainfall_requirement || 'Not specified'}
-                    </span>
-                  </div>
-                  <div>
-                    <span className="font-medium">Humidity:</span>
-                    <span className="ml-2 text-muted-foreground">
-                      {crop?.climate?.humidity || dbCrop?.humidity_range || 'Not specified'}
-                    </span>
-                  </div>
-                  <div>
-                    <span className="font-medium">Season:</span>
-                    <Badge className="ml-2">{(crop?.season || dbCrop?.season || []).join(', ')}</Badge>
-                  </div>
-                </CardContent>
-              </Card>
-
-              <Card>
-                <CardHeader>
-                  <CardTitle className="flex items-center gap-2">
-                    <Droplets className="h-5 w-5 text-primary" />
-                    Soil Requirements
-                  </CardTitle>
-                </CardHeader>
-                <CardContent className="space-y-3">
-                  <div>
-                    <span className="font-medium">Type:</span>
-                    <span className="ml-2 text-muted-foreground">
-                      {(crop?.soil?.type || dbCrop?.soil_type || []).join(', ') || 'Not specified'}
-                    </span>
-                  </div>
-                  <div>
-                    <span className="font-medium">pH:</span>
-                    <span className="ml-2 text-muted-foreground">
-                      {crop?.soil?.ph || dbCrop?.soil_ph || 'Not specified'}
-                    </span>
-                  </div>
-                  <div>
-                    <span className="font-medium">Drainage:</span>
-                    <span className="ml-2 text-muted-foreground">
-                      {crop?.soil?.drainage || dbCrop?.drainage_requirement || 'Not specified'}
-                    </span>
-                  </div>
-                </CardContent>
-              </Card>
-            </div>
-          </TabsContent>
-
-          {/* Nutrition Tab */}
-          <TabsContent value="nutrition" className="space-y-6">
-            {crop?.nutritionalValue ? (
-              <Card>
-                <CardHeader>
-                  <CardTitle className="flex items-center gap-2">
-                    <Apple className="h-5 w-5 text-primary" />
-                    Nutritional Value (per 100g)
-                  </CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                    <div className="text-center p-4 bg-muted rounded-lg">
-                      <div className="text-2xl font-bold text-primary">{crop.nutritionalValue.calories}</div>
-                      <div className="text-sm text-muted-foreground">Calories</div>
-                    </div>
-                    <div className="text-center p-4 bg-muted rounded-lg">
-                      <div className="text-2xl font-bold text-crop-green">{crop.nutritionalValue.protein}</div>
-                      <div className="text-sm text-muted-foreground">Protein</div>
-                    </div>
-                    <div className="text-center p-4 bg-muted rounded-lg">
-                      <div className="text-2xl font-bold text-harvest-gold">{crop.nutritionalValue.carbohydrates}</div>
-                      <div className="text-sm text-muted-foreground">Carbs</div>
-                    </div>
-                    <div className="text-center p-4 bg-muted rounded-lg">
-                      <div className="text-2xl font-bold text-secondary">{crop.nutritionalValue.fiber}</div>
-                      <div className="text-sm text-muted-foreground">Fiber</div>
-                    </div>
-                  </div>
-                  <div className="mt-4">
-                    <h4 className="font-semibold mb-2">Key Nutrients</h4>
-                    <div className="flex flex-wrap gap-2">
-                      <h5 className="font-medium mb-1">Vitamins:</h5>
-                      {crop.nutritionalValue.vitamins.map((vitamin) => (
-                        <Badge key={vitamin} variant="outline">{vitamin}</Badge>
-                      ))}
-                      <h5 className="font-medium mb-1 ml-4">Minerals:</h5>
-                      {crop.nutritionalValue.minerals.map((mineral) => (
-                        <Badge key={mineral} variant="outline">{mineral}</Badge>
-                      ))}
-                    </div>
-                  </div>
-                </CardContent>
-              </Card>
-            ) : (
-              <Card>
-                <CardContent className="text-center py-12">
-                  <Apple className="h-16 w-16 text-muted-foreground mx-auto mb-4" />
-                  <h3 className="text-xl font-semibold text-foreground mb-2">Nutritional Data Not Available</h3>
-                  <p className="text-muted-foreground">
-                    {dbCrop?.nutritional_info || 'Detailed nutritional information is not available for this crop yet.'}
-                  </p>
-                </CardContent>
-              </Card>
-            )}
-          </TabsContent>
-
-          {/* Cultivation Process Tab */}
-          <TabsContent value="cultivation" className="mt-6">
-            {crop ? (
-              <CropFlowChart crop={crop} selectedVariety={selectedVariety} />
-            ) : (
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                {dbCrop?.land_preparation && (
-                  <Card>
-                    <CardHeader>
-                      <CardTitle>Land Preparation</CardTitle>
-                    </CardHeader>
-                    <CardContent>
-                      <ul className="space-y-2">
-                        {dbCrop.land_preparation.map((item, index) => (
-                          <li key={index} className="flex items-start gap-2">
-                            <span className="w-1.5 h-1.5 bg-primary rounded-full mt-2 flex-shrink-0"></span>
-                            {item}
-                          </li>
-                        ))}
-                      </ul>
-                    </CardContent>
-                  </Card>
-                )}
-                {dbCrop?.fertilizer_requirement && (
-                  <Card>
-                    <CardHeader>
-                      <CardTitle>Fertilizer Requirements</CardTitle>
-                    </CardHeader>
-                    <CardContent>
-                      <ul className="space-y-2">
-                        {dbCrop.fertilizer_requirement.map((item, index) => (
-                          <li key={index} className="flex items-start gap-2">
-                            <span className="w-1.5 h-1.5 bg-primary rounded-full mt-2 flex-shrink-0"></span>
-                            {item}
-                          </li>
-                        ))}
-                      </ul>
-                    </CardContent>
-                  </Card>
-                )}
-                {dbCrop?.irrigation_schedule && (
-                  <Card>
-                    <CardHeader>
-                      <CardTitle>Irrigation Schedule</CardTitle>
-                    </CardHeader>
-                    <CardContent>
-                      <ul className="space-y-2">
-                        {dbCrop.irrigation_schedule.map((item, index) => (
-                          <li key={index} className="flex items-start gap-2">
-                            <span className="w-1.5 h-1.5 bg-primary rounded-full mt-2 flex-shrink-0"></span>
-                            {item}
-                          </li>
-                        ))}
-                      </ul>
-                    </CardContent>
-                  </Card>
-                )}
-                {dbCrop?.harvesting_info && (
-                  <Card>
-                    <CardHeader>
-                      <CardTitle>Harvesting Information</CardTitle>
-                    </CardHeader>
-                    <CardContent>
-                      <ul className="space-y-2">
-                        {dbCrop.harvesting_info.map((item, index) => (
-                          <li key={index} className="flex items-start gap-2">
-                            <span className="w-1.5 h-1.5 bg-primary rounded-full mt-2 flex-shrink-0"></span>
-                            {item}
-                          </li>
-                        ))}
-                      </ul>
-                    </CardContent>
-                  </Card>
-                )}
-              </div>
-            )}
-          </TabsContent>
-
-          {/* Comparison Tool Tab */}
-          <TabsContent value="comparison" className="mt-6">
-            <ComparisonTool initialCrop={cropName} onCropSelect={(name) => {
-              console.log('Navigate to crop:', name);
-            }} />
-          </TabsContent>
-
-          <TabsContent value="pests" className="space-y-6">
-            {(dbPests.length > 0 || dbDiseases.length > 0) ? (
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                {/* Pests */}
-                <Card>
-                  <CardHeader>
-                    <CardTitle className="flex items-center gap-2">
-                      <Bug className="h-5 w-5 text-red-500" />
-                      Common Pests
-                    </CardTitle>
-                  </CardHeader>
-                  <CardContent>
-                    <div className="space-y-4">
-                      {/* Database pests display - fallback for static data not available */}
-                      
-                      {/* Database pests */}
-                      {dbPests.map((pestRelation) => (
-                        <div key={pestRelation.id} className="border-b pb-3 last:border-b-0">
-                          <div className="flex items-center gap-2 mb-2">
-                            <h4 className="font-semibold text-red-700">{pestRelation.pests?.name}</h4>
-                            <Badge 
-                              variant={pestRelation.severity_level === 'high' ? 'destructive' : 
-                                     pestRelation.severity_level === 'medium' ? 'default' : 'secondary'}
-                              className="text-xs"
-                            >
-                              {pestRelation.severity_level} severity
-                            </Badge>
-                          </div>
-                          <p className="text-sm text-muted-foreground mb-2">
-                            {pestRelation.pests?.description}
-                          </p>
-                          <div className="space-y-1">
-                            {pestRelation.pests?.symptoms && (
-                              <div className="text-sm">
-                                <span className="font-medium">Symptoms:</span>
-                                <span className="ml-2">{pestRelation.pests.symptoms.join(', ')}</span>
-                              </div>
-                            )}
-                            {pestRelation.pests?.treatment_methods && (
-                              <div className="text-sm">
-                                <span className="font-medium">Treatment:</span>
-                                <span className="ml-2">{pestRelation.pests.treatment_methods.join(', ')}</span>
-                              </div>
-                            )}
-                            <div className="text-sm">
-                              <span className="font-medium">Frequency:</span>
-                              <span className="ml-2">{pestRelation.occurrence_frequency}</span>
-                            </div>
-                          </div>
-                        </div>
-                      ))}
-                      
-                      {dbPests.length === 0 && (
-                        <p className="text-sm text-muted-foreground italic">No pest information available</p>
-                      )}
-                    </div>
-                  </CardContent>
-                </Card>
-
-                {/* Diseases */}
-                <Card>
-                  <CardHeader>
-                    <CardTitle className="flex items-center gap-2">
-                      <Bug className="h-5 w-5 text-orange-500" />
-                      Common Diseases
-                    </CardTitle>
-                  </CardHeader>
-                  <CardContent>
-                    <div className="space-y-4">
-                      {/* Database diseases display - fallback for static data not available */}
-                      
-                      {/* Database diseases */}
-                      {dbDiseases.map((diseaseRelation) => (
-                        <div key={diseaseRelation.id} className="border-b pb-3 last:border-b-0">
-                          <div className="flex items-center gap-2 mb-2">
-                            <h4 className="font-semibold text-orange-700">{diseaseRelation.diseases?.name}</h4>
-                            <Badge 
-                              variant={diseaseRelation.severity_level === 'high' ? 'destructive' : 
-                                     diseaseRelation.severity_level === 'medium' ? 'default' : 'secondary'}
-                              className="text-xs"
-                            >
-                              {diseaseRelation.severity_level} severity
-                            </Badge>
-                          </div>
-                          <p className="text-sm text-muted-foreground mb-2">
-                            {diseaseRelation.diseases?.description}
-                          </p>
-                          <div className="space-y-1">
-                            {diseaseRelation.diseases?.symptoms && (
-                              <div className="text-sm">
-                                <span className="font-medium">Symptoms:</span>
-                                <span className="ml-2">{diseaseRelation.diseases.symptoms.join(', ')}</span>
-                              </div>
-                            )}
-                            {diseaseRelation.diseases?.treatment_methods && (
-                              <div className="text-sm">
-                                <span className="font-medium">Treatment:</span>
-                                <span className="ml-2">{diseaseRelation.diseases.treatment_methods.join(', ')}</span>
-                              </div>
-                            )}
-                            <div className="text-sm">
-                              <span className="font-medium">Frequency:</span>
-                              <span className="ml-2">{diseaseRelation.occurrence_frequency}</span>
-                            </div>
-                          </div>
-                        </div>
-                      ))}
-                      
-                      {dbDiseases.length === 0 && (
-                        <p className="text-sm text-muted-foreground italic">No disease information available</p>
-                      )}
-                    </div>
-                  </CardContent>
-                </Card>
-              </div>
-            ) : (
-              <Card>
-                <CardContent className="text-center py-12">
-                  <p className="text-muted-foreground">No pest and disease information available yet.</p>
-                </CardContent>
-              </Card>
-            )}
-          </TabsContent>
-
-          <TabsContent value="economics" className="space-y-6">
+            {/* Database variety fields */}
             <Card>
               <CardHeader>
-                <CardTitle>Economic Aspects</CardTitle>
+                <CardTitle>Variety Information</CardTitle>
               </CardHeader>
               <CardContent>
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                  <div className="text-center p-4 bg-muted rounded-lg">
-                    <div className="text-2xl font-bold text-crop-green">
-                      {crop?.economics?.costOfCultivation || dbCrop?.cost_of_cultivation || 'Not specified'}
-                    </div>
-                    <div className="text-sm text-muted-foreground">Cost/hectare</div>
-                  </div>
-                  <div className="text-center p-4 bg-muted rounded-lg">
-                    <div className="text-2xl font-bold text-harvest-gold">
-                      {crop?.economics?.marketPrice || dbCrop?.market_price || 'Not specified'}
-                    </div>
-                    <div className="text-sm text-muted-foreground">Market Price</div>
-                  </div>
-                  <div className="text-center p-4 bg-muted rounded-lg">
-                    <div className="text-2xl font-bold text-primary">
-                      {crop?.economics?.averageYield || dbCrop?.average_yield || 'Not specified'}
-                    </div>
-                    <div className="text-sm text-muted-foreground">Average Yield</div>
-                  </div>
-                </div>
-                {crop?.economics?.majorStates && (
-                  <div className="mt-4">
-                    <h4 className="font-semibold mb-2">Major Growing States</h4>
-                    <div className="flex flex-wrap gap-2">
-                      {crop.economics.majorStates.map((state) => (
-                        <Badge key={state} variant="outline">{state}</Badge>
-                      ))}
-                    </div>
-                  </div>
-                )}
+                <Accordion type="single" collapsible className="w-full">
+                  {renderSection("Variety Details", [
+                    { label: "Variety Name", value: dbCrop?.variety_name },
+                    { label: "Yield", value: dbCrop?.yield },
+                    { label: "Features", value: dbCrop?.variety_features },
+                    { label: "Suitability", value: dbCrop?.variety_suitability },
+                    { label: "Market Demand", value: dbCrop?.market_demand },
+                  ])}
+                </Accordion>
               </CardContent>
             </Card>
           </TabsContent>
 
-          <TabsContent value="innovations" className="space-y-6">
+          {/* Harvest Tab */}
+          <TabsContent value="harvest" className="space-y-6">
             <Card>
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
-                  <Lightbulb className="h-5 w-5 text-primary" />
-                  Climate Resilience & Innovations
+                  <Scissors className="h-5 w-5 text-primary" />
+                  Harvest & Post-Harvest
                 </CardTitle>
               </CardHeader>
               <CardContent>
-                <div className="space-y-4">
-                  {crop?.climateResilience && (
-                    <div>
-                      <h4 className="font-semibold mb-2">Climate Resilience Features</h4>
-                      <div className="space-y-2">
-                        {crop.climateResilience.map((feature, index) => (
-                          <div key={index} className="p-3 bg-muted rounded-lg">
-                            <p className="text-muted-foreground">{feature}</p>
-                          </div>
-                        ))}
-                      </div>
-                    </div>
-                  )}
-                  <div>
-                    <h4 className="font-semibold mb-2">Recent Innovations</h4>
-                    <div className="space-y-2">
-                      {(crop?.innovations || dbCrop?.innovations || []).map((innovation, index) => (
-                        <div key={index} className="p-3 bg-muted rounded-lg">
-                          <p className="text-muted-foreground">{innovation}</p>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-                  <div>
-                    <h4 className="font-semibold mb-2">Sustainability Practices</h4>
-                    <div className="space-y-2">
-                      {(crop?.sustainability || dbCrop?.sustainability_practices || []).map((practice, index) => (
-                        <div key={index} className="p-3 bg-muted rounded-lg">
-                          <p className="text-muted-foreground">{practice}</p>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-                </div>
+                <Accordion type="single" collapsible className="w-full">
+                  {renderSection("Harvesting", [
+                    { label: "Harvest Time", value: dbCrop?.harvest_time },
+                    { label: "Maturity Indicators", value: dbCrop?.maturity_indicators },
+                    { label: "Harvesting Tools", value: dbCrop?.harvesting_tools },
+                  ])}
+                  {renderSection("Post-Harvest", [
+                    { label: "Post-Harvest Losses", value: dbCrop?.post_harvest_losses, unit: "%" },
+                    { label: "Storage Conditions", value: dbCrop?.storage_conditions },
+                    { label: "Shelf Life", value: dbCrop?.shelf_life },
+                    { label: "Processed Products", value: dbCrop?.processed_products },
+                    { label: "Packaging Types", value: dbCrop?.packaging_types },
+                  ])}
+                  {renderSection("Special Requirements", [
+                    { label: "Cold Chain", value: dbCrop?.cold_chain },
+                    { label: "Ripening Characteristics", value: dbCrop?.ripening_characteristics },
+                    { label: "Pre-cooling", value: dbCrop?.pre_cooling },
+                  ])}
+                  {renderSection("Harvesting Information", [
+                    { label: "Harvesting Info", value: dbCrop?.harvesting_info },
+                  ])}
+                </Accordion>
+              </CardContent>
+            </Card>
+          </TabsContent>
+
+          {/* Market Tab */}
+          <TabsContent value="market" className="space-y-6">
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <TrendingUp className="h-5 w-5 text-primary" />
+                  Market & Economics
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <Accordion type="single" collapsible className="w-full">
+                  {renderSection("Pricing", [
+                    { label: "Market Price", value: dbCrop?.market_price, unit: "Rs/kg" },
+                    { label: "Market Trends", value: dbCrop?.market_trends },
+                    { label: "Cost of Cultivation", value: dbCrop?.cost_of_cultivation },
+                    { label: "Average Yield", value: dbCrop?.average_yield },
+                  ])}
+                  {renderSection("Export", [
+                    { label: "Export Potential", value: dbCrop?.export_potential },
+                    { label: "Export Destinations", value: dbCrop?.export_destinations },
+                  ])}
+                  {renderSection("Value Chain", [
+                    { label: "Value Chain Players", value: dbCrop?.value_chain_players },
+                    { label: "Certifications", value: dbCrop?.certifications },
+                  ])}
+                </Accordion>
+              </CardContent>
+            </Card>
+          </TabsContent>
+
+          {/* Tech & Innovation Tab */}
+          <TabsContent value="tech" className="space-y-6">
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <Zap className="h-5 w-5 text-primary" />
+                  Technology & Innovation
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <Accordion type="single" collapsible className="w-full">
+                  {renderSection("Smart Farming", [
+                    { label: "AI/ML/IoT Use Cases", value: dbCrop?.ai_ml_iot },
+                    { label: "Smart Farming Scope", value: dbCrop?.smart_farming },
+                  ])}
+                  {renderSection("Innovations", [
+                    { label: "Innovations", value: dbCrop?.innovations },
+                  ])}
+                  {renderSection("Government Support", [
+                    { label: "Subsidies", value: dbCrop?.subsidies },
+                    { label: "Schemes", value: dbCrop?.schemes },
+                    { label: "Support Agencies", value: dbCrop?.support_agencies },
+                  ])}
+                </Accordion>
+              </CardContent>
+            </Card>
+          </TabsContent>
+
+          {/* Sustainability Tab */}
+          <TabsContent value="sustainability" className="space-y-6">
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <Globe className="h-5 w-5 text-primary" />
+                  Sustainability & Environment
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <Accordion type="single" collapsible className="w-full">
+                  {renderSection("Sustainability", [
+                    { label: "Sustainability Potential", value: dbCrop?.sustainability_potential },
+                    { label: "Sustainability Practices", value: dbCrop?.sustainability_practices },
+                    { label: "Waste-to-Wealth", value: dbCrop?.waste_to_wealth },
+                  ])}
+                  {renderSection("Climate", [
+                    { label: "Climate Resilience", value: dbCrop?.climate_resilience },
+                    { label: "Carbon Footprint", value: dbCrop?.carbon_footprint },
+                  ])}
+                </Accordion>
+              </CardContent>
+            </Card>
+          </TabsContent>
+
+          {/* Cultural Tab */}
+          <TabsContent value="cultural" className="space-y-6">
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <Heart className="h-5 w-5 text-primary" />
+                  Cultural & Traditional Relevance
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <Accordion type="single" collapsible className="w-full">
+                  {renderSection("Cultural Uses", [
+                    { label: "Religious Use", value: dbCrop?.religious_use },
+                    { label: "Traditional Uses", value: dbCrop?.traditional_uses },
+                  ])}
+                  {renderSection("Status & Facts", [
+                    { label: "GI Status", value: dbCrop?.gi_status },
+                    { label: "Fun Fact", value: dbCrop?.fun_fact },
+                  ])}
+                </Accordion>
+              </CardContent>
+            </Card>
+          </TabsContent>
+
+          {/* Insights Tab */}
+          <TabsContent value="insights" className="space-y-6">
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <BookOpen className="h-5 w-5 text-primary" />
+                  Insights & Analysis
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <Accordion type="single" collapsible className="w-full">
+                  {renderSection("Key Takeaways", [
+                    { label: "Key Takeaways", value: dbCrop?.key_takeaways },
+                  ])}
+                  {renderSection("SWOT Analysis", [
+                    { label: "Strengths", value: dbCrop?.swot_strengths },
+                    { label: "Weaknesses", value: dbCrop?.swot_weaknesses },
+                    { label: "Opportunities", value: dbCrop?.swot_opportunities },
+                    { label: "Threats", value: dbCrop?.swot_threats },
+                  ])}
+                </Accordion>
               </CardContent>
             </Card>
           </TabsContent>

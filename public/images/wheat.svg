@@ -1,0 +1,15 @@
+<svg width="80" height="80" viewBox="0 0 80 80" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <circle cx="40" cy="40" r="40" fill="#FEF3C7"/>
+  <!-- Wheat stalks -->
+  <path d="M35 20 L35 60 M45 20 L45 60" stroke="#92400E" stroke-width="2" stroke-linecap="round"/>
+  <!-- Wheat heads -->
+  <circle cx="35" cy="18" r="3" fill="#F59E0B"/>
+  <circle cx="45" cy="18" r="3" fill="#F59E0B"/>
+  <circle cx="35" cy="22" r="2" fill="#F59E0B"/>
+  <circle cx="45" cy="22" r="2" fill="#F59E0B"/>
+  <!-- Leaves -->
+  <path d="M33 30 Q30 25 33 20" stroke="#16A34A" stroke-width="1.5" fill="none"/>
+  <path d="M47 30 Q50 25 47 20" stroke="#16A34A" stroke-width="1.5" fill="none"/>
+  <path d="M33 40 Q30 35 33 30" stroke="#16A34A" stroke-width="1.5" fill="none"/>
+  <path d="M47 40 Q50 35 47 30" stroke="#16A34A" stroke-width="1.5" fill="none"/>
+</svg>

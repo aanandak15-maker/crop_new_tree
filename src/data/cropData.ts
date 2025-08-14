@@ -19,16 +19,55 @@ export interface CropData {
   name: string;
   scientificName: string;
   family: string;
+  cropType: string; // cereals, pulses, vegetables, fruits, oilseeds, spices
   season: string[];
+  description?: string;
+  origin?: string;
   climate: {
     temperature: string;
     rainfall: string;
     humidity: string;
+    zone?: string;
+    optimumTemp?: string;
+    tolerableTemp?: string;
+    altitude?: string;
   };
   soil: {
     type: string[];
     ph: string;
     drainage: string;
+    texture?: string;
+    lightRequirement?: string;
+  };
+  morphology: {
+    growthHabit?: string;
+    lifeSpan?: string;
+    plantType?: string;
+    rootSystem?: string;
+    leaf?: string;
+    floweringSeason?: string;
+    inflorescenceType?: string;
+    fruitType?: string;
+    fruitDevelopment?: string;
+    uniqueMorphology?: string;
+    ediblePart?: string;
+  };
+  genetics: {
+    chromosomeNumber?: string;
+    breedingMethods?: string;
+    biotechAdvances?: string;
+    hybridVarieties?: string;
+    patents?: string;
+    researchInstitutes?: string;
+  };
+  reproduction: {
+    pollination?: string;
+    propagationType?: string;
+    plantingMaterial?: string;
+    germinationPercent?: string;
+    rootstockCompatibility?: string;
+    nurseryPractices?: string;
+    trainingSystem?: string;
   };
   varieties: CropVariety[];
   cultivation: {
@@ -37,6 +76,27 @@ export interface CropData {
     fertilizers: string[];
     irrigation: string[];
     harvesting: string[];
+    nurseryPractices?: string;
+    trainingSystem?: string;
+    spacing?: string;
+    plantingSeason?: string;
+  };
+  management: {
+    npkN?: string;
+    npkP?: string;
+    npkK?: string;
+    micronutrientNeeds?: string;
+    biofertilizerUsage?: string;
+    applicationScheduleMethod?: string;
+    applicationScheduleStages?: string;
+    applicationScheduleFrequency?: string;
+    waterQuality?: string;
+  };
+  weeds: {
+    commonWeeds?: string;
+    weedSeason?: string;
+    weedControlMethod?: string;
+    criticalPeriodWeed?: string;
   };
   pests: string[];
   diseases: string[];
@@ -57,6 +117,64 @@ export interface CropData {
   };
   innovations: string[];
   climateResilience: string[];
+  market: {
+    marketTrends: string;
+    exportPotential: string;
+    exportDestinations: string[];
+    valueChainPlayers: string[];
+    certifications: string[];
+    subsidies: string;
+    schemes: string[];
+    supportAgencies: string[];
+  };
+  technology: {
+    aiMlIot: string;
+    smartFarming: string;
+  };
+  cultural: {
+    religiousUse: string;
+    traditionalUses: string;
+    giStatus: string;
+    funFact: string;
+  };
+  insights: {
+    keyTakeaways: string;
+    swotStrengths: string;
+    swotWeaknesses: string;
+    swotOpportunities: string;
+    swotThreats: string;
+  };
+  nutrition: {
+    calories: string;
+    protein: string;
+    carbohydrates: string;
+    fat: string;
+    fiber: string;
+    vitamins: string[];
+    minerals: string[];
+    bioactiveCompounds: string;
+    healthBenefits: string;
+  };
+  harvest: {
+    harvestTime: string;
+    maturityIndicators: string;
+    harvestingTools: string;
+    postHarvestLosses: string;
+    storageConditions: string;
+    shelfLife: string;
+    processedProducts: string[];
+    packagingTypes: string[];
+    coldChain: string;
+  };
+  nematodes: {
+    name: string;
+    symptoms: string;
+    lifeCycle: string;
+    etl: string;
+    management: string;
+    biocontrol: string;
+    image: string;
+  };
 }
 
 export const cropDatabase: CropData[] = [
@@ -65,30 +183,69 @@ export const cropDatabase: CropData[] = [
     name: "Wheat",
     scientificName: "Triticum aestivum",
     family: "Poaceae (Gramineae)",
+    cropType: "cereals",
     season: ["Rabi"],
+    description: "Wheat is one of the world's most important cereal crops, providing essential nutrition and serving as a staple food for billions of people globally. It is the second most-produced cereal after maize and the most important food grain in terms of human consumption.",
+    origin: "Fertile Crescent (Middle East) - domesticated around 10,000 years ago",
     climate: {
-      temperature: "15-25°C (optimal)",
-      rainfall: "500-700mm annually",
-      humidity: "50-70%"
+      temperature: "15-25°C (optimal), 10-35°C (tolerance range)",
+      rainfall: "500-700mm annually, 400-800mm acceptable",
+      humidity: "50-70% during growing season",
+      zone: "Temperate and subtropical regions",
+      optimumTemp: "20-25°C during vegetative growth, 15-20°C during grain filling",
+      tolerableTemp: "5-35°C (survival range)",
+      altitude: "0-3000m above sea level (varies by variety)"
     },
     soil: {
-      type: ["Well-drained loamy", "Clay loam", "Sandy loam"],
-      ph: "6.0-7.5",
-      drainage: "Good drainage essential"
+      type: ["Well-drained loamy", "Clay loam", "Sandy loam", "Alluvial soils"],
+      ph: "6.0-7.5 (optimal), 5.5-8.0 (tolerance range)",
+      drainage: "Good drainage essential, waterlogging harmful",
+      texture: "Medium to fine textured soils preferred",
+      lightRequirement: "Full sunlight (6-8 hours daily)"
+    },
+    morphology: {
+      growthHabit: "Annual, erect, tufted grass",
+      lifeSpan: "Annual (120-150 days)",
+      plantType: "Monocotyledonous, C3 plant",
+      rootSystem: "Fibrous root system, 1-2m deep",
+      leaf: "Linear, alternate, parallel-veined, 15-30cm long",
+      floweringSeason: "Spring (February-March in India)",
+      inflorescenceType: "Spike (ear or head)",
+      fruitType: "Caryopsis (grain)",
+      fruitDevelopment: "Single-seeded, dry, indehiscent",
+      uniqueMorphology: "Hollow stems (culms), ligules present, auricles variable",
+      ediblePart: "Grain (endosperm, germ, bran)"
+    },
+    genetics: {
+      chromosomeNumber: "2n=42 (hexaploid)",
+      breedingMethods: "Pedigree, bulk, single seed descent, doubled haploid",
+      biotechAdvances: "Marker-assisted selection, genetic transformation, genome editing",
+      hybridVarieties: "Limited due to self-pollination, cytoplasmic male sterility used",
+      patents: "Multiple patents on disease resistance genes, quality traits",
+      researchInstitutes: "CIMMYT, ICAR, IARI, State Agricultural Universities"
+    },
+    reproduction: {
+      pollination: "Self-pollinating (cleistogamous)",
+      propagationType: "Sexual (seed)",
+      plantingMaterial: "Certified seeds",
+      germinationPercent: "85-95% under optimal conditions",
+      rootstockCompatibility: "Not applicable (annual crop)",
+      nurseryPractices: "Direct seeding, no nursery required",
+      trainingSystem: "Not applicable (annual crop)"
     },
     varieties: [
       {
         id: "hd2967",
         name: "HD 2967",
         duration: "135-140 days",
-        yield: "45-50 q/ha",
-        states: ["Punjab", "Haryana", "Uttar Pradesh", "Madhya Pradesh"],
-        resistance: ["Yellow rust", "Brown rust", "Powdery mildew"],
-        characteristics: ["High protein content", "Good chapati quality", "Semi-dwarf"],
+        yield: "45-50 q/ha (potential), 35-40 q/ha (average)",
+        states: ["Punjab", "Haryana", "Uttar Pradesh", "Madhya Pradesh", "Rajasthan"],
+        resistance: ["Yellow rust", "Brown rust", "Powdery mildew", "Karnal bunt"],
+        characteristics: ["High protein content (12-13%)", "Excellent chapati quality", "Semi-dwarf (85-90 cm)", "Heat tolerant"],
         lateSowingSuitable: false,
         irrigationResponsive: true,
         certifiedSeedAvailable: true,
-        grainQuality: "High Protein, Medium Bold",
+        grainQuality: "High Protein, Medium Bold, Amber color",
         zone: "North Zone",
         premiumMarket: true
       },
@@ -96,14 +253,14 @@ export const cropDatabase: CropData[] = [
         id: "dbw187",
         name: "DBW 187",
         duration: "140-145 days",
-        yield: "40-45 q/ha",
-        states: ["Punjab", "Haryana", "Delhi", "Western UP"],
-        resistance: ["Yellow rust", "Leaf rust", "Powdery mildew"],
-        characteristics: ["Heat tolerant", "Late sowing variety", "Good grain quality"],
+        yield: "40-45 q/ha (potential), 32-38 q/ha (average)",
+        states: ["Punjab", "Haryana", "Delhi", "Western UP", "Uttarakhand"],
+        resistance: ["Yellow rust", "Leaf rust", "Powdery mildew", "Loose smut"],
+        characteristics: ["Heat tolerant", "Late sowing variety", "Good grain quality", "Lodging resistant"],
         lateSowingSuitable: true,
         irrigationResponsive: true,
         certifiedSeedAvailable: true,
-        grainQuality: "Good chapati quality",
+        grainQuality: "Good chapati quality, Medium grain size",
         zone: "North-West Zone",
         premiumMarket: false
       },
@@ -111,224 +268,119 @@ export const cropDatabase: CropData[] = [
         id: "pusa3085",
         name: "Pusa 3085",
         duration: "130-135 days",
-        yield: "42-48 q/ha",
-        states: ["Bihar", "Jharkhand", "Eastern UP", "West Bengal"],
-        resistance: ["Blast", "Brown spot", "Bacterial blight"],
-        characteristics: ["Early maturing", "High yielding", "Disease resistant"],
+        yield: "42-48 q/ha (potential), 35-42 q/ha (average)",
+        states: ["Bihar", "Jharkhand", "Eastern UP", "West Bengal", "Odisha"],
+        resistance: ["Blast", "Brown spot", "Bacterial blight", "Sheath blight"],
+        characteristics: ["Early maturing", "High yielding", "Disease resistant", "Good milling quality"],
         lateSowingSuitable: false,
         irrigationResponsive: true,
         certifiedSeedAvailable: true,
-        grainQuality: "Good milling quality",
+        grainQuality: "Good milling quality, Medium slender grain",
         zone: "Eastern Zone",
         premiumMarket: false
       }
     ],
     cultivation: {
-      landPreparation: ["Deep ploughing", "Harrowing", "Leveling", "Apply FYM 8-10 t/ha"],
-      sowing: ["Seed rate: 100-125 kg/ha", "Row spacing: 20-22.5 cm", "Sowing time: Nov-Dec", "Seed treatment with fungicide"],
-      fertilizers: ["NPK: 120:60:40 kg/ha", "Urea in 3 splits", "DAP at sowing", "MOP at sowing"],
-      irrigation: ["Crown root initiation (20-25 DAS)", "Tillering (40-45 DAS)", "Jointing (60-65 DAS)", "Flowering (80-85 DAS)", "Milk stage (100-105 DAS)", "Dough stage (115-120 DAS)"],
-      harvesting: ["Harvest at physiological maturity", "Moisture content: 20-25%", "Use combine harvester", "Proper threshing and cleaning"]
+      landPreparation: ["Deep ploughing", "Harrowing", "Planking", "Leveling", "Bed preparation"],
+      sowing: ["Seed rate: 100-125 kg/ha", "Spacing: 22.5 cm row spacing", "Depth: 4-5 cm", "Sowing time: October-November (Rabi)"],
+      fertilizers: ["NPK: 120:60:40 kg/ha", "Nitrogen in 3 splits", "Full P&K at sowing", "Top dressing at tillering and flowering"],
+      irrigation: ["Critical stages: Crown root, Tillering, Jointing, Flowering, Grain filling", "Light irrigation", "Avoid water logging", "Total: 4-6 irrigations"],
+      harvesting: ["Harvest at physiological maturity", "Moisture: 20-25%", "Manual or mechanical harvesting", "Proper drying and storage"]
     },
-    pests: ["Aphids", "Termites", "Cutworms", "Armyworms", "Shoot fly"],
-    diseases: ["Yellow rust", "Brown rust", "Powdery mildew", "Loose smut", "Karnal bunt", "Foot rot"],
+    management: {
+      npkN: "120 kg/ha",
+      npkP: "60 kg/ha",
+      npkK: "40 kg/ha",
+      micronutrientNeeds: "Zinc, Boron, Iron",
+      biofertilizerUsage: "Azotobacter, PSB",
+      applicationScheduleMethod: "Split application",
+      applicationScheduleStages: "Basal, Tillering, Flowering",
+      applicationScheduleFrequency: "3 splits",
+      waterQuality: "Good quality water, avoid saline water"
+    },
+    weeds: {
+      commonWeeds: "Phalaris minor, Avena fatua, Chenopodium album, Melilotus indica",
+      weedSeason: "Rabi season (October-March)",
+      weedControlMethod: "Pre-emergence and post-emergence herbicides",
+      criticalPeriodWeed: "First 30-45 days after sowing"
+    },
+    pests: ["Aphids", "Termites", "Army worm", "Pink stem borer", "Cut worms"],
+    diseases: ["Yellow rust", "Brown rust", "Black rust", "Powdery mildew", "Karnal bunt", "Loose smut"],
     economics: {
-      averageYield: "32 q/ha (National average)",
-      marketPrice: "₹2000-2500/quintal (MSP: ₹2275)",
-      majorStates: ["Uttar Pradesh", "Punjab", "Haryana", "Madhya Pradesh", "Rajasthan"],
+      averageYield: "34 q/ha (National average)",
+      marketPrice: "₹2100-2500/quintal (MSP: ₹2125)",
+      majorStates: ["Uttar Pradesh", "Punjab", "Madhya Pradesh", "Haryana", "Rajasthan"],
       costOfCultivation: "₹35,000-45,000/ha"
     },
-    sustainability: ["Crop rotation with legumes", "Zero tillage technology", "Integrated pest management", "Water-saving techniques", "Organic farming practices"],
+    sustainability: ["Organic farming", "Conservation agriculture", "Integrated pest management", "Water conservation", "Soil health improvement"],
     nutritionalValue: {
-      calories: "340 kcal",
-      protein: "12.2%",
-      carbohydrates: "71%",
-      fiber: "12.3g",
-      vitamins: ["Vitamin B1", "Vitamin B3", "Folate"],
+      calories: "327 kcal",
+      protein: "12.6%",
+      carbohydrates: "71.2%",
+      fiber: "12.2g",
+      vitamins: ["Vitamin B1", "Vitamin B2", "Vitamin B6", "Vitamin E"],
       minerals: ["Iron", "Zinc", "Magnesium", "Phosphorus"]
     },
-    innovations: ["Drought tolerant varieties", "Precision sowing techniques", "Biofortified wheat (Zinc-enriched)", "Climate-smart varieties"],
-    climateResilience: ["Heat tolerance", "Terminal heat stress resistance", "Water use efficiency", "Lodging resistance"]
-  },
-  {
-    id: "rice",
-    name: "Rice",
-    scientificName: "Oryza sativa",
-    family: "Poaceae (Gramineae)",
-    season: ["Kharif", "Rabi (in some regions)"],
-    climate: {
-      temperature: "20-35°C",
-      rainfall: "1000-2000mm annually",
-      humidity: "80-90%"
+    innovations: ["High-yielding varieties", "Disease-resistant strains", "Climate-smart agriculture", "Precision farming"],
+    climateResilience: ["Drought tolerance", "Heat stress tolerance", "Water use efficiency", "Early maturity (escape terminal heat)"],
+    market: {
+      marketTrends: "Growing demand for quality wheat",
+      exportPotential: "High potential for export",
+      exportDestinations: ["Middle East", "Southeast Asia", "Africa"],
+      valueChainPlayers: ["Farmers", "Traders", "Processors", "Exporters"],
+      certifications: ["Organic", "Non-GMO", "Quality certification"],
+      subsidies: "Available under various government schemes",
+      schemes: ["PM-KISAN", "PM-Fasal Bima Yojana", "National Food Security Mission"],
+      supportAgencies: ["NAFED", "State Agricultural Departments", "Wheat Research Institutes"]
     },
-    soil: {
-      type: ["Clay", "Clay loam", "Silty clay"],
-      ph: "5.5-7.0",
-      drainage: "Poor drainage suitable (puddled field)"
+    technology: {
+      aiMlIot: "AI-based crop monitoring, IoT sensors for irrigation, ML for yield prediction",
+      smartFarming: "Drones for spraying, GPS-guided farming, Smart irrigation systems"
     },
-    varieties: [
-        {
-          id: "swarna",
-          name: "Swarna",
-          duration: "145-150 days",
-          yield: "50-55 q/ha",
-          states: ["Andhra Pradesh", "Telangana", "Karnataka", "Tamil Nadu", "Odisha"],
-          resistance: ["Blast", "Brown plant hopper", "Gall midge"],
-          characteristics: ["Medium slender grain", "Good cooking quality", "Widely adapted"],
-          lateSowingSuitable: false,
-          irrigationResponsive: true,
-          certifiedSeedAvailable: true,
-          grainQuality: "Medium slender, good cooking",
-          zone: "South Zone",
-          premiumMarket: true
-        },
-        {
-          id: "ir64",
-          name: "IR 64",
-          duration: "120-125 days",
-          yield: "45-50 q/ha",
-          states: ["Punjab", "Haryana", "Uttar Pradesh", "Bihar"],
-          resistance: ["Blast", "Bacterial blight", "Brown plant hopper"],
-          characteristics: ["Semi-dwarf", "High yielding", "Good milling quality"],
-          lateSowingSuitable: false,
-          irrigationResponsive: true,
-          certifiedSeedAvailable: true,
-          grainQuality: "Good milling, medium grain",
-          zone: "North Zone",
-          premiumMarket: false
-        },
-        {
-          id: "basmati1509",
-          name: "Pusa Basmati 1509",
-          duration: "115-120 days",
-          yield: "40-45 q/ha",
-          states: ["Punjab", "Haryana", "Uttar Pradesh", "Uttarakhand"],
-          resistance: ["Blast", "Bacterial blight"],
-          characteristics: ["Export quality", "Extra long grain", "High aroma"],
-          lateSowingSuitable: true,
-          irrigationResponsive: true,
-          certifiedSeedAvailable: true,
-          grainQuality: "Export quality, extra long",
-          zone: "North-West Zone",
-          premiumMarket: true
-        }
-    ],
-    cultivation: {
-      landPreparation: ["Puddling", "Leveling", "Bunding", "Apply organic matter"],
-      sowing: ["Seed rate: 20-25 kg/ha (transplanting)", "Nursery raising: 21-25 days", "Transplanting: 2-3 seedlings/hill", "Spacing: 20x15 cm"],
-      fertilizers: ["NPK: 120:60:40 kg/ha", "Nitrogen in 3 splits", "Phosphorus at transplanting", "Potash in 2 splits"],
-      irrigation: ["Maintain 2-5 cm water level", "Drain before harvest", "Alternate wetting and drying (AWD)", "Total water requirement: 1200-1500 mm"],
-      harvesting: ["Harvest at 80% grain filling", "Moisture content: 20-25%", "Use sickle or combine", "Proper drying and storage"]
+    cultural: {
+      religiousUse: "Used in religious ceremonies, bread for communion",
+      traditionalUses: "Traditional bread making, medicinal uses in Ayurveda",
+      giStatus: "Several GI tags for regional wheat varieties",
+      funFact: "Wheat has been cultivated for over 10,000 years and is mentioned in ancient texts"
     },
-    pests: ["Brown plant hopper", "White backed plant hopper", "Leaf folder", "Stem borer", "Gall midge", "Thrips"],
-    diseases: ["Blast", "Bacterial blight", "Sheath blight", "Brown spot", "False smut", "Tungro virus"],
-    economics: {
-      averageYield: "26 q/ha (National average)",
-      marketPrice: "₹1800-2200/quintal (MSP: ₹2183)",
-      majorStates: ["West Bengal", "Uttar Pradesh", "Punjab", "Tamil Nadu", "Andhra Pradesh"],
-      costOfCultivation: "₹40,000-55,000/ha"
+    insights: {
+      keyTakeaways: "High nutritional value, climate resilient, essential food security crop",
+      swotStrengths: "High protein content, versatile usage, global demand",
+      swotWeaknesses: "Water intensive, climate sensitive, storage challenges",
+      swotOpportunities: "Growing health consciousness, organic market, export potential",
+      swotThreats: "Climate change, pest resistance, market volatility"
     },
-    sustainability: ["System of Rice Intensification (SRI)", "Direct seeded rice", "Alternate wetting and drying", "Integrated nutrient management", "Biofortified varieties"],
-    nutritionalValue: {
-      calories: "345 kcal",
-      protein: "6.8%",
-      carbohydrates: "78%",
-      fiber: "1.3g",
-      vitamins: ["Vitamin B1", "Vitamin B3", "Vitamin B6"],
-      minerals: ["Manganese", "Iron", "Zinc", "Phosphorus"]
+    nutrition: {
+      calories: "327 kcal",
+      protein: "12.6%",
+      carbohydrates: "71.2%",
+      fat: "0.5g",
+      fiber: "12.2g",
+      vitamins: ["Vitamin B1", "Vitamin B2", "Vitamin B6", "Vitamin E"],
+      minerals: ["Iron", "Zinc", "Magnesium", "Phosphorus"],
+      bioactiveCompounds: "Antioxidants, polyphenols, lignans",
+      healthBenefits: "Reduces risk of heart diseases, improves digestion, boosts immunity"
     },
-    innovations: ["Direct seeded rice technology", "Aerobic rice cultivation", "Golden rice (Vitamin A enriched)", "Climate-smart varieties"],
-    climateResilience: ["Submergence tolerance", "Salinity tolerance", "Drought tolerance", "Heat stress resistance"]
-  },
-  {
-    id: "maize",
-    name: "Maize",
-    scientificName: "Zea mays",
-    family: "Poaceae (Gramineae)",
-    season: ["Kharif", "Rabi", "Zaid"],
-    climate: {
-      temperature: "21-27°C",
-      rainfall: "500-750mm annually",
-      humidity: "60-80%"
+    harvest: {
+      harvestTime: "Rabi season (October-March)",
+      maturityIndicators: "Physiological maturity (when grain is ripe)",
+      harvestingTools: "Manual or mechanical harvesting, combine harvester",
+      postHarvestLosses: "10-15%",
+      storageConditions: "Cool, dry, well-ventilated, pest-free",
+      shelfLife: "6-12 months",
+      processedProducts: ["Wheat flour", "Wheat bran", "Wheat straw", "Wheat germ"],
+      packagingTypes: ["Bags", "Sacks", "Barrels", "Bulk"],
+      coldChain: "Required for long-term storage"
     },
-    soil: {
-      type: ["Well-drained loamy", "Sandy loam", "Clay loam"],
-      ph: "6.0-7.5",
-      drainage: "Good drainage required"
-    },
-    varieties: [
-        {
-          id: "nk6240",
-          name: "NK 6240",
-          duration: "85-90 days",
-          yield: "80-90 q/ha",
-          states: ["Karnataka", "Maharashtra", "Gujarat", "Madhya Pradesh"],
-          resistance: ["Turcicum leaf blight", "Common rust"],
-          characteristics: ["Single cross hybrid", "High yielding", "Stress tolerant"],
-          lateSowingSuitable: true,
-          irrigationResponsive: true,
-          certifiedSeedAvailable: true,
-          grainQuality: "Good grain, high test weight",
-          zone: "Central Zone",
-          premiumMarket: true
-        },
-        {
-          id: "900mgold",
-          name: "900M Gold",
-          duration: "88-92 days",
-          yield: "75-85 q/ha",
-          states: ["Punjab", "Haryana", "Uttar Pradesh", "Bihar"],
-          resistance: ["Downy mildew", "Turcicum leaf blight"],
-          characteristics: ["Triple stack hybrid", "Excellent standability", "Good grain quality"],
-          lateSowingSuitable: false,
-          irrigationResponsive: true,
-          certifiedSeedAvailable: true,
-          grainQuality: "Excellent grain quality",
-          zone: "North Zone",
-          premiumMarket: true
-        },
-        {
-          id: "bioseed9544",
-          name: "Bio Seed 9544",
-          duration: "80-85 days",
-          yield: "70-80 q/ha",
-          states: ["Rajasthan", "Gujarat", "Maharashtra", "Karnataka"],
-          resistance: ["Common rust", "Turcicum leaf blight"],
-          characteristics: ["Drought tolerant", "Early maturing", "High shelling %"],
-          lateSowingSuitable: true,
-          irrigationResponsive: false,
-          certifiedSeedAvailable: true,
-          grainQuality: "High shelling percentage",
-          zone: "Western Zone",
-          premiumMarket: false
-        }
-    ],
-    cultivation: {
-      landPreparation: ["Deep ploughing", "Harrowing", "Planking", "Ridge and furrow method"],
-      sowing: ["Seed rate: 20-25 kg/ha", "Spacing: 60x20 cm", "Depth: 4-5 cm", "Sowing time: June-July (Kharif)"],
-      fertilizers: ["NPK: 120:60:40 kg/ha", "Nitrogen in 3 splits", "Full P&K at sowing", "Side dressing at knee height"],
-      irrigation: ["Critical stages: Tasseling, Silking, Grain filling", "Light frequent irrigation", "Avoid water logging", "Total: 6-8 irrigations"],
-      harvesting: ["Harvest at physiological maturity", "Moisture: 18-20%", "Hand picking or combine", "Proper curing and storage"]
-    },
-    pests: ["Fall armyworm", "Stem borer", "Shoot fly", "Pink stem borer", "Aphids", "Thrips"],
-    diseases: ["Turcicum leaf blight", "Common rust", "Downy mildew", "Charcoal rot", "Post flowering stalk rot"],
-    economics: {
-      averageYield: "28 q/ha (National average)",
-      marketPrice: "₹1700-2100/quintal (MSP: ₹2090)",
-      majorStates: ["Karnataka", "Maharashtra", "Madhya Pradesh", "Bihar", "Rajasthan"],
-      costOfCultivation: "₹30,000-40,000/ha"
-    },
-    sustainability: ["Precision agriculture", "Conservation agriculture", "Integrated pest management", "Quality protein maize", "Biofortified varieties"],
-    nutritionalValue: {
-      calories: "365 kcal",
-      protein: "9.4%",
-      carbohydrates: "74%",
-      fiber: "7.3g",
-      vitamins: ["Vitamin A", "Vitamin C", "Vitamin B6"],
-      minerals: ["Magnesium", "Phosphorus", "Iron", "Zinc"]
-    },
-    innovations: ["Quality Protein Maize (QPM)", "Biofortified varieties", "Hybrid technology", "Precision agriculture"],
-    climateResilience: ["Drought tolerance", "Heat stress tolerance", "Lodging resistance", "Early maturity"]
+    nematodes: {
+      name: "Wheat Nematode",
+      symptoms: "Wilting, yellowing, stunted growth, reduced yield, root knot, galls",
+      lifeCycle: "Nematode, egg, larva, nematode, egg",
+      etl: "Ecological, Trophic, Local",
+      management: "Use resistant varieties, rotate crops, biological control, soil fumigation",
+      biocontrol: "Parasitic nematodes, predators, antagonistic bacteria",
+      image: "https://example.com/wheat-nematode.jpg"
+    }
   }
 ];
 
@@ -342,3 +394,4 @@ export const getCropByName = (name: string): CropData | undefined => {
 export const getAllCropNames = (): string[] => {
   return cropDatabase.map(crop => crop.name);
 };
+

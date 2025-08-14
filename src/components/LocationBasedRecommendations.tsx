@@ -110,83 +110,75 @@ const LocationBasedRecommendations: React.FC<LocationBasedRecommendationsProps> 
           </Select>
         </div>
 
-        {/* Recommendations */}
+        {/* Recommendations Display */}
         {selectedState && (
           <div className="space-y-4">
-            <h3 className="text-lg font-semibold flex items-center gap-2">
-              <TrendingUp className="h-5 w-5 text-crop-green" />
-              Recommended Crops for {selectedState.charAt(0).toUpperCase() + selectedState.slice(1)}
-              {selectedSeason && ` (${selectedSeason.charAt(0).toUpperCase() + selectedSeason.slice(1)} Season)`}
-            </h3>
+            <div className="flex items-center gap-2">
+              <Shield className="h-5 w-5 text-crop-green" />
+              <h3 className="text-lg font-semibold">
+                Top Recommendations for {selectedState}
+                {selectedSeason && selectedSeason !== 'all' && ` (${selectedSeason})`}
+              </h3>
+            </div>
 
             {recommendations.length > 0 ? (
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                {recommendations.slice(0, 6).map(({ crop, varieties, avgYield }) => (
-                  <Card 
-                    key={crop.id}
-                    className="cursor-pointer hover:shadow-lg transition-all hover:border-crop-green"
-                    onClick={() => onCropSelect(crop.name)}
-                  >
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                {recommendations.slice(0, 6).map((rec, index) => (
+                  <Card key={rec.crop.name} className="hover:shadow-elegant transition-all duration-300">
                     <CardHeader className="pb-3">
-                      <div className="flex justify-between items-start">
-                        <div>
-                          <CardTitle className="text-lg">{crop.name}</CardTitle>
-                          <CardDescription className="text-sm italic">
-                            {crop.scientificName}
-                          </CardDescription>
-                        </div>
-                        <Badge className="bg-crop-green text-white">
-                          {Math.round(avgYield)} q/ha
+                      <div className="flex items-center justify-between">
+                        <CardTitle className="text-lg">{rec.crop.name}</CardTitle>
+                        <Badge variant="secondary" className="bg-harvest-gold/20 text-harvest-gold">
+                          #{index + 1}
                         </Badge>
                       </div>
+                      <CardDescription className="text-sm italic">
+                        {rec.crop.scientificName}
+                      </CardDescription>
                     </CardHeader>
-
-                    <CardContent className="pt-0">
-                      <div className="space-y-3">
+                    <CardContent className="space-y-3">
+                      <div className="grid grid-cols-2 gap-2 text-sm">
                         <div>
-                          <span className="text-sm font-medium">Suitable Varieties:</span>
-                          <div className="flex flex-wrap gap-1 mt-1">
-                            {varieties.slice(0, 3).map((variety) => (
-                              <Badge key={variety.id} variant="outline" className="text-xs">
-                                {variety.name}
-                              </Badge>
-                            ))}
-                            {varieties.length > 3 && (
-                              <Badge variant="outline" className="text-xs text-muted-foreground">
-                                +{varieties.length - 3} more
-                              </Badge>
-                            )}
-                          </div>
+                          <span className="font-medium">Varieties:</span>
+                          <div className="text-muted-foreground">{rec.varieties.length}</div>
                         </div>
-
-                        <div className="flex items-center justify-between text-sm">
-                          <span className="flex items-center gap-1">
-                            <Shield className="h-3 w-3 text-crop-green" />
-                            {varieties.filter(v => v.resistance.length > 0).length} resistant varieties
-                          </span>
-                          <Button 
-                            size="sm" 
-                            variant="ghost"
-                            className="text-crop-green hover:text-crop-green hover:bg-leaf-light"
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              onCropSelect(crop.name);
-                            }}
-                          >
-                            Explore →
-                          </Button>
+                        <div>
+                          <span className="font-medium">Avg Yield:</span>
+                          <div className="text-muted-foreground">{Math.round(rec.avgYield)} q/ha</div>
                         </div>
                       </div>
+                      
+                      <div>
+                        <div className="text-sm font-medium mb-1">Top Varieties:</div>
+                        <div className="flex flex-wrap gap-1">
+                          {rec.varieties.slice(0, 2).map((variety) => (
+                            <Badge key={variety.name} variant="outline" className="text-xs">
+                              {variety.name}
+                            </Badge>
+                          ))}
+                          {rec.varieties.length > 2 && (
+                            <Badge variant="outline" className="text-xs text-muted-foreground">
+                              +{rec.varieties.length - 2} more
+                            </Badge>
+                          )}
+                        </div>
+                      </div>
+
+                      <Button 
+                        className="w-full bg-gradient-to-r from-crop-green to-crop-green/80 hover:from-crop-green/90 hover:to-crop-green/70"
+                        onClick={() => onCropSelect(rec.crop.name)}
+                      >
+                        <TrendingUp className="mr-2 h-4 w-4" />
+                        View Details
+                      </Button>
                     </CardContent>
                   </Card>
                 ))}
               </div>
             ) : (
               <div className="text-center py-8">
-                <div className="text-4xl mb-4">🌾</div>
-                <h3 className="text-lg font-semibold text-foreground mb-2">
-                  No specific recommendations found
-                </h3>
+                <MapPin className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
+                <h4 className="text-lg font-semibold mb-2">No recommendations found</h4>
                 <p className="text-muted-foreground">
                   Try selecting a different state or season combination
                 </p>
@@ -195,14 +187,12 @@ const LocationBasedRecommendations: React.FC<LocationBasedRecommendationsProps> 
           </div>
         )}
 
-        {/* Call to Action */}
+        {/* Instructions */}
         {!selectedState && (
           <div className="text-center py-8">
-            <div className="text-6xl mb-4">📍</div>
-            <h3 className="text-xl font-semibold text-foreground mb-2">
-              Get Personalized Recommendations
-            </h3>
-            <p className="text-muted-foreground mb-4">
+            <MapPin className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
+            <h4 className="text-lg font-semibold mb-2">Get Personalized Recommendations</h4>
+            <p className="text-muted-foreground">
               Select your state to see the best crop varieties for your region
             </p>
           </div>

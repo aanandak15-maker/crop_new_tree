@@ -239,7 +239,7 @@ const DataBackupVersioning = () => {
   const restoreVersion = async (version: DataVersion) => {
     try {
       // In production, this would restore the specific version
-      console.log("Restoring version:", version);
+              // Restoring version
       
       toast({
         title: "Success",

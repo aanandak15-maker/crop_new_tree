@@ -1,0 +1,29 @@
+<svg width="100" height="100" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+  <!-- Background circle -->
+  <circle cx="50" cy="50" r="45" fill="#4ade80" stroke="#22c55e" stroke-width="2"/>
+  
+  <!-- Main stem -->
+  <rect x="48" y="65" width="4" height="20" fill="#166534"/>
+  
+  <!-- Branch stems -->
+  <rect x="35" y="70" width="3" height="15" fill="#166534" transform="rotate(-20 35 70)"/>
+  <rect x="65" y="70" width="3" height="15" fill="#166534" transform="rotate(20 65 70)"/>
+  
+  <!-- Leaves - Tulsi has distinctive oval leaves -->
+  <ellipse cx="30" cy="75" rx="6" ry="3" fill="#16a34a" transform="rotate(-25 30 75)"/>
+  <ellipse cx="70" cy="75" rx="6" ry="3" fill="#16a34a" transform="rotate(25 70 75)"/>
+  <ellipse cx="25" cy="80" rx="5" ry="2.5" fill="#16a34a" transform="rotate(-30 25 80)"/>
+  <ellipse cx="75" cy="80" rx="5" ry="2.5" fill="#16a34a" transform="rotate(30 75 80)"/>
+  <ellipse cx="40" cy="85" rx="4" ry="2" fill="#16a34a" transform="rotate(-15 40 85)"/>
+  <ellipse cx="60" cy="85" rx="4" ry="2" fill="#16a34a" transform="rotate(15 60 85)"/>
+  
+  <!-- Flower spikes -->
+  <rect x="47" y="55" width="6" height="8" fill="#8b5cf6"/>
+  <rect x="32" y="60" width="4" height="6" fill="#8b5cf6" transform="rotate(-20 32 60)"/>
+  <rect x="68" y="60" width="4" height="6" fill="#8b5cf6" transform="rotate(20 68 60)"/>
+  
+  <!-- Small flowers on spikes -->
+  <circle cx="50" cy="58" r="1.5" fill="#fbbf24"/>
+  <circle cx="50" cy="61" r="1.5" fill="#fbbf24"/>
+  <circle cx="50" cy="64" r="1.5" fill="#fbbf24"/>
+</svg>
