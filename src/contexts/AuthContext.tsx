@@ -1,6 +1,14 @@
 import React, { createContext, useContext, useEffect, useState } from 'react';
 import { User, Session } from '@supabase/supabase-js';
 import { supabase } from '@/integrations/supabase/client';
+// Quiet logs by default; enable by setting VITE_ENABLE_DEBUG=true
+const __DEBUG__ = import.meta.env.VITE_ENABLE_DEBUG === 'true';
+if (!__DEBUG__) {
+  const noop = (..._args: any[]) => {};
+  // Suppress noisy informational logs from this session
+  console.log = noop;
+  console.warn = noop;
+}
 
 interface UserProfile {
   id: string;
