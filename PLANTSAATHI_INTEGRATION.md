@@ -19,7 +19,6 @@ plantsaathiai/
 ├── src/
 │   ├── features/
 │   │   ├── disease-detection/     # Your existing feature
-│   │   ├── soil-analysis/         # Your existing feature  
 │   │   ├── weather/               # Your existing feature
 │   │   └── crop-guide/            # ← NEW: Complete crop system
 │   │       ├── components/
@@ -45,7 +44,6 @@ plantsaathiai/
 ```
 Plant Saathi AI Dashboard
 ├── 🔬 Disease Detection
-├── 🌱 Soil Analysis  
 ├── 🌤️ Weather Info
 └── 🌾 Crop Guide         ← NEW FEATURE
     ├── /crops            → Crop Explorer
