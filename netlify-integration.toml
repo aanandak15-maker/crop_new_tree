@@ -1,0 +1,47 @@
+# Netlify configuration for seamless integration
+[build]
+  publish = "dist"
+  command = "npm run build:prod"
+
+[build.environment]
+  VITE_BASE_PATH = "/"
+  VITE_ENABLE_INTEGRATION = "true"
+
+# Redirects for integration
+[[redirects]]
+  from = "/embed/*"
+  to = "/index.html"
+  status = 200
+
+# Headers for iframe embedding
+[[headers]]
+  for = "/*"
+  [headers.values]
+    X-Frame-Options = "SAMEORIGIN"
+    Content-Security-Policy = "frame-ancestors 'self' https://*.yourmainapp.com"
+    X-Content-Type-Options = "nosniff"
+    Referrer-Policy = "strict-origin-when-cross-origin"
+
+# Enable CORS for API calls from main app
+[[headers]]
+  for = "/api/*"
+  [headers.values]
+    Access-Control-Allow-Origin = "https://yourmainapp.com"
+    Access-Control-Allow-Methods = "GET, POST, PUT, DELETE, OPTIONS"
+    Access-Control-Allow-Headers = "Content-Type, Authorization"
+
+# Cache optimization
+[[headers]]
+  for = "/assets/*"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"
+
+# Environment-specific redirects
+[context.production]
+  [context.production.environment]
+    VITE_SUPABASE_URL = "https://your-production-supabase-url.supabase.co"
+    VITE_INTEGRATION_MODE = "production"
+
+[context.deploy-preview]
+  [context.deploy-preview.environment]
+    VITE_INTEGRATION_MODE = "preview"

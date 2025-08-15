@@ -1,0 +1,21 @@
+{
+  "name": "main-app",
+  "version": "1.0.0",
+  "private": true,
+  "workspaces": [
+    "packages/*",
+    "features/*"
+  ],
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "dev:crop-guide": "npm run dev --workspace=crop-guide",
+    "build:crop-guide": "npm run build --workspace=crop-guide"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-react-swc": "^3.5.0",
+    "typescript": "^5.5.3",
+    "vite": "^5.4.1"
+  },
+  "packageManager": "npm@10.0.0"
+}

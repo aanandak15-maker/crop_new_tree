@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Seamless Crop Guide Integration</title>
+    <style>
+        .crop-guide-container {
+            width: 100%;
+            height: 100vh;
+            border: none;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .crop-guide-iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+            background: transparent;
+        }
+        
+        .loading-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: #f8fafc;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            transition: opacity 0.3s ease;
+        }
+        
+        .loading-overlay.hidden {
+            opacity: 0;
+            pointer-events: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="crop-guide-container">
+        <div class="loading-overlay" id="loadingOverlay">
+            <div>
+                <div class="spinner"></div>
+                <p>Loading Crop Guide...</p>
+            </div>
+        </div>
+        <iframe 
+            id="cropGuideIframe"
+            class="crop-guide-iframe" 
+            src="https://crops.yourmainapp.com"
+            onload="hideLoading()"
+            sandbox="allow-scripts allow-same-origin allow-forms allow-popups">
+        </iframe>
+    </div>
+
+    <script>
+        function hideLoading() {
+            const overlay = document.getElementById('loadingOverlay');
+            overlay.classList.add('hidden');
+            
+            // Remove overlay after transition
+            setTimeout(() => {
+                overlay.style.display = 'none';
+            }, 300);
+        }
+
+        // Handle iframe communication
+        window.addEventListener('message', function(event) {
+            // Validate origin for security
+            if (event.origin !== 'https://crops.yourmainapp.com') return;
+            
+            // Handle crop guide events
+            if (event.data.type === 'CROP_SELECTED') {
+                console.log('Crop selected:', event.data.cropName);
+                // Could trigger actions in main app
+            }
+        });
+    </script>
+</body>
+</html>
